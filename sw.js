@@ -1,12 +1,13 @@
 // Cocktail Journal Service Worker
 const CACHE_NAME = 'cocktail-journal-v1';
-const OFFLINE_URL = '/';
+const OFFLINE_URL = './';
 
 // Assets to cache on install
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json',
+  './',
+  './index.html',
+  './manifest.json',
+  './cocktails.json',
   'https://cdn.tailwindcss.com',
   'https://unpkg.com/react@18/umd/react.development.js',
   'https://unpkg.com/react-dom@18/umd/react-dom.development.js',
@@ -89,7 +90,7 @@ self.addEventListener('fetch', (event) => {
           .catch(() => {
             // Network failed, try to return offline page
             if (event.request.mode === 'navigate') {
-              return caches.match(OFFLINE_URL);
+              return caches.match('./index.html');
             }
           });
       })

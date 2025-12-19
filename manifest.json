@@ -2,7 +2,7 @@
   "name": "Barkeep",
   "short_name": "Barkeep",
   "description": "A refined bartending companion for cocktail recipes, specs, and inventory",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0c0a09",
   "theme_color": "#0c0a09",
