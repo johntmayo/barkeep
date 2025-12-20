@@ -5,13 +5,27 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "bourbon", "measure": "2 oz"},
-      {"name": "sugar", "measure": "1 cube"},
-      {"name": "angostura bitters", "measure": "2-3 dashes"},
-      {"name": "water", "measure": "splash"}
+      {
+        "name": "bourbon or rye whiskey",
+        "measure": "45 ml"
+      },
+      {
+        "name": "sugar cube",
+        "measure": "1"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "water",
+        "measure": "few dashes"
+      }
     ],
-    "instructions": "Place sugar cube in rocks glass, saturate with bitters and a splash of water. Muddle until dissolved. Add bourbon and a large ice cube. Stir gently. Express orange peel over drink and drop in.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "instructions": "Place sugar cube in rocks glass, saturate with bitters and a few dashes of water. Muddle until dissolved. Fill glass with ice cubes and add whiskey. Garnish with orange slice and a cherry.",
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "manhattan",
@@ -19,12 +33,23 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "rye whiskey", "measure": "2 oz"},
-      {"name": "sweet vermouth", "measure": "1 oz"},
-      {"name": "angostura bitters", "measure": "2 dashes"}
+      {
+        "name": "rye whiskey",
+        "measure": "50 ml"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "20 ml"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "1 dash"
+      }
     ],
-    "instructions": "Stir all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a brandied cherry.",
-    "image": "https://images.unsplash.com/photo-1582056615449-3b2e167d4d78?w=400&h=300&fit=crop"
+    "instructions": "Stir all ingredients with ice until well-chilled. Strain into a chilled cocktail glass. Garnish with a cherry.",
+    "image": "https://images.unsplash.com/photo-1582056615449-3b2e167d4d78?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "negroni",
@@ -32,12 +57,23 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "gin", "measure": "1 oz"},
-      {"name": "campari", "measure": "1 oz"},
-      {"name": "sweet vermouth", "measure": "1 oz"}
+      {
+        "name": "gin",
+        "measure": "30 ml"
+      },
+      {
+        "name": "campari",
+        "measure": "30 ml"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "30 ml"
+      }
     ],
-    "instructions": "Stir all ingredients with ice. Strain into a rocks glass over a large ice cube. Garnish with an orange peel.",
-    "image": "https://images.unsplash.com/photo-1551751299-1b51cab2694c?w=400&h=300&fit=crop"
+    "instructions": "Stir all ingredients with ice. Strain into a rocks glass over ice. Garnish with half an orange slice.",
+    "image": "https://images.unsplash.com/photo-1551751299-1b51cab2694c?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "whiskey-sour",
@@ -45,13 +81,27 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "bourbon", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"},
-      {"name": "simple syrup", "measure": "3/4 oz"},
-      {"name": "egg white", "measure": "1 (optional)"}
+      {
+        "name": "bourbon",
+        "measure": "45 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "egg white",
+        "measure": "1 (optional)"
+      }
     ],
-    "instructions": "If using egg white, dry shake all ingredients first. Then shake with ice until well-chilled. Strain into a rocks glass over ice. Garnish with a cherry and orange slice.",
-    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+    "instructions": "If using egg white, dry shake all ingredients first. Add ice and shake again. Strain into a rocks glass. Garnish with half an orange slice and a cherry.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "gimlet",
@@ -59,12 +109,23 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"},
-      {"name": "simple syrup", "measure": "3/4 oz"}
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice. Strain into a chilled coupe. Garnish with a lime wheel.",
-    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "vodka-soda",
@@ -72,12 +133,22 @@
     "category": "Highball",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "vodka", "measure": "2 oz"},
-      {"name": "club soda", "measure": "4 oz"},
-      {"name": "lime", "measure": "1 wedge"}
+      {
+        "name": "vodka",
+        "measure": "2 oz"
+      },
+      {
+        "name": "club soda",
+        "measure": "4 oz"
+      },
+      {
+        "name": "lime",
+        "measure": "1 wedge"
+      }
     ],
     "instructions": "Fill highball glass with ice. Add vodka, top with club soda. Squeeze lime wedge and drop in. Stir gently.",
-    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "style": "highball"
   },
   {
     "id": "rusty-nail",
@@ -85,11 +156,19 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "scotch", "measure": "1 1/2 oz"},
-      {"name": "drambuie", "measure": "3/4 oz"}
+      {
+        "name": "scotch",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "drambuie",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Stir ingredients with ice. Strain into a rocks glass over a large ice cube. Garnish with a lemon twist.",
-    "image": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "bees-knees",
@@ -97,12 +176,23 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"},
-      {"name": "honey syrup", "measure": "3/4 oz"}
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "honey syrup",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a lemon twist.",
-    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "sour"
   },
   {
     "id": "sidecar",
@@ -110,12 +200,23 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "cognac", "measure": "2 oz"},
-      {"name": "cointreau", "measure": "3/4 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"}
+      {
+        "name": "cognac",
+        "measure": "2 oz"
+      },
+      {
+        "name": "cointreau",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe with a sugared rim (optional). Garnish with an orange twist.",
-    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "french-75",
@@ -123,13 +224,27 @@
     "category": "Cocktail",
     "glass": "Champagne flute",
     "ingredients": [
-      {"name": "gin", "measure": "1 oz"},
-      {"name": "lemon juice", "measure": "1/2 oz"},
-      {"name": "simple syrup", "measure": "1/2 oz"},
-      {"name": "champagne", "measure": "3 oz"}
+      {
+        "name": "gin",
+        "measure": "1 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "champagne",
+        "measure": "3 oz"
+      }
     ],
     "instructions": "Shake gin, lemon juice, and simple syrup with ice. Strain into a champagne flute. Top with champagne. Garnish with a lemon twist.",
-    "image": "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "spritz"
   },
   {
     "id": "corpse-reviver-2",
@@ -137,14 +252,31 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "3/4 oz"},
-      {"name": "cointreau", "measure": "3/4 oz"},
-      {"name": "lillet blanc", "measure": "3/4 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"},
-      {"name": "absinthe", "measure": "rinse"}
+      {
+        "name": "gin",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "cointreau",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lillet blanc",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "absinthe",
+        "measure": "rinse"
+      }
     ],
     "instructions": "Rinse a chilled coupe with absinthe and discard excess. Shake remaining ingredients with ice. Strain into the prepared glass. Garnish with an orange twist.",
-    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "last-word",
@@ -152,13 +284,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "3/4 oz"},
-      {"name": "green chartreuse", "measure": "3/4 oz"},
-      {"name": "maraschino liqueur", "measure": "3/4 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"}
+      {
+        "name": "gin",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "green chartreuse",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. No garnish needed.",
-    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "southside",
@@ -166,13 +312,26 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"},
-      {"name": "simple syrup", "measure": "3/4 oz"},
-      {"name": "mint leaves", "measure": "6-8"}
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "mint leaves",
+        "measure": "6-8"
+      }
     ],
     "instructions": "Gently muddle mint with simple syrup. Add gin and lime juice. Shake with ice until well-chilled. Fine strain into a chilled coupe. Garnish with a mint sprig.",
-    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "style": "smash"
   },
   {
     "id": "clover-club",
@@ -180,13 +339,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"},
-      {"name": "raspberry syrup", "measure": "1/2 oz"},
-      {"name": "egg white", "measure": "1"}
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "raspberry syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "egg white",
+        "measure": "1"
+      }
     ],
     "instructions": "Dry shake all ingredients without ice. Then shake with ice until well-chilled. Strain into a chilled coupe. Garnish with fresh raspberries.",
-    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "aperol-spritz",
@@ -194,12 +367,23 @@
     "category": "Spritz",
     "glass": "Wine glass",
     "ingredients": [
-      {"name": "aperol", "measure": "2 oz"},
-      {"name": "prosecco", "measure": "3 oz"},
-      {"name": "club soda", "measure": "1 oz"}
+      {
+        "name": "prosecco",
+        "measure": "90 ml"
+      },
+      {
+        "name": "aperol",
+        "measure": "60 ml"
+      },
+      {
+        "name": "club soda",
+        "measure": "splash"
+      }
     ],
-    "instructions": "Fill a large wine glass with ice. Add Aperol, then prosecco, then club soda. Stir gently. Garnish with an orange slice.",
-    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop"
+    "instructions": "Build all ingredients in a wine glass filled with ice. Stir gently. Garnish with an orange slice.",
+    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "spritz"
   },
   {
     "id": "hugo",
@@ -207,13 +391,26 @@
     "category": "Spritz",
     "glass": "Wine glass",
     "ingredients": [
-      {"name": "elderflower liqueur", "measure": "1 oz"},
-      {"name": "prosecco", "measure": "4 oz"},
-      {"name": "club soda", "measure": "2 oz"},
-      {"name": "mint leaves", "measure": "4-5"}
+      {
+        "name": "elderflower liqueur",
+        "measure": "1 oz"
+      },
+      {
+        "name": "prosecco",
+        "measure": "4 oz"
+      },
+      {
+        "name": "club soda",
+        "measure": "2 oz"
+      },
+      {
+        "name": "mint leaves",
+        "measure": "4-5"
+      }
     ],
     "instructions": "Add mint and elderflower liqueur to a wine glass. Fill with ice. Add prosecco and club soda. Stir gently. Garnish with a lime wedge and mint sprig.",
-    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop",
+    "style": "spritz"
   },
   {
     "id": "paloma",
@@ -221,14 +418,31 @@
     "category": "Cocktail",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "tequila", "measure": "2 oz"},
-      {"name": "grapefruit juice", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"},
-      {"name": "club soda", "measure": "2 oz"},
-      {"name": "salt", "measure": "pinch"}
+      {
+        "name": "tequila",
+        "measure": "2 oz"
+      },
+      {
+        "name": "grapefruit juice",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "club soda",
+        "measure": "2 oz"
+      },
+      {
+        "name": "salt",
+        "measure": "pinch"
+      }
     ],
     "instructions": "Add tequila, grapefruit juice, lime juice, and a pinch of salt to a highball glass with ice. Top with club soda. Stir gently. Garnish with a grapefruit wedge.",
-    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "highball"
   },
   {
     "id": "tommys-margarita",
@@ -236,12 +450,23 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "tequila", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1 oz"},
-      {"name": "agave syrup", "measure": "1/2 oz"}
+      {
+        "name": "tequila",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "agave syrup",
+        "measure": "20 ml"
+      }
     ],
-    "instructions": "Shake all ingredients with ice until well-chilled. Strain into a rocks glass over ice. Garnish with a lime wheel. Salt rim optional.",
-    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop"
+    "instructions": "Shake all ingredients with ice. Strain into a chilled rocks glass over ice.",
+    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "sour"
   },
   {
     "id": "espresso-martini",
@@ -249,12 +474,31 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "vodka", "measure": "1 1/2 oz"},
-      {"name": "coffee liqueur", "measure": "1 oz"},
-      {"name": "espresso", "measure": "1 oz"}
+      {
+        "name": "vodka",
+        "measure": "50 ml"
+      },
+      {
+        "name": "coffee liqueur",
+        "measure": "10 ml"
+      },
+      {
+        "name": "sugar syrup",
+        "measure": "10 ml"
+      },
+      {
+        "name": "espresso",
+        "measure": "1 shot"
+      }
     ],
-    "instructions": "Shake all ingredients vigorously with ice. Strain into a chilled coupe. Garnish with three coffee beans.",
-    "image": "https://images.unsplash.com/photo-1545438102-799c3991ffef?w=400&h=300&fit=crop"
+    "instructions": "Shake all ingredients vigorously with ice. Strain into a chilled martini glass.",
+    "image": "https://images.unsplash.com/photo-1545438102-799c3991ffef?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "coffee",
+    "styles": [
+      "coffee",
+      "martini"
+    ]
   },
   {
     "id": "pornstar-martini",
@@ -262,14 +506,31 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "vanilla vodka", "measure": "1 1/2 oz"},
-      {"name": "passoa", "measure": "1 oz"},
-      {"name": "passion fruit puree", "measure": "1 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"},
-      {"name": "prosecco", "measure": "shot on side"}
+      {
+        "name": "vanilla vodka",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "passoa",
+        "measure": "1 oz"
+      },
+      {
+        "name": "passion fruit puree",
+        "measure": "1 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "prosecco",
+        "measure": "shot on side"
+      }
     ],
     "instructions": "Shake vodka, Passoa, passion fruit puree, and lime juice with ice. Strain into a coupe. Float half a passion fruit on top. Serve with a shot of prosecco on the side.",
-    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "martini"
   },
   {
     "id": "cosmopolitan",
@@ -277,13 +538,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "vodka", "measure": "1 1/2 oz"},
-      {"name": "cointreau", "measure": "3/4 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"},
-      {"name": "cranberry juice", "measure": "1/2 oz"}
+      {
+        "name": "vodka citron",
+        "measure": "40 ml"
+      },
+      {
+        "name": "cointreau",
+        "measure": "15 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "cranberry juice",
+        "measure": "30 ml"
+      }
     ],
-    "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a lime wheel or flamed orange twist.",
-    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop"
+    "instructions": "Shake all ingredients with ice. Strain into a chilled cocktail glass. Garnish with a lime zest.",
+    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "sour"
   },
   {
     "id": "mojito",
@@ -291,14 +566,31 @@
     "category": "Cocktail",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "white rum", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1 oz"},
-      {"name": "simple syrup", "measure": "3/4 oz"},
-      {"name": "mint leaves", "measure": "8-10"},
-      {"name": "club soda", "measure": "2 oz"}
+      {
+        "name": "white rum",
+        "measure": "45 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "20 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "mint leaves",
+        "measure": "6"
+      },
+      {
+        "name": "club soda",
+        "measure": "splash"
+      }
     ],
-    "instructions": "Gently muddle mint with simple syrup and lime juice. Add rum and ice. Top with club soda. Stir gently. Garnish with a mint sprig and lime wheel.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "instructions": "Muddle mint leaves with sugar and lime juice. Add splash of soda water. Fill glass with cracked ice. Pour rum, fill with soda water. Light stir. Garnish with mint sprigs.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "highball"
   },
   {
     "id": "spritz-veneziano",
@@ -306,12 +598,22 @@
     "category": "Spritz",
     "glass": "Wine glass",
     "ingredients": [
-      {"name": "select aperitivo", "measure": "2 oz"},
-      {"name": "prosecco", "measure": "3 oz"},
-      {"name": "club soda", "measure": "1 oz"}
+      {
+        "name": "select aperitivo",
+        "measure": "2 oz"
+      },
+      {
+        "name": "prosecco",
+        "measure": "3 oz"
+      },
+      {
+        "name": "club soda",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Fill a wine glass with ice. Add Select, prosecco, and club soda. Stir gently. Garnish with a green olive.",
-    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop",
+    "style": "spritz"
   },
   {
     "id": "tom-collins",
@@ -319,13 +621,30 @@
     "category": "Cocktail",
     "glass": "Collins glass",
     "ingredients": [
-      {"name": "gin", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "1 oz"},
-      {"name": "simple syrup", "measure": "1/2 oz"},
-      {"name": "club soda", "measure": "3 oz"}
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "club soda",
+        "measure": "3 oz"
+      }
     ],
     "instructions": "Shake gin, lemon juice, and simple syrup with ice. Strain into a Collins glass with ice. Top with club soda. Garnish with a lemon wheel and cherry.",
-    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "style": "highball",
+    "styles": [
+      "highball",
+      "fizz"
+    ]
   },
   {
     "id": "bijou",
@@ -333,13 +652,26 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "1 oz"},
-      {"name": "green chartreuse", "measure": "1 oz"},
-      {"name": "sweet vermouth", "measure": "1 oz"},
-      {"name": "orange bitters", "measure": "1 dash"}
+      {
+        "name": "gin",
+        "measure": "1 oz"
+      },
+      {
+        "name": "green chartreuse",
+        "measure": "1 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1 oz"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "1 dash"
+      }
     ],
     "instructions": "Stir all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a cherry.",
-    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "style": "spirit-forward"
   },
   {
     "id": "aviation",
@@ -347,13 +679,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "2 oz"},
-      {"name": "maraschino liqueur", "measure": "1/2 oz"},
-      {"name": "creme de violette", "measure": "1/4 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"}
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "creme de violette",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a brandied cherry.",
-    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "ramos-gin-fizz",
@@ -361,17 +707,43 @@
     "category": "Cocktail",
     "glass": "Collins glass",
     "ingredients": [
-      {"name": "gin", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "1/2 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"},
-      {"name": "simple syrup", "measure": "1 oz"},
-      {"name": "heavy cream", "measure": "1 oz"},
-      {"name": "egg white", "measure": "1"},
-      {"name": "orange flower water", "measure": "3 drops"},
-      {"name": "club soda", "measure": "2 oz"}
+      {
+        "name": "gin",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1 oz"
+      },
+      {
+        "name": "heavy cream",
+        "measure": "1 oz"
+      },
+      {
+        "name": "egg white",
+        "measure": "1"
+      },
+      {
+        "name": "orange flower water",
+        "measure": "3 drops"
+      },
+      {
+        "name": "club soda",
+        "measure": "2 oz"
+      }
     ],
     "instructions": "Dry shake all ingredients except soda for 1 minute. Add ice and shake vigorously for another minute. Strain into a Collins glass. Let settle, then slowly pour soda down the middle to lift the foam.",
-    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "fizz"
   },
   {
     "id": "champs-elysees",
@@ -379,14 +751,30 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "cognac", "measure": "1 1/2 oz"},
-      {"name": "green chartreuse", "measure": "1/2 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"},
-      {"name": "simple syrup", "measure": "1/4 oz"},
-      {"name": "angostura bitters", "measure": "1 dash"}
+      {
+        "name": "cognac",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "green chartreuse",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "1 dash"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a lemon twist.",
-    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "style": "sour"
   },
   {
     "id": "white-lady",
@@ -394,12 +782,23 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "1 1/2 oz"},
-      {"name": "cointreau", "measure": "3/4 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"}
+      {
+        "name": "gin",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "cointreau",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a lemon twist.",
-    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "hemingway-daiquiri",
@@ -407,13 +806,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "white rum", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"},
-      {"name": "grapefruit juice", "measure": "1/2 oz"},
-      {"name": "maraschino liqueur", "measure": "1/2 oz"}
+      {
+        "name": "white rum",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "grapefruit juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a lime wheel.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "sour"
   },
   {
     "id": "el-presidente",
@@ -421,10 +834,22 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "white rum", "measure": "1 1/2 oz"},
-      {"name": "dry vermouth", "measure": "3/4 oz"},
-      {"name": "orange curacao", "measure": "1/2 oz"},
-      {"name": "grenadine", "measure": "1 barspoon"}
+      {
+        "name": "white rum",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "orange curacao",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "grenadine",
+        "measure": "1 barspoon"
+      }
     ],
     "instructions": "Stir all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with an orange twist.",
     "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
@@ -435,12 +860,23 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "white rum", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1 oz"},
-      {"name": "simple syrup", "measure": "3/4 oz"}
+      {
+        "name": "white rum",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "20 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "10 ml"
+      }
     ],
-    "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a lime wheel.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe glass.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "sour"
   },
   {
     "id": "mary-pickford",
@@ -448,10 +884,22 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "white rum", "measure": "2 oz"},
-      {"name": "pineapple juice", "measure": "2 oz"},
-      {"name": "grenadine", "measure": "1/4 oz"},
-      {"name": "maraschino liqueur", "measure": "1/4 oz"}
+      {
+        "name": "white rum",
+        "measure": "2 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "2 oz"
+      },
+      {
+        "name": "grenadine",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "1/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a cherry.",
     "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
@@ -462,10 +910,22 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "white rum", "measure": "1 1/2 oz"},
-      {"name": "pineapple juice", "measure": "1 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"},
-      {"name": "apricot brandy", "measure": "1/2 oz"}
+      {
+        "name": "white rum",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "apricot brandy",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a pineapple wedge.",
     "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
@@ -476,10 +936,22 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "white rum", "measure": "3 oz"},
-      {"name": "lime juice", "measure": "1 oz"},
-      {"name": "grapefruit juice", "measure": "1 oz"},
-      {"name": "maraschino liqueur", "measure": "1/2 oz"}
+      {
+        "name": "white rum",
+        "measure": "3 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "grapefruit juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. A stronger, less sweet daiquiri variation.",
     "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
@@ -490,12 +962,23 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "tequila", "measure": "2 oz"},
-      {"name": "cointreau", "measure": "1 oz"},
-      {"name": "lime juice", "measure": "1 oz"}
+      {
+        "name": "tequila",
+        "measure": "50 ml"
+      },
+      {
+        "name": "cointreau",
+        "measure": "20 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "15 ml"
+      }
     ],
-    "instructions": "Shake all ingredients with ice until well-chilled. Strain into a coupe or rocks glass. Salt rim optional. Garnish with a lime wheel.",
-    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop"
+    "instructions": "Shake all ingredients with ice. Strain into a chilled cocktail glass or serve in a salt-rimmed margarita glass. Garnish with half a lime slice.",
+    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "sour"
   },
   {
     "id": "tequila-sunrise",
@@ -503,12 +986,23 @@
     "category": "Cocktail",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "tequila", "measure": "2 oz"},
-      {"name": "orange juice", "measure": "4 oz"},
-      {"name": "grenadine", "measure": "1/2 oz"}
+      {
+        "name": "tequila",
+        "measure": "2 oz"
+      },
+      {
+        "name": "orange juice",
+        "measure": "4 oz"
+      },
+      {
+        "name": "grenadine",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Fill a highball glass with ice. Add tequila and orange juice, stir. Slowly pour grenadine down the side of the glass to settle at bottom. Garnish with an orange slice and cherry.",
-    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "highball"
   },
   {
     "id": "matador",
@@ -516,9 +1010,18 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "tequila", "measure": "1 1/2 oz"},
-      {"name": "pineapple juice", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"}
+      {
+        "name": "tequila",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a coupe. Garnish with a pineapple wedge.",
     "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop"
@@ -529,10 +1032,22 @@
     "category": "Cocktail",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "tequila", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"},
-      {"name": "grenadine", "measure": "3/4 oz"},
-      {"name": "angostura bitters", "measure": "2-3 dashes"}
+      {
+        "name": "tequila",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "grenadine",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2-3 dashes"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a highball glass with ice. Garnish with a lime wheel.",
     "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop"
@@ -543,12 +1058,22 @@
     "category": "Cocktail",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "tequila", "measure": "2 oz"},
-      {"name": "cola", "measure": "4 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"}
+      {
+        "name": "tequila",
+        "measure": "2 oz"
+      },
+      {
+        "name": "cola",
+        "measure": "4 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Fill a highball glass with ice. Add tequila and lime juice. Top with cola. Stir gently. Garnish with a lime wedge.",
-    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop",
+    "style": "highball"
   },
   {
     "id": "godfather",
@@ -556,11 +1081,19 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "scotch", "measure": "1 1/2 oz"},
-      {"name": "amaretto", "measure": "3/4 oz"}
+      {
+        "name": "scotch",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "amaretto",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Stir ingredients with ice. Strain into a rocks glass over a large ice cube.",
-    "image": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "spirit-forward"
   },
   {
     "id": "stinger",
@@ -568,11 +1101,19 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "cognac", "measure": "2 oz"},
-      {"name": "creme de menthe", "measure": "3/4 oz"}
+      {
+        "name": "cognac",
+        "measure": "2 oz"
+      },
+      {
+        "name": "creme de menthe",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Stir ingredients with ice until well-chilled. Strain into a chilled coupe. Can also be served over crushed ice.",
-    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "brandy-alexander",
@@ -580,12 +1121,22 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "cognac", "measure": "1 1/2 oz"},
-      {"name": "creme de cacao", "measure": "1 oz"},
-      {"name": "heavy cream", "measure": "1 oz"}
+      {
+        "name": "cognac",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "creme de cacao",
+        "measure": "1 oz"
+      },
+      {
+        "name": "heavy cream",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with freshly grated nutmeg.",
-    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "style": "flip"
   },
   {
     "id": "black-russian",
@@ -593,11 +1144,19 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "vodka", "measure": "2 oz"},
-      {"name": "coffee liqueur", "measure": "1 oz"}
+      {
+        "name": "vodka",
+        "measure": "2 oz"
+      },
+      {
+        "name": "coffee liqueur",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Pour ingredients into a rocks glass over ice. Stir briefly.",
-    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "spirit-forward"
   },
   {
     "id": "irish-coffee",
@@ -605,13 +1164,27 @@
     "category": "Hot Drink",
     "glass": "Irish coffee mug",
     "ingredients": [
-      {"name": "irish whiskey", "measure": "1 1/2 oz"},
-      {"name": "hot coffee", "measure": "4 oz"},
-      {"name": "brown sugar", "measure": "1 tsp"},
-      {"name": "heavy cream", "measure": "1 oz"}
+      {
+        "name": "irish whiskey",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "hot coffee",
+        "measure": "4 oz"
+      },
+      {
+        "name": "brown sugar",
+        "measure": "1 tsp"
+      },
+      {
+        "name": "heavy cream",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Warm the glass. Add whiskey and sugar, stir to dissolve. Add hot coffee. Float cream on top by pouring over the back of a spoon. Do not stir after adding cream.",
-    "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "coffee"
   },
   {
     "id": "vesper-martini",
@@ -619,12 +1192,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "gin", "measure": "3 oz"},
-      {"name": "vodka", "measure": "1 oz"},
-      {"name": "lillet blanc", "measure": "1/2 oz"}
+      {
+        "name": "gin",
+        "measure": "3 oz"
+      },
+      {
+        "name": "vodka",
+        "measure": "1 oz"
+      },
+      {
+        "name": "lillet blanc",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Shake ingredients with ice until very cold. Strain into a chilled coupe. Garnish with a large, thin lemon peel.",
-    "image": "https://images.unsplash.com/photo-1575023782549-62ca0d244b39?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1575023782549-62ca0d244b39?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "spirit-forward",
+    "styles": [
+      "spirit-forward",
+      "martini"
+    ]
   },
   {
     "id": "vodka-martini",
@@ -632,11 +1220,22 @@
     "category": "Cocktail",
     "glass": "Martini glass",
     "ingredients": [
-      {"name": "vodka", "measure": "2 1/2 oz"},
-      {"name": "dry vermouth", "measure": "1/2 oz"}
+      {
+        "name": "vodka",
+        "measure": "2 1/2 oz"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Stir (or shake) ingredients with ice until well-chilled. Strain into a chilled martini glass. Garnish with a lemon twist or olives.",
-    "image": "https://images.unsplash.com/photo-1575023782549-62ca0d244b39?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1575023782549-62ca0d244b39?w=400&h=300&fit=crop",
+    "style": "spirit-forward",
+    "styles": [
+      "spirit-forward",
+      "martini"
+    ]
   },
   {
     "id": "dry-martini",
@@ -644,11 +1243,23 @@
     "category": "Cocktail",
     "glass": "Martini glass",
     "ingredients": [
-      {"name": "gin", "measure": "2 1/2 oz"},
-      {"name": "dry vermouth", "measure": "1/2 oz"}
+      {
+        "name": "gin",
+        "measure": "60 ml"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "10 ml"
+      }
     ],
-    "instructions": "Stir ingredients with ice until well-chilled. Strain into a chilled martini glass. Garnish with a lemon twist or olives.",
-    "image": "https://images.unsplash.com/photo-1575023782549-62ca0d244b39?w=400&h=300&fit=crop"
+    "instructions": "Stir all ingredients with ice until well-chilled. Strain into a chilled martini glass. Squeeze oil from lemon peel onto the drink, or garnish with olives.",
+    "image": "https://images.unsplash.com/photo-1575023782549-62ca0d244b39?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward",
+    "styles": [
+      "spirit-forward",
+      "martini"
+    ]
   },
   {
     "id": "americano",
@@ -656,12 +1267,23 @@
     "category": "Cocktail",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "campari", "measure": "1 1/2 oz"},
-      {"name": "sweet vermouth", "measure": "1 1/2 oz"},
-      {"name": "club soda", "measure": "top"}
+      {
+        "name": "campari",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "club soda",
+        "measure": "top"
+      }
     ],
     "instructions": "Build Campari and sweet vermouth in a highball glass over ice. Top with club soda. Stir gently. Garnish with an orange slice.",
-    "image": "https://images.unsplash.com/photo-1551751299-1b51cab2694c?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551751299-1b51cab2694c?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "spirit-forward"
   },
   {
     "id": "mai-tai",
@@ -669,14 +1291,31 @@
     "category": "Tiki",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "aged rum", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1 oz"},
-      {"name": "orange curacao", "measure": "1/2 oz"},
-      {"name": "orgeat", "measure": "1/2 oz"},
-      {"name": "simple syrup", "measure": "1/4 oz"}
+      {
+        "name": "white rum",
+        "measure": "30 ml"
+      },
+      {
+        "name": "dark rum",
+        "measure": "30 ml"
+      },
+      {
+        "name": "orange curacao",
+        "measure": "15 ml"
+      },
+      {
+        "name": "orgeat syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "30 ml"
+      }
     ],
-    "instructions": "Shake all ingredients with ice. Strain into a rocks glass over crushed ice. Garnish with a spent lime shell and mint sprig.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "instructions": "Shake all ingredients with ice. Strain into a rocks glass filled with crushed ice. Garnish with pineapple spear, mint sprig, and lime peel.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "tiki"
   },
   {
     "id": "zombie",
@@ -684,16 +1323,39 @@
     "category": "Tiki",
     "glass": "Collins glass",
     "ingredients": [
-      {"name": "white rum", "measure": "1 1/2 oz"},
-      {"name": "gold rum", "measure": "1 1/2 oz"},
-      {"name": "dark rum", "measure": "1 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"},
-      {"name": "falernum", "measure": "1/2 oz"},
-      {"name": "grenadine", "measure": "1/2 oz"},
-      {"name": "angostura bitters", "measure": "1 dash"}
+      {
+        "name": "white rum",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "gold rum",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "dark rum",
+        "measure": "1 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "falernum",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "grenadine",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "1 dash"
+      }
     ],
     "instructions": "Shake all ingredients except dark rum with ice. Strain into a Collins glass with crushed ice. Float dark rum on top. Garnish with mint and a cherry.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "tiki"
   },
   {
     "id": "jungle-bird",
@@ -701,14 +1363,30 @@
     "category": "Tiki",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "dark rum", "measure": "1 1/2 oz"},
-      {"name": "campari", "measure": "3/4 oz"},
-      {"name": "pineapple juice", "measure": "1 1/2 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"},
-      {"name": "simple syrup", "measure": "1/2 oz"}
+      {
+        "name": "dark rum",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "campari",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice. Strain into a rocks glass over ice. Garnish with a pineapple wedge.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "tiki"
   },
   {
     "id": "painkiller",
@@ -716,13 +1394,26 @@
     "category": "Tiki",
     "glass": "Collins glass",
     "ingredients": [
-      {"name": "dark rum", "measure": "2 oz"},
-      {"name": "pineapple juice", "measure": "4 oz"},
-      {"name": "orange juice", "measure": "1 oz"},
-      {"name": "coconut cream", "measure": "1 oz"}
+      {
+        "name": "dark rum",
+        "measure": "2 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "4 oz"
+      },
+      {
+        "name": "orange juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "coconut cream",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice. Strain into a Collins glass with ice. Garnish with freshly grated nutmeg and an orange slice.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "tiki"
   },
   {
     "id": "navy-grog",
@@ -730,16 +1421,38 @@
     "category": "Tiki",
     "glass": "Collins glass",
     "ingredients": [
-      {"name": "white rum", "measure": "1 oz"},
-      {"name": "gold rum", "measure": "1 oz"},
-      {"name": "dark rum", "measure": "1 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"},
-      {"name": "grapefruit juice", "measure": "3/4 oz"},
-      {"name": "honey syrup", "measure": "1/2 oz"},
-      {"name": "club soda", "measure": "1 oz"}
+      {
+        "name": "white rum",
+        "measure": "1 oz"
+      },
+      {
+        "name": "gold rum",
+        "measure": "1 oz"
+      },
+      {
+        "name": "dark rum",
+        "measure": "1 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "grapefruit juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "honey syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "club soda",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Shake all ingredients except soda with ice. Strain into a Collins glass with crushed ice. Top with soda. Garnish with a lime wheel and mint.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "tiki"
   },
   {
     "id": "scorpion",
@@ -747,14 +1460,30 @@
     "category": "Tiki",
     "glass": "Scorpion bowl",
     "ingredients": [
-      {"name": "white rum", "measure": "2 oz"},
-      {"name": "cognac", "measure": "1 oz"},
-      {"name": "orange juice", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "1 1/2 oz"},
-      {"name": "orgeat", "measure": "1/2 oz"}
+      {
+        "name": "white rum",
+        "measure": "2 oz"
+      },
+      {
+        "name": "cognac",
+        "measure": "1 oz"
+      },
+      {
+        "name": "orange juice",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "orgeat",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Blend all ingredients with crushed ice. Pour into a scorpion bowl or large snifter. Garnish with gardenia flowers or orchids. Traditionally serves 2.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "tiki"
   },
   {
     "id": "blue-hawaii",
@@ -762,14 +1491,30 @@
     "category": "Tiki",
     "glass": "Hurricane glass",
     "ingredients": [
-      {"name": "white rum", "measure": "1 oz"},
-      {"name": "vodka", "measure": "1 oz"},
-      {"name": "blue curacao", "measure": "1 oz"},
-      {"name": "pineapple juice", "measure": "3 oz"},
-      {"name": "sweet and sour mix", "measure": "1 oz"}
+      {
+        "name": "white rum",
+        "measure": "1 oz"
+      },
+      {
+        "name": "vodka",
+        "measure": "1 oz"
+      },
+      {
+        "name": "blue curacao",
+        "measure": "1 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "3 oz"
+      },
+      {
+        "name": "sweet and sour mix",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice. Strain into a hurricane glass with ice. Garnish with a pineapple wedge and cherry.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "tiki"
   },
   {
     "id": "planters-punch",
@@ -777,15 +1522,35 @@
     "category": "Tiki",
     "glass": "Collins glass",
     "ingredients": [
-      {"name": "dark rum", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1 oz"},
-      {"name": "simple syrup", "measure": "1/2 oz"},
-      {"name": "grenadine", "measure": "1/2 oz"},
-      {"name": "angostura bitters", "measure": "2 dashes"},
-      {"name": "club soda", "measure": "2 oz"}
+      {
+        "name": "dark rum",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "grenadine",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "club soda",
+        "measure": "2 oz"
+      }
     ],
     "instructions": "Shake all ingredients except soda with ice. Strain into a Collins glass with ice. Top with soda. Garnish with an orange slice and cherry.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "tiki"
   },
   {
     "id": "singapore-sling",
@@ -793,17 +1558,43 @@
     "category": "Tiki",
     "glass": "Collins glass",
     "ingredients": [
-      {"name": "gin", "measure": "1 1/2 oz"},
-      {"name": "cherry heering", "measure": "1/2 oz"},
-      {"name": "cointreau", "measure": "1/4 oz"},
-      {"name": "benedictine", "measure": "1/4 oz"},
-      {"name": "pineapple juice", "measure": "4 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"},
-      {"name": "grenadine", "measure": "1/4 oz"},
-      {"name": "angostura bitters", "measure": "1 dash"}
+      {
+        "name": "gin",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "cherry heering",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "cointreau",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "benedictine",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "4 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "grenadine",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "1 dash"
+      }
     ],
     "instructions": "Shake all ingredients with ice. Strain into a Collins glass with ice. Garnish with a pineapple wedge and cherry.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "tiki"
   },
   {
     "id": "paper-plane",
@@ -811,13 +1602,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "bourbon", "measure": "3/4 oz"},
-      {"name": "aperol", "measure": "3/4 oz"},
-      {"name": "amaro nonino", "measure": "3/4 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"}
+      {
+        "name": "bourbon",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "aperol",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "amaro nonino",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. No garnish needed.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "sour"
   },
   {
     "id": "naked-and-famous",
@@ -825,13 +1630,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "mezcal", "measure": "3/4 oz"},
-      {"name": "aperol", "measure": "3/4 oz"},
-      {"name": "yellow chartreuse", "measure": "3/4 oz"},
-      {"name": "lime juice", "measure": "3/4 oz"}
+      {
+        "name": "mezcal",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "aperol",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "yellow chartreuse",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. No garnish needed.",
-    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "sour"
   },
   {
     "id": "gold-rush",
@@ -839,12 +1658,23 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "bourbon", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"},
-      {"name": "honey syrup", "measure": "3/4 oz"}
+      {
+        "name": "bourbon",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "honey syrup",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a rocks glass over a large ice cube. Garnish with a lemon wheel.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "sour"
   },
   {
     "id": "penicillin",
@@ -852,13 +1682,27 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "blended scotch", "measure": "2 oz"},
-      {"name": "lemon juice", "measure": "3/4 oz"},
-      {"name": "honey-ginger syrup", "measure": "3/4 oz"},
-      {"name": "islay scotch", "measure": "1/4 oz float"}
+      {
+        "name": "blended scotch",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "honey-ginger syrup",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "islay scotch",
+        "measure": "1/4 oz float"
+      }
     ],
     "instructions": "Shake blended scotch, lemon, and honey-ginger syrup with ice. Strain into a rocks glass over a large ice cube. Float Islay scotch on top. Garnish with candied ginger.",
-    "image": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "sour"
   },
   {
     "id": "vieux-carre",
@@ -866,15 +1710,34 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "rye whiskey", "measure": "3/4 oz"},
-      {"name": "cognac", "measure": "3/4 oz"},
-      {"name": "sweet vermouth", "measure": "3/4 oz"},
-      {"name": "benedictine", "measure": "1 barspoon"},
-      {"name": "peychauds bitters", "measure": "2 dashes"},
-      {"name": "angostura bitters", "measure": "2 dashes"}
+      {
+        "name": "rye whiskey",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "cognac",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "benedictine",
+        "measure": "1 barspoon"
+      },
+      {
+        "name": "peychauds bitters",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      }
     ],
     "instructions": "Stir all ingredients with ice until well-chilled. Strain into a rocks glass over a large ice cube. Garnish with a lemon twist.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "style": "spirit-forward"
   },
   {
     "id": "sazerac",
@@ -882,13 +1745,27 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "rye whiskey", "measure": "2 oz"},
-      {"name": "sugar", "measure": "1 cube"},
-      {"name": "peychauds bitters", "measure": "3 dashes"},
-      {"name": "absinthe", "measure": "rinse"}
+      {
+        "name": "rye whiskey",
+        "measure": "2 oz"
+      },
+      {
+        "name": "sugar",
+        "measure": "1 cube"
+      },
+      {
+        "name": "peychauds bitters",
+        "measure": "3 dashes"
+      },
+      {
+        "name": "absinthe",
+        "measure": "rinse"
+      }
     ],
     "instructions": "Rinse a chilled rocks glass with absinthe and discard excess. In a mixing glass, muddle sugar with bitters and a splash of water. Add rye and ice, stir until well-chilled. Strain into the prepared glass. Express a lemon peel over the drink and discard.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "martinez",
@@ -896,13 +1773,27 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "old tom gin", "measure": "1 1/2 oz"},
-      {"name": "sweet vermouth", "measure": "1 1/2 oz"},
-      {"name": "maraschino liqueur", "measure": "1 barspoon"},
-      {"name": "angostura bitters", "measure": "2 dashes"}
+      {
+        "name": "old tom gin",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1 1/2 oz"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "1 barspoon"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      }
     ],
     "instructions": "Stir all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with a lemon twist.",
-    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "boulevardier",
@@ -910,12 +1801,23 @@
     "category": "Cocktail",
     "glass": "Rocks glass",
     "ingredients": [
-      {"name": "bourbon", "measure": "1 1/4 oz"},
-      {"name": "campari", "measure": "1 oz"},
-      {"name": "sweet vermouth", "measure": "1 oz"}
+      {
+        "name": "bourbon",
+        "measure": "1 1/4 oz"
+      },
+      {
+        "name": "campari",
+        "measure": "1 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "1 oz"
+      }
     ],
     "instructions": "Stir all ingredients with ice until well-chilled. Strain into a rocks glass over a large ice cube. Garnish with an orange twist.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "spirit-forward"
   },
   {
     "id": "toronto",
@@ -923,13 +1825,26 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "canadian whisky", "measure": "2 oz"},
-      {"name": "fernet branca", "measure": "1/4 oz"},
-      {"name": "simple syrup", "measure": "1/4 oz"},
-      {"name": "angostura bitters", "measure": "2 dashes"}
+      {
+        "name": "canadian whisky",
+        "measure": "2 oz"
+      },
+      {
+        "name": "fernet branca",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/4 oz"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      }
     ],
     "instructions": "Stir all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with an orange twist.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "style": "spirit-forward"
   },
   {
     "id": "blood-and-sand",
@@ -937,10 +1852,22 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "scotch", "measure": "3/4 oz"},
-      {"name": "cherry heering", "measure": "3/4 oz"},
-      {"name": "sweet vermouth", "measure": "3/4 oz"},
-      {"name": "orange juice", "measure": "3/4 oz"}
+      {
+        "name": "scotch",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "cherry heering",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "orange juice",
+        "measure": "3/4 oz"
+      }
     ],
     "instructions": "Shake all ingredients with ice until well-chilled. Strain into a chilled coupe. Garnish with an orange twist.",
     "image": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?w=400&h=300&fit=crop"
@@ -951,12 +1878,23 @@
     "category": "Cocktail",
     "glass": "Julep cup",
     "ingredients": [
-      {"name": "bourbon", "measure": "2 1/2 oz"},
-      {"name": "simple syrup", "measure": "1/2 oz"},
-      {"name": "mint leaves", "measure": "8-10"}
+      {
+        "name": "bourbon",
+        "measure": "2 1/2 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1/2 oz"
+      },
+      {
+        "name": "mint leaves",
+        "measure": "8-10"
+      }
     ],
     "instructions": "Gently muddle mint with simple syrup in a julep cup. Add bourbon and pack with crushed ice. Stir until cup is frosted. Top with more crushed ice. Garnish with a generous mint bouquet.",
-    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "ibaCategory": "The Unforgettables",
+    "style": "smash"
   },
   {
     "id": "dark-n-stormy",
@@ -964,12 +1902,23 @@
     "category": "Cocktail",
     "glass": "Highball glass",
     "ingredients": [
-      {"name": "dark rum", "measure": "2 oz"},
-      {"name": "ginger beer", "measure": "4 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"}
+      {
+        "name": "dark rum",
+        "measure": "2 oz"
+      },
+      {
+        "name": "ginger beer",
+        "measure": "4 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1/2 oz"
+      }
     ],
     "instructions": "Fill a highball glass with ice. Add lime juice, then ginger beer. Float dark rum on top by pouring over the back of a spoon. Garnish with a lime wheel.",
-    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "ibaCategory": "New Era Drinks",
+    "style": "highball"
   },
   {
     "id": "moscow-mule",
@@ -977,12 +1926,23 @@
     "category": "Cocktail",
     "glass": "Copper mug",
     "ingredients": [
-      {"name": "vodka", "measure": "2 oz"},
-      {"name": "ginger beer", "measure": "4 oz"},
-      {"name": "lime juice", "measure": "1/2 oz"}
+      {
+        "name": "vodka",
+        "measure": "45 ml"
+      },
+      {
+        "name": "ginger beer",
+        "measure": "120 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "10 ml"
+      }
     ],
-    "instructions": "Fill a copper mug with ice. Add vodka and lime juice. Top with ginger beer. Stir gently. Garnish with a lime wheel and mint sprig.",
-    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop"
+    "instructions": "Combine vodka and ginger beer in a copper mug filled with ice. Add lime juice. Stir gently. Garnish with a lime slice.",
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "highball"
   },
   {
     "id": "pisco-sour",
@@ -990,14 +1950,1251 @@
     "category": "Cocktail",
     "glass": "Coupe",
     "ingredients": [
-      {"name": "pisco", "measure": "2 oz"},
-      {"name": "lime juice", "measure": "1 oz"},
-      {"name": "simple syrup", "measure": "3/4 oz"},
-      {"name": "egg white", "measure": "1"},
-      {"name": "angostura bitters", "measure": "drops for garnish"}
+      {
+        "name": "pisco",
+        "measure": "2 oz"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1 oz"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "3/4 oz"
+      },
+      {
+        "name": "egg white",
+        "measure": "1"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "drops for garnish"
+      }
     ],
     "instructions": "Dry shake all ingredients without ice. Then shake vigorously with ice. Strain into a chilled coupe. Dash bitters on top in a decorative pattern.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "ibaCategory": "Contemporary Classics",
+    "style": "sour"
+  },
+  {
+    "id": "alexander",
+    "name": "Alexander",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "cognac",
+        "measure": "30 ml"
+      },
+      {
+        "name": "creme de cacao",
+        "measure": "30 ml"
+      },
+      {
+        "name": "cream",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe. Garnish with freshly grated nutmeg.",
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "angel-face",
+    "name": "Angel Face",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "30 ml"
+      },
+      {
+        "name": "apricot brandy",
+        "measure": "30 ml"
+      },
+      {
+        "name": "calvados",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "between-the-sheets",
+    "name": "Between the Sheets",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "white rum",
+        "measure": "30 ml"
+      },
+      {
+        "name": "cognac",
+        "measure": "30 ml"
+      },
+      {
+        "name": "cointreau",
+        "measure": "30 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "20 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "sour"
+  },
+  {
+    "id": "brandy-crusta",
+    "name": "Brandy Crusta",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "cognac",
+        "measure": "52.5 ml"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "curacao",
+        "measure": "1 barspoon"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "1 barspoon"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Sugar rim a small coupe with a long lemon peel spiral inside. Shake all ingredients with ice. Strain into the prepared glass.",
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "style": "sour"
+  },
+  {
+    "id": "casino",
+    "name": "Casino",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "old tom gin",
+        "measure": "40 ml"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "10 ml"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "10 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "10 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe. Garnish with a lemon twist and cherry.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "style": "sour"
+  },
+  {
+    "id": "gin-fizz",
+    "name": "Gin Fizz",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "45 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "10 ml"
+      },
+      {
+        "name": "club soda",
+        "measure": "80 ml"
+      }
+    ],
+    "instructions": "Shake gin, lemon juice, and syrup with ice. Strain into a highball glass. Top with soda. Garnish with a lemon slice.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "style": "highball",
+    "styles": [
+      "highball",
+      "fizz"
+    ]
+  },
+  {
+    "id": "hanky-panky",
+    "name": "Hanky Panky",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "45 ml"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "45 ml"
+      },
+      {
+        "name": "fernet branca",
+        "measure": "7.5 ml"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain into a chilled coupe. Garnish with an orange zest.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "john-collins",
+    "name": "John Collins",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Collins glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "45 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "club soda",
+        "measure": "60 ml"
+      }
+    ],
+    "instructions": "Build gin, lemon juice, and syrup in a Collins glass with ice. Top with soda. Stir gently. Garnish with a lemon slice and cherry.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "style": "highball",
+    "styles": [
+      "highball",
+      "fizz"
+    ]
+  },
+  {
+    "id": "monkey-gland",
+    "name": "Monkey Gland",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "50 ml"
+      },
+      {
+        "name": "orange juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "absinthe",
+        "measure": "2 drops"
+      },
+      {
+        "name": "grenadine",
+        "measure": "2 drops"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "paradise",
+    "name": "Paradise",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "35 ml"
+      },
+      {
+        "name": "apricot brandy",
+        "measure": "20 ml"
+      },
+      {
+        "name": "orange juice",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "porto-flip",
+    "name": "Porto Flip",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "cognac",
+        "measure": "15 ml"
+      },
+      {
+        "name": "ruby port",
+        "measure": "45 ml"
+      },
+      {
+        "name": "egg yolk",
+        "measure": "10 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe. Garnish with freshly grated nutmeg.",
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "style": "flip"
+  },
+  {
+    "id": "tuxedo",
+    "name": "Tuxedo",
+    "category": "Cocktail",
+    "ibaCategory": "The Unforgettables",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "old tom gin",
+        "measure": "30 ml"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "30 ml"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "2.5 ml"
+      },
+      {
+        "name": "absinthe",
+        "measure": "2.5 ml"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "3 dashes"
+      }
+    ],
+    "instructions": "Stir all ingredients with ice. Strain into a chilled coupe. Garnish with a cherry and lemon zest.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "bellini",
+    "name": "Bellini",
+    "category": "Sparkling",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Champagne flute",
+    "ingredients": [
+      {
+        "name": "white peach puree",
+        "measure": "50 ml"
+      },
+      {
+        "name": "prosecco",
+        "measure": "100 ml"
+      }
+    ],
+    "instructions": "Pour peach puree into a chilled flute. Top with prosecco. Stir gently.",
+    "image": "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=300&fit=crop",
+    "style": "spritz"
+  },
+  {
+    "id": "bloody-mary",
+    "name": "Bloody Mary",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "45 ml"
+      },
+      {
+        "name": "tomato juice",
+        "measure": "90 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "worcestershire sauce",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "tabasco",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "celery salt",
+        "measure": "1 pinch"
+      },
+      {
+        "name": "pepper",
+        "measure": "1 pinch"
+      }
+    ],
+    "instructions": "Roll (pour back and forth) all ingredients with ice. Strain into a highball glass with ice. Garnish with celery stalk and lemon wedge.",
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "caipirinha",
+    "name": "Caipirinha",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "cachaca",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lime",
+        "measure": "1 whole, cut"
+      },
+      {
+        "name": "sugar",
+        "measure": "4 tsp"
+      }
+    ],
+    "instructions": "Cut lime into wedges, place in glass with sugar. Muddle to release juice. Add cachaca and crushed ice. Stir well.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "champagne-cocktail",
+    "name": "Champagne Cocktail",
+    "category": "Sparkling",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Champagne flute",
+    "ingredients": [
+      {
+        "name": "champagne",
+        "measure": "90 ml"
+      },
+      {
+        "name": "cognac",
+        "measure": "10 ml"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "sugar cube",
+        "measure": "1"
+      }
+    ],
+    "instructions": "Place sugar cube in flute, saturate with bitters. Add cognac. Top with champagne. Garnish with orange zest and cherry.",
+    "image": "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=300&fit=crop",
+    "style": "spritz"
+  },
+  {
+    "id": "cuba-libre",
+    "name": "Cuba Libre",
+    "category": "Highball",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "white rum",
+        "measure": "50 ml"
+      },
+      {
+        "name": "cola",
+        "measure": "120 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "10 ml"
+      }
+    ],
+    "instructions": "Build rum and lime juice in a highball glass with ice. Top with cola. Garnish with a lime wedge.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "highball"
+  },
+  {
+    "id": "french-connection",
+    "name": "French Connection",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "cognac",
+        "measure": "35 ml"
+      },
+      {
+        "name": "amaretto",
+        "measure": "35 ml"
+      }
+    ],
+    "instructions": "Build ingredients in a rocks glass over ice. Stir gently.",
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "golden-dream",
+    "name": "Golden Dream",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "galliano",
+        "measure": "20 ml"
+      },
+      {
+        "name": "cointreau",
+        "measure": "20 ml"
+      },
+      {
+        "name": "orange juice",
+        "measure": "20 ml"
+      },
+      {
+        "name": "cream",
+        "measure": "10 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
     "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "grasshopper",
+    "name": "Grasshopper",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "creme de menthe",
+        "measure": "30 ml"
+      },
+      {
+        "name": "creme de cacao",
+        "measure": "30 ml"
+      },
+      {
+        "name": "cream",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "harvey-wallbanger",
+    "name": "Harvey Wallbanger",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "45 ml"
+      },
+      {
+        "name": "galliano",
+        "measure": "15 ml"
+      },
+      {
+        "name": "orange juice",
+        "measure": "90 ml"
+      }
+    ],
+    "instructions": "Build vodka and orange juice in a highball glass with ice. Stir. Float Galliano on top.",
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "style": "highball"
+  },
+  {
+    "id": "horses-neck",
+    "name": "Horse's Neck",
+    "category": "Highball",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "cognac",
+        "measure": "40 ml"
+      },
+      {
+        "name": "ginger ale",
+        "measure": "120 ml"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "1 dash"
+      }
+    ],
+    "instructions": "Build in a highball glass with ice. Place a long spiral of lemon peel inside the glass.",
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop",
+    "style": "highball"
+  },
+  {
+    "id": "kir",
+    "name": "Kir",
+    "category": "Wine Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Wine glass",
+    "ingredients": [
+      {
+        "name": "creme de cassis",
+        "measure": "10 ml"
+      },
+      {
+        "name": "dry white wine",
+        "measure": "90 ml"
+      }
+    ],
+    "instructions": "Pour creme de cassis into a wine glass. Top with white wine. Stir gently.",
+    "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&h=300&fit=crop",
+    "style": "spritz"
+  },
+  {
+    "id": "long-island-iced-tea",
+    "name": "Long Island Iced Tea",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "15 ml"
+      },
+      {
+        "name": "gin",
+        "measure": "15 ml"
+      },
+      {
+        "name": "white rum",
+        "measure": "15 ml"
+      },
+      {
+        "name": "tequila",
+        "measure": "15 ml"
+      },
+      {
+        "name": "cointreau",
+        "measure": "15 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "25 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "30 ml"
+      },
+      {
+        "name": "cola",
+        "measure": "top"
+      }
+    ],
+    "instructions": "Shake all ingredients except cola with ice. Strain into a highball glass with ice. Top with cola. Garnish with a lemon spiral.",
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "style": "highball"
+  },
+  {
+    "id": "mimosa",
+    "name": "Mimosa",
+    "category": "Sparkling",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Champagne flute",
+    "ingredients": [
+      {
+        "name": "champagne",
+        "measure": "75 ml"
+      },
+      {
+        "name": "orange juice",
+        "measure": "75 ml"
+      }
+    ],
+    "instructions": "Pour orange juice into a chilled flute. Top with champagne. Stir gently. Garnish with an orange twist.",
+    "image": "https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=400&h=300&fit=crop",
+    "style": "spritz"
+  },
+  {
+    "id": "pina-colada",
+    "name": "Piña Colada",
+    "category": "Tiki",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Hurricane glass",
+    "ingredients": [
+      {
+        "name": "white rum",
+        "measure": "50 ml"
+      },
+      {
+        "name": "coconut cream",
+        "measure": "50 ml"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "50 ml"
+      }
+    ],
+    "instructions": "Blend all ingredients with ice until smooth. Pour into a hurricane glass. Garnish with a pineapple wedge and cherry.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "tiki"
+  },
+  {
+    "id": "sea-breeze",
+    "name": "Sea Breeze",
+    "category": "Highball",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "40 ml"
+      },
+      {
+        "name": "cranberry juice",
+        "measure": "120 ml"
+      },
+      {
+        "name": "grapefruit juice",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Build all ingredients in a highball glass with ice. Stir gently. Garnish with a lime wedge.",
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "style": "highball"
+  },
+  {
+    "id": "sex-on-the-beach",
+    "name": "Sex on the Beach",
+    "category": "Cocktail",
+    "ibaCategory": "Contemporary Classics",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "40 ml"
+      },
+      {
+        "name": "peach schnapps",
+        "measure": "20 ml"
+      },
+      {
+        "name": "orange juice",
+        "measure": "40 ml"
+      },
+      {
+        "name": "cranberry juice",
+        "measure": "40 ml"
+      }
+    ],
+    "instructions": "Build all ingredients in a highball glass with ice. Stir gently. Garnish with an orange slice.",
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+    "style": "highball"
+  },
+  {
+    "id": "barracuda",
+    "name": "Barracuda",
+    "category": "Sparkling",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gold rum",
+        "measure": "45 ml"
+      },
+      {
+        "name": "galliano",
+        "measure": "15 ml"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "1 dash"
+      },
+      {
+        "name": "prosecco",
+        "measure": "top"
+      }
+    ],
+    "instructions": "Shake rum, Galliano, pineapple juice, and lime with ice. Strain into a coupe. Top with prosecco.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "bramble",
+    "name": "Bramble",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "50 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "25 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "12.5 ml"
+      },
+      {
+        "name": "creme de mure",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Shake gin, lemon, and syrup with ice. Strain into a rocks glass filled with crushed ice. Drizzle creme de mure over top. Garnish with blackberries and a lemon slice.",
+    "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&h=300&fit=crop",
+    "style": "sour"
+  },
+  {
+    "id": "canchanchara",
+    "name": "Canchanchara",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "aguardiente",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "raw honey",
+        "measure": "15 ml"
+      },
+      {
+        "name": "water",
+        "measure": "50 ml"
+      }
+    ],
+    "instructions": "Mix honey with a splash of water to dissolve. Add aguardiente and lime juice. Stir with ice. Serve in a rocks glass or traditional clay cup.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "fernandito",
+    "name": "Fernandito",
+    "category": "Highball",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "fernet branca",
+        "measure": "50 ml"
+      },
+      {
+        "name": "cola",
+        "measure": "top"
+      }
+    ],
+    "instructions": "Build Fernet Branca in a highball glass with ice. Top with cola. Stir gently.",
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "style": "highball"
+  },
+  {
+    "id": "french-martini",
+    "name": "French Martini",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "45 ml"
+      },
+      {
+        "name": "chambord",
+        "measure": "15 ml"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients vigorously with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "style": "martini"
+  },
+  {
+    "id": "illegal",
+    "name": "Illegal",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "mezcal",
+        "measure": "30 ml"
+      },
+      {
+        "name": "overproof white rum",
+        "measure": "15 ml"
+      },
+      {
+        "name": "falernum",
+        "measure": "15 ml"
+      },
+      {
+        "name": "maraschino liqueur",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "egg white",
+        "measure": "1"
+      }
+    ],
+    "instructions": "Dry shake all ingredients. Shake with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1556855810-ac404aa91e85?w=400&h=300&fit=crop",
+    "style": "sour"
+  },
+  {
+    "id": "lemon-drop-martini",
+    "name": "Lemon Drop Martini",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "vodka citron",
+        "measure": "30 ml"
+      },
+      {
+        "name": "cointreau",
+        "measure": "20 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a sugar-rimmed coupe. Garnish with a lemon zest.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "style": "sour",
+    "styles": [
+      "sour",
+      "martini"
+    ]
+  },
+  {
+    "id": "new-york-sour",
+    "name": "New York Sour",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "bourbon",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "egg white",
+        "measure": "1"
+      },
+      {
+        "name": "red wine",
+        "measure": "15 ml float"
+      }
+    ],
+    "instructions": "Dry shake bourbon, lemon, syrup, and egg white. Shake with ice. Strain into a rocks glass with ice. Float red wine on top.",
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "style": "sour"
+  },
+  {
+    "id": "old-cuban",
+    "name": "Old Cuban",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "aged rum",
+        "measure": "45 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "30 ml"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "mint leaves",
+        "measure": "6"
+      },
+      {
+        "name": "champagne",
+        "measure": "60 ml"
+      }
+    ],
+    "instructions": "Muddle mint with syrup. Add rum, lime, and bitters. Shake with ice. Strain into a coupe. Top with champagne. Garnish with a mint sprig.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "russian-spring-punch",
+    "name": "Russian Spring Punch",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "25 ml"
+      },
+      {
+        "name": "creme de cassis",
+        "measure": "15 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "25 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "10 ml"
+      },
+      {
+        "name": "sparkling wine",
+        "measure": "top"
+      }
+    ],
+    "instructions": "Shake vodka, cassis, lemon, and syrup with ice. Strain into a highball glass with ice. Top with sparkling wine. Garnish with a lemon slice and blackberries.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    "style": "fizz"
+  },
+  {
+    "id": "spicy-fifty",
+    "name": "Spicy Fifty",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "vanilla vodka",
+        "measure": "50 ml"
+      },
+      {
+        "name": "elderflower liqueur",
+        "measure": "15 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "honey syrup",
+        "measure": "10 ml"
+      },
+      {
+        "name": "red chili",
+        "measure": "2 slices"
+      }
+    ],
+    "instructions": "Muddle chili with honey. Add remaining ingredients. Shake with ice. Fine strain into a chilled coupe. Garnish with a chili.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "suffering-bastard",
+    "name": "Suffering Bastard",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Collins glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "30 ml"
+      },
+      {
+        "name": "cognac",
+        "measure": "30 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "angostura bitters",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "ginger beer",
+        "measure": "top"
+      }
+    ],
+    "instructions": "Shake gin, cognac, lime, and bitters with ice. Strain into a Collins glass with ice. Top with ginger beer. Garnish with mint and orange slice.",
+    "image": "https://images.unsplash.com/photo-1587223962930-cb7f31384c19?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "trinidad-sour",
+    "name": "Trinidad Sour",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "angostura bitters",
+        "measure": "45 ml"
+      },
+      {
+        "name": "orgeat",
+        "measure": "30 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "rye whiskey",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "style": "sour"
+  },
+  {
+    "id": "vento",
+    "name": "VE.N.TO",
+    "category": "Cocktail",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "grappa",
+        "measure": "45 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "honey",
+        "measure": "15 ml"
+      },
+      {
+        "name": "chamomile cordial",
+        "measure": "15 ml"
+      },
+      {
+        "name": "egg white",
+        "measure": "1"
+      },
+      {
+        "name": "peach puree",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Dry shake all ingredients. Shake with ice. Strain into a rocks glass with ice.",
+    "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+  },
+  {
+    "id": "yellow-bird",
+    "name": "Yellow Bird",
+    "category": "Tiki",
+    "ibaCategory": "New Era Drinks",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "white rum",
+        "measure": "30 ml"
+      },
+      {
+        "name": "galliano",
+        "measure": "15 ml"
+      },
+      {
+        "name": "cointreau",
+        "measure": "15 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Shake all ingredients with ice. Strain into a chilled coupe.",
+    "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop",
+    "style": "tiki"
+  },
+  {
+    "id": "whiskey-smash",
+    "name": "Whiskey Smash",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "bourbon",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lemon",
+        "measure": "2 wedges"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "mint leaves",
+        "measure": "4"
+      }
+    ],
+    "instructions": "Muddle lemon and mint with syrup. Add bourbon and ice. Shake briefly. Strain into a rocks glass with ice. Garnish with a mint sprig.",
+    "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    "style": "smash"
   }
 ]
-
