@@ -296,6 +296,7 @@
       const [spiritFilter, setSpiritFilter] = useState('All');
       const [sortBy, setSortBy] = useState('name');
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
+      const [ingredientsDb, setIngredientsDb] = useState(null);
       const mainRef = useRef(null);
       const toast = useToast();
 
@@ -322,6 +323,7 @@
       // Load data
       useEffect(() => {
         loadCuratedCocktails();
+        loadIngredientsDb();
         loadUserData();
       }, []);
 
@@ -334,6 +336,16 @@
           console.error('Failed to load cocktails:', error);
         }
         setLoading(false);
+      };
+
+      const loadIngredientsDb = async () => {
+        try {
+          const response = await fetch('./ingredients.json');
+          const data = await response.json();
+          setIngredientsDb(data);
+        } catch (error) {
+          console.error('Failed to load ingredients:', error);
+        }
       };
 
       const loadUserData = () => {
@@ -719,7 +731,7 @@
             />
           )}
 
-          {showAddDrink && <AddRecipeModal onClose={() => setShowAddDrink(false)} onAdd={addCustomDrink} />}
+          {showAddDrink && <AddRecipeModal onClose={() => setShowAddDrink(false)} onAdd={addCustomDrink} ingredientsDb={ingredientsDb} />}
           {showImportExport && <BackupModal onClose={() => setShowImportExport(false)} onExport={exportData} onImport={importData} />}
           
           {showConfirmDelete && (
@@ -933,26 +945,78 @@
       );
     };
 
-    const AddRecipeModal = ({ onClose, onAdd }) => {
+    const AddRecipeModal = ({ onClose, onAdd, ingredientsDb }) => {
       const [name, setName] = useState('');
-      const [category, setCategory] = useState('');
+      const [category, setCategory] = useState('Cocktail');
       const [glass, setGlass] = useState('');
       const [instructions, setInstructions] = useState('');
       const [notes, setNotes] = useState('');
-      const [ingredients, setIngredients] = useState([{ name: '', measure: '' }]);
+      const [ingredients, setIngredients] = useState([]);
+      const [showIngredientPicker, setShowIngredientPicker] = useState(false);
+      const [ingredientSearch, setIngredientSearch] = useState('');
+      const [expandedCategory, setExpandedCategory] = useState(null);
 
-      const addIngredient = () => setIngredients([...ingredients, { name: '', measure: '' }]);
+      // Flatten all ingredients for search
+      const allIngredients = useMemo(() => {
+        if (!ingredientsDb) return [];
+        const flat = [];
+        ingredientsDb.categories?.forEach(cat => {
+          cat.subcategories?.forEach(sub => {
+            sub.items?.forEach(item => {
+              flat.push({ ...item, category: cat.name, subcategory: sub.name });
+            });
+          });
+        });
+        return flat;
+      }, [ingredientsDb]);
+
+      // Filter ingredients by search
+      const filteredIngredients = useMemo(() => {
+        if (!ingredientSearch.trim()) return null;
+        const term = ingredientSearch.toLowerCase();
+        return allIngredients.filter(ing => 
+          ing.name.toLowerCase().includes(term) || 
+          ing.aliases?.some(a => a.toLowerCase().includes(term))
+        ).slice(0, 15);
+      }, [ingredientSearch, allIngredients]);
+
+      const addIngredient = (ingredientName) => {
+        setIngredients([...ingredients, { name: ingredientName, amount: '', unit: 'oz' }]);
+        setShowIngredientPicker(false);
+        setIngredientSearch('');
+        setExpandedCategory(null);
+      };
+
       const updateIngredient = (i, field, value) => {
         const updated = [...ingredients];
         updated[i][field] = value;
         setIngredients(updated);
       };
+
       const removeIngredient = (i) => setIngredients(ingredients.filter((_, idx) => idx !== i));
 
       const handleSubmit = () => {
-        if (!name.trim()) return;
-        onAdd({ name, category, glass, instructions, notes, ingredients: ingredients.filter(i => i.name.trim()) });
+        if (!name.trim() || ingredients.length === 0) return;
+        const formattedIngredients = ingredients.map(ing => ({
+          name: ing.name,
+          measure: ing.amount ? `${ing.amount} ${ing.unit}` : ing.unit
+        }));
+        onAdd({ name, category, glass, instructions, notes, ingredients: formattedIngredients });
       };
+
+      const measurements = ingredientsDb?.measurements || [
+        { id: 'oz', name: 'oz' }, { id: 'ml', name: 'ml' }, { id: 'dash', name: 'dash' },
+        { id: 'dashes', name: 'dashes' }, { id: 'barspoon', name: 'barspoon' }, { id: 'splash', name: 'splash' },
+        { id: 'top', name: 'top' }, { id: 'rinse', name: 'rinse' }, { id: 'whole', name: 'whole' },
+        { id: 'leaves', name: 'leaves' }, { id: 'drops', name: 'drops' }
+      ];
+
+      const amounts = ingredientsDb?.amounts || ['1/4', '1/2', '3/4', '1', '1 1/2', '2', '2 1/2', '3', '4', '6', '8'];
+      const glassware = ingredientsDb?.glassware || [
+        { id: 'rocks', name: 'Rocks Glass' }, { id: 'coupe', name: 'Coupe' },
+        { id: 'martini', name: 'Martini Glass' }, { id: 'highball', name: 'Highball Glass' },
+        { id: 'collins', name: 'Collins Glass' }, { id: 'flute', name: 'Champagne Flute' }
+      ];
 
       return (
         <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
@@ -960,56 +1024,187 @@
             <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl animate-slide-up">
               <div className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="font-display text-2xl text-cream font-light">New Recipe</h2>
+                  <h2 className="font-display text-2xl text-cream font-light">Build Cocktail</h2>
                   <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300"><Icon name="X" className="w-5 h-5" /></button>
                 </div>
 
                 <div className="space-y-5">
+                  {/* Name */}
                   <div>
                     <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Name *</label>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Recipe name" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light" autoFocus />
                   </div>
 
+                  {/* Category & Glass */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Category</label>
-                      <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Cocktail" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light" />
+                      <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 input-field rounded-lg text-cream font-light bg-transparent appearance-none cursor-pointer">
+                        {['Cocktail', 'Sour', 'Spirit Forward', 'Highball', 'Tiki', 'Spritz', 'Martini', 'Flip', 'Hot Drink', 'Other'].map(c => (
+                          <option key={c} value={c} className="bg-ink-900">{c}</option>
+                        ))}
+                      </select>
                     </div>
                     <div>
                       <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Glass</label>
-                      <input type="text" value={glass} onChange={(e) => setGlass(e.target.value)} placeholder="e.g. Coupe" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light" />
+                      <select value={glass} onChange={(e) => setGlass(e.target.value)} className="w-full px-4 py-3 input-field rounded-lg text-cream font-light bg-transparent appearance-none cursor-pointer">
+                        <option value="" className="bg-ink-900">Select glass...</option>
+                        {glassware.map(g => (
+                          <option key={g.id} value={g.name} className="bg-ink-900">{g.name}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
 
+                  {/* Ingredients */}
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-2xs text-ink-500 uppercase tracking-widest">Ingredients</label>
-                      <button onClick={addIngredient} className="text-xs text-copper hover:text-copper-light">+ Add</button>
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-2xs text-ink-500 uppercase tracking-widest">Ingredients *</label>
                     </div>
-                    <div className="space-y-2">
-                      {ingredients.map((ing, i) => (
-                        <div key={i} className="flex gap-2">
-                          <input type="text" value={ing.measure} onChange={(e) => updateIngredient(i, 'measure', e.target.value)} placeholder="2 oz" className="w-20 px-3 py-2.5 input-field rounded-lg text-sm text-copper-light font-light" />
-                          <input type="text" value={ing.name} onChange={(e) => updateIngredient(i, 'name', e.target.value)} placeholder="Ingredient" className="flex-1 px-3 py-2.5 input-field rounded-lg text-sm text-cream font-light" />
-                          {ingredients.length > 1 && (
-                            <button onClick={() => removeIngredient(i)} className="p-2 text-ink-600 hover:text-red-400"><Icon name="X" className="w-4 h-4" /></button>
-                          )}
+
+                    {/* Added ingredients */}
+                    {ingredients.length > 0 && (
+                      <div className="space-y-2 mb-3">
+                        {ingredients.map((ing, i) => (
+                          <div key={i} className="flex items-center gap-2 p-3 card rounded-lg">
+                            <select
+                              value={ing.amount}
+                              onChange={(e) => updateIngredient(i, 'amount', e.target.value)}
+                              className="w-16 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
+                            >
+                              <option value="" className="bg-ink-900">—</option>
+                              {amounts.map(a => (
+                                <option key={a} value={a} className="bg-ink-900">{a}</option>
+                              ))}
+                            </select>
+                            <select
+                              value={ing.unit}
+                              onChange={(e) => updateIngredient(i, 'unit', e.target.value)}
+                              className="w-24 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
+                            >
+                              {measurements.map(m => (
+                                <option key={m.id} value={m.name} className="bg-ink-900">{m.name}</option>
+                              ))}
+                            </select>
+                            <span className="flex-1 text-sm text-ink-300 capitalize">{ing.name}</span>
+                            <button onClick={() => removeIngredient(i)} className="p-1.5 text-ink-600 hover:text-red-400">
+                              <Icon name="X" className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Add ingredient button/picker */}
+                    {!showIngredientPicker ? (
+                      <button
+                        onClick={() => setShowIngredientPicker(true)}
+                        className="w-full p-3 border border-dashed border-ink-700 hover:border-copper/50 rounded-lg text-ink-500 hover:text-copper text-sm font-light transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Icon name="Plus" className="w-4 h-4" />
+                        Add Ingredient
+                      </button>
+                    ) : (
+                      <div className="card-elevated rounded-xl p-3 animate-slide-down">
+                        {/* Search */}
+                        <div className="relative mb-3">
+                          <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
+                          <input
+                            type="text"
+                            value={ingredientSearch}
+                            onChange={(e) => setIngredientSearch(e.target.value)}
+                            placeholder="Search ingredients..."
+                            className="w-full pl-10 pr-4 py-2.5 input-field rounded-lg text-sm text-cream font-light"
+                            autoFocus
+                          />
                         </div>
-                      ))}
-                    </div>
+
+                        {/* Search results */}
+                        {filteredIngredients && filteredIngredients.length > 0 ? (
+                          <div className="max-h-48 overflow-y-auto space-y-1">
+                            {filteredIngredients.map((ing, i) => (
+                              <button
+                                key={i}
+                                onClick={() => addIngredient(ing.name)}
+                                className="w-full text-left px-3 py-2 rounded hover:bg-white/[0.05] transition-colors"
+                              >
+                                <span className="text-sm text-cream">{ing.name}</span>
+                                <span className="text-2xs text-ink-600 ml-2">{ing.subcategory}</span>
+                              </button>
+                            ))}
+                          </div>
+                        ) : ingredientSearch.trim() ? (
+                          <div className="text-center py-4">
+                            <p className="text-sm text-ink-500 mb-2">No matches found</p>
+                            <button
+                              onClick={() => addIngredient(ingredientSearch.trim())}
+                              className="text-sm text-copper hover:text-copper-light"
+                            >
+                              Add "{ingredientSearch.trim()}" as custom
+                            </button>
+                          </div>
+                        ) : (
+                          /* Browse categories */
+                          <div className="max-h-64 overflow-y-auto">
+                            {ingredientsDb?.categories?.map(cat => (
+                              <div key={cat.id} className="mb-1">
+                                <button
+                                  onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
+                                  className="w-full flex items-center justify-between px-3 py-2 hover:bg-white/[0.03] rounded transition-colors"
+                                >
+                                  <span className="text-xs text-ink-400 uppercase tracking-wider">{cat.name}</span>
+                                  <Icon name={expandedCategory === cat.id ? 'ChevronDown' : 'ChevronRight'} className="w-4 h-4 text-ink-600" />
+                                </button>
+                                {expandedCategory === cat.id && (
+                                  <div className="ml-2 border-l border-white/[0.03]">
+                                    {cat.subcategories?.map(sub => (
+                                      <div key={sub.id} className="ml-2">
+                                        <p className="text-2xs text-ink-600 px-2 py-1 mt-1">{sub.name}</p>
+                                        {sub.items?.map(item => (
+                                          <button
+                                            key={item.id}
+                                            onClick={() => addIngredient(item.name)}
+                                            className="w-full text-left px-3 py-1.5 text-sm text-ink-300 hover:text-cream hover:bg-white/[0.03] rounded transition-colors"
+                                          >
+                                            {item.name}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <button
+                          onClick={() => { setShowIngredientPicker(false); setIngredientSearch(''); setExpandedCategory(null); }}
+                          className="w-full mt-3 py-2 text-xs text-ink-500 hover:text-ink-300"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
                   </div>
 
+                  {/* Method */}
                   <div>
                     <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Method</label>
-                    <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Instructions..." rows="3" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
+                    <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Shake, stir, build..." rows="3" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
                   </div>
 
+                  {/* Notes */}
                   <div>
                     <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Notes</label>
-                    <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Personal notes..." rows="2" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
+                    <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Where you had it, variations, etc..." rows="2" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
                   </div>
 
-                  <button onClick={handleSubmit} disabled={!name.trim()} className="w-full py-4 btn-copper rounded-lg text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!name.trim() || ingredients.length === 0}
+                    className="w-full py-4 btn-copper rounded-lg text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     Save Recipe
                   </button>
                 </div>
