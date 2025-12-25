@@ -1,4 +1,4 @@
-const CACHE_NAME = 'barkeep-cache-v3';
+const CACHE_NAME = 'barkeep-cache-v4';
 const urlsToCache = [
   './',
   './index.html',
@@ -12,6 +12,7 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
       .then(() => self.skipWaiting())
+      .catch(err => console.error('Cache install failed:', err))
   );
 });
 
@@ -30,10 +31,39 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+  
   // Network first for HTML to get latest updates
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
+      fetch(event.request)
+        .then(response => {
+          // Clone the response before caching
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+  
+  // Stale-while-revalidate for JSON files
+  if (event.request.url.includes('.json')) {
+    event.respondWith(
+      caches.match(event.request).then(cachedResponse => {
+        const fetchPromise = fetch(event.request).then(response => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        });
+        return cachedResponse || fetchPromise;
+      })
     );
     return;
   }
@@ -41,6 +71,31 @@ self.addEventListener('fetch', event => {
   // Cache first for other assets
   event.respondWith(
     caches.match(event.request)
-      .then(response => response || fetch(event.request))
+      .then(response => {
+        if (response) {
+          // Update cache in background
+          fetch(event.request).then(fetchResponse => {
+            const responseToCache = fetchResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            });
+          }).catch(() => {});
+          return response;
+        }
+        return fetch(event.request).then(response => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        });
+      })
   );
+});
+
+// Handle update message
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

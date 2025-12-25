@@ -181,7 +181,27 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW failed'));
+        navigator.serviceWorker.register('./sw.js')
+          .then(registration => {
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New service worker available
+                    window.dispatchEvent(new CustomEvent('sw-update', { detail: newWorker }));
+                  }
+                });
+              }
+            });
+            
+            // Check for updates every hour
+            setInterval(() => {
+              registration.update();
+            }, 3600000);
+          })
+          .catch(e => console.log('SW failed:', e));
       });
     }
   </script>
@@ -314,12 +334,26 @@
 
     // ============ CONSTANTS ============
     
-    const SPIRIT_CATEGORIES = ['All', 'Gin', 'Vodka', 'Whiskey', 'Rum', 'Tequila', 'Brandy', 'Other'];
+    const SPIRIT_CATEGORIES = ['Gin', 'Vodka', 'Whiskey', 'Rum', 'Tequila', 'Brandy', 'Other'];
+    const METHOD_OPTIONS = ['Shake', 'Stir', 'Build', 'Muddle', 'Blend'];
     const SORT_OPTIONS = [
       { value: 'name', label: 'A–Z' },
+      { value: 'newest', label: 'Newest' },
       { value: 'rating', label: 'Top Rated' },
+      { value: 'most-made', label: 'Most Made' },
       { value: 'ingredients', label: 'Fewest Ingredients' },
     ];
+    
+    // Detect method from instructions
+    const detectMethod = (drink) => {
+      const instr = (drink.instructions || '').toLowerCase();
+      if (instr.includes('shake')) return 'Shake';
+      if (instr.includes('stir')) return 'Stir';
+      if (instr.includes('muddle')) return 'Muddle';
+      if (instr.includes('blend')) return 'Blend';
+      if (instr.includes('build') || instr.includes('pour') || instr.includes('top')) return 'Build';
+      return null;
+    };
     
     const COMMON_INGREDIENTS = [
       'Gin', 'Vodka', 'Rum', 'Tequila', 'Bourbon', 'Rye Whiskey', 'Scotch', 'Cognac', 'Mezcal',
@@ -344,8 +378,14 @@
       const [selectedDrink, setSelectedDrink] = useState(null);
       const [showAddDrink, setShowAddDrink] = useState(false);
       const [showImportExport, setShowImportExport] = useState(false);
-      const [spiritFilter, setSpiritFilter] = useState('All');
+      const [filters, setFilters] = useState({
+        spirits: [],
+        methods: [],
+        glasses: [],
+        tags: []
+      });
       const [sortBy, setSortBy] = useState('name');
+      const [madeCounts, setMadeCounts] = useState({}); // Track how many times each recipe was made
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
       const [ingredientsDb, setIngredientsDb] = useState(null);
       const [showRecipesHub, setShowRecipesHub] = useState(false);
@@ -354,6 +394,8 @@
       const [sharedRecipeData, setSharedRecipeData] = useState(null);
       const [collections, setCollections] = useState([]);
       const [showShoppingList, setShowShoppingList] = useState(null);
+      const [updateAvailable, setUpdateAvailable] = useState(false);
+      const [waitingWorker, setWaitingWorker] = useState(null);
       const mainRef = useRef(null);
       const toast = useToast();
 
@@ -376,6 +418,41 @@
         mainRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, [view]);
+      
+      // Handle service worker updates
+      useEffect(() => {
+        const handleUpdate = (e) => {
+          setWaitingWorker(e.detail);
+          setUpdateAvailable(true);
+        };
+        
+        window.addEventListener('sw-update', handleUpdate);
+        
+        // Check if there's a waiting worker on load
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.ready.then(registration => {
+            if (registration.waiting) {
+              setWaitingWorker(registration.waiting);
+              setUpdateAvailable(true);
+            }
+          });
+        }
+        
+        return () => window.removeEventListener('sw-update', handleUpdate);
+      }, []);
+      
+      const reloadForUpdate = () => {
+        if (waitingWorker) {
+          waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+          waitingWorker.addEventListener('statechange', () => {
+            if (waitingWorker.state === 'activated') {
+              window.location.reload();
+            }
+          });
+        } else {
+          window.location.reload();
+        }
+      };
 
       // Load data
       useEffect(() => {
@@ -416,6 +493,7 @@
           const tryList = storage.get('want-to-try');
           const rate = storage.get('ratings');
           const coll = storage.get('collections');
+          const made = storage.get('made-counts');
           if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
           if (inv?.value) {
             const inventory = JSON.parse(inv.value);
@@ -426,47 +504,169 @@
           if (tryList?.value) setWantToTry(new Set(JSON.parse(tryList.value)));
           if (rate?.value) setRatings(JSON.parse(rate.value));
           if (coll?.value) setCollections(JSON.parse(coll.value));
+          if (made?.value) setMadeCounts(JSON.parse(made.value));
         } catch { }
       };
+      
+      // Save filters and sort per view
+      useEffect(() => {
+        if (view && (view === 'browse' || view === 'saved' || view === 'favorites' || view === 'canMake' || view === 'almostMake' || view === 'custom')) {
+          storage.set(`filters-${view}`, JSON.stringify(filters));
+          storage.set(`sort-${view}`, sortBy);
+        }
+      }, [filters, sortBy, view]);
 
       const saveData = (key, data) => storage.set(key, JSON.stringify(data));
 
-      // Export/Import
-      const exportData = () => {
+      // Automatic daily backup
+      const performAutomaticBackup = () => {
+        try {
+          const backup = {
+            schema: 'barkeep-v1',
+            version: '1.0.0',
+            exportDate: new Date().toISOString(),
+            data: {
+              customDrinks,
+              barInventory,
+              savedDrinks: Array.from(savedDrinks),
+              favorites: Array.from(favorites),
+              wantToTry: Array.from(wantToTry),
+              ratings,
+              collections,
+              madeCounts
+            }
+          };
+          
+          const backups = JSON.parse(storage.get('auto-backups')?.value || '[]');
+          backups.push(backup);
+          
+          // Keep only last 7 backups
+          const trimmed = backups.slice(-7);
+          
+          storage.set('auto-backups', JSON.stringify(trimmed));
+          storage.set('last-backup-date', new Date().toISOString().split('T')[0]);
+        } catch (err) {
+          console.error('Auto backup failed:', err);
+        }
+      };
+      
+      // Check if backup is needed (daily) - run after data loads
+      useEffect(() => {
+        if (loading) return; // Wait for data to load
+        
+        const today = new Date().toISOString().split('T')[0];
+        const lastBackup = storage.get('last-backup-date')?.value;
+        
+        if (lastBackup !== today) {
+          // Perform backup after a short delay to ensure all data is loaded
+          const timer = setTimeout(() => {
+            performAutomaticBackup();
+          }, 3000);
+          return () => clearTimeout(timer);
+        }
+      }, [loading]); // Run when data finishes loading
+      
+      // Export everything
+      const exportEverything = () => {
         const data = {
-          customDrinks, barInventory,
-          savedDrinks: Array.from(savedDrinks),
-          favorites: Array.from(favorites),
-          wantToTry: Array.from(wantToTry),
-          ratings, exportDate: new Date().toISOString()
+          schema: 'barkeep-v1',
+          version: '1.0.0',
+          exportDate: new Date().toISOString(),
+          data: {
+            customDrinks,
+            barInventory,
+            savedDrinks: Array.from(savedDrinks),
+            favorites: Array.from(favorites),
+            wantToTry: Array.from(wantToTry),
+            ratings,
+            collections,
+            madeCounts
+          }
         };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `barkeep-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `barkeep-full-backup-${new Date().toISOString().split('T')[0]}.json`;
         a.click();
         URL.revokeObjectURL(url);
-        toast('Backup downloaded', 'success');
-        setShowImportExport(false);
+        toast('Full backup downloaded', 'success');
       };
 
-      const importData = (event) => {
+      const importEverything = (event, mergeMode = false) => {
         const file = event.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
-            const data = JSON.parse(e.target.result);
-            if (data.customDrinks) { setCustomDrinks(data.customDrinks); saveData('custom-drinks', data.customDrinks); }
-            if (data.barInventory) { setBarInventory(data.barInventory); saveData('bar-inventory', data.barInventory); }
-            if (data.savedDrinks) { setSavedDrinks(new Set(data.savedDrinks)); saveData('saved-drinks', data.savedDrinks); }
-            if (data.favorites) { setFavorites(new Set(data.favorites)); saveData('favorites', data.favorites); }
-            if (data.wantToTry) { setWantToTry(new Set(data.wantToTry)); saveData('want-to-try', data.wantToTry); }
-            if (data.ratings) { setRatings(data.ratings); saveData('ratings', data.ratings); }
-            toast('Data restored successfully', 'success');
-            setShowImportExport(false);
-          } catch { toast('Failed to import data', 'error'); }
+            const imported = JSON.parse(e.target.result);
+            
+            // Handle both old format and new format
+            const data = imported.data || imported;
+            
+            if (mergeMode) {
+              // Merge mode: combine with existing data
+              if (data.customDrinks) {
+                const merged = [...customDrinks, ...data.customDrinks.filter(d => !customDrinks.some(existing => existing.id === d.id))];
+                setCustomDrinks(merged);
+                saveData('custom-drinks', merged);
+              }
+              if (data.barInventory) {
+                const existingIds = new Set(barInventory.map(i => i.id));
+                const merged = [...barInventory, ...data.barInventory.filter(i => !existingIds.has(i.id))];
+                setBarInventory(merged);
+                saveData('bar-inventory', merged);
+              }
+              if (data.savedDrinks) {
+                const merged = new Set([...savedDrinks, ...data.savedDrinks]);
+                setSavedDrinks(merged);
+                saveData('saved-drinks', Array.from(merged));
+              }
+              if (data.favorites) {
+                const merged = new Set([...favorites, ...data.favorites]);
+                setFavorites(merged);
+                saveData('favorites', Array.from(merged));
+              }
+              if (data.wantToTry) {
+                const merged = new Set([...wantToTry, ...data.wantToTry]);
+                setWantToTry(merged);
+                saveData('want-to-try', Array.from(merged));
+              }
+              if (data.ratings) {
+                const merged = { ...ratings, ...data.ratings };
+                setRatings(merged);
+                saveData('ratings', merged);
+              }
+              if (data.collections) {
+                const merged = [...collections, ...data.collections.filter(c => !collections.some(existing => existing.id === c.id))];
+                setCollections(merged);
+                saveData('collections', merged);
+              }
+              if (data.madeCounts) {
+                const merged = { ...madeCounts, ...data.madeCounts };
+                setMadeCounts(merged);
+                saveData('made-counts', merged);
+              }
+              toast('Data merged successfully', 'success');
+            } else {
+              // Replace mode: overwrite existing data
+              if (data.customDrinks) { setCustomDrinks(data.customDrinks); saveData('custom-drinks', data.customDrinks); }
+              if (data.barInventory) { setBarInventory(data.barInventory); saveData('bar-inventory', data.barInventory); }
+              if (data.savedDrinks) { setSavedDrinks(new Set(data.savedDrinks)); saveData('saved-drinks', data.savedDrinks); }
+              if (data.favorites) { setFavorites(new Set(data.favorites)); saveData('favorites', data.favorites); }
+              if (data.wantToTry) { setWantToTry(new Set(data.wantToTry)); saveData('want-to-try', data.wantToTry); }
+              if (data.ratings) { setRatings(data.ratings); saveData('ratings', data.ratings); }
+              if (data.collections) { setCollections(data.collections); saveData('collections', data.collections); }
+              if (data.madeCounts) { setMadeCounts(data.madeCounts); saveData('made-counts', data.madeCounts); }
+              toast('Data replaced successfully', 'success');
+            }
+            
+            // Reload to refresh UI
+            loadUserData();
+          } catch (err) {
+            console.error('Import error:', err);
+            toast('Failed to import data', 'error');
+          }
         };
         reader.readAsText(file);
       };
@@ -727,17 +927,78 @@
           drinks = drinks.filter(d => d.name.toLowerCase().includes(term) || d.ingredients?.some(i => i.name.toLowerCase().includes(term)));
         }
         
-        if (spiritFilter !== 'All') drinks = drinks.filter(d => detectSpirit(d) === spiritFilter);
+        // Apply multi-filters
+        if (filters.spirits.length > 0) {
+          drinks = drinks.filter(d => filters.spirits.includes(detectSpirit(d)));
+        }
+        
+        if (filters.methods.length > 0) {
+          drinks = drinks.filter(d => {
+            const method = detectMethod(d);
+            return method && filters.methods.includes(method);
+          });
+        }
+        
+        if (filters.glasses.length > 0) {
+          drinks = drinks.filter(d => d.glass && filters.glasses.includes(d.glass));
+        }
+        
+        if (filters.tags.includes('canMake')) {
+          drinks = drinks.filter(d => canMakeDrink(d));
+        }
+        if (filters.tags.includes('almostMake')) {
+          drinks = drinks.filter(d => {
+            const missing = getMissingCount(d);
+            return missing > 0 && missing <= 2 && !canMakeDrink(d);
+          });
+        }
         
         // Sort
         drinks = [...drinks].sort((a, b) => {
           if (sortBy === 'rating') return (ratings[b.id] || 0) - (ratings[a.id] || 0);
+          if (sortBy === 'newest') {
+            const aDate = a.dateAdded ? new Date(a.dateAdded) : new Date(0);
+            const bDate = b.dateAdded ? new Date(b.dateAdded) : new Date(0);
+            return bDate - aDate;
+          }
+          if (sortBy === 'most-made') {
+            return (madeCounts[b.id] || 0) - (madeCounts[a.id] || 0);
+          }
           if (sortBy === 'ingredients') return (a.ingredients?.length || 0) - (b.ingredients?.length || 0);
           return a.name.localeCompare(b.name);
         });
         
         return drinks;
-      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, barInventory, ingredientsDb, searchTerm, spiritFilter, sortBy, ratings]);
+      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, barInventory, ingredientsDb, searchTerm, filters, sortBy, ratings, madeCounts]);
+      
+      const toggleFilter = (category, value) => {
+        setFilters(prev => {
+          const newFilters = { ...prev };
+          if (newFilters[category].includes(value)) {
+            newFilters[category] = newFilters[category].filter(v => v !== value);
+          } else {
+            newFilters[category] = [...newFilters[category], value];
+          }
+          return newFilters;
+        });
+      };
+      
+      const clearFilters = () => {
+        setFilters({ spirits: [], methods: [], glasses: [], tags: [] });
+        setSearchTerm('');
+      };
+      
+      const hasActiveFilters = filters.spirits.length > 0 || filters.methods.length > 0 || filters.glasses.length > 0 || filters.tags.length > 0 || searchTerm.trim();
+      
+      // Get unique glass types from all drinks
+      const availableGlasses = useMemo(() => {
+        const glassesSet = new Set();
+        const allDrinks = [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
+        allDrinks.forEach(drink => {
+          if (drink.glass) glassesSet.add(drink.glass);
+        });
+        return Array.from(glassesSet).sort();
+      }, [curatedDrinks, customDrinks]);
 
       const getAlmostMakeCount = () => {
         return getAllDrinks().filter(d => {
@@ -850,8 +1111,8 @@
             ) : view === 'settings' ? (
               <SettingsView
                 onClose={() => setView('browse')}
-                onExport={exportData}
-                onImport={importData}
+                onExport={exportEverything}
+                onImport={importEverything}
                 unmatchedIngredients={Array.from(unmatchedIngredients)}
                 onImportShared={() => setShowImportShared(true)}
               />
@@ -903,33 +1164,112 @@
                     </button>
                   </div>
                   
-                  <div className="flex gap-2 overflow-x-auto hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
-                    <select
-                      value={spiritFilter}
-                      onChange={(e) => setSpiritFilter(e.target.value)}
-                      className="px-3 py-2 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer whitespace-nowrap"
-                    >
-                      {SPIRIT_CATEGORIES.map(cat => (
-                        <option key={cat} value={cat} className="bg-ink-900">{cat === 'All' ? 'All Spirits' : cat}</option>
+                  {/* Filter Chips */}
+                  <div className="space-y-3">
+                    {/* Spirits */}
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Spirit:</span>
+                      {SPIRIT_CATEGORIES.map(spirit => (
+                        <button
+                          key={spirit}
+                          onClick={() => toggleFilter('spirits', spirit)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                            filters.spirits.includes(spirit)
+                              ? 'bg-copper/20 text-copper border border-copper/30'
+                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                          }`}
+                        >
+                          {spirit}
+                        </button>
                       ))}
-                    </select>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="px-3 py-2 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer whitespace-nowrap"
-                    >
-                      {SORT_OPTIONS.map(opt => (
-                        <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
+                    </div>
+                    
+                    {/* Methods */}
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Method:</span>
+                      {METHOD_OPTIONS.map(method => (
+                        <button
+                          key={method}
+                          onClick={() => toggleFilter('methods', method)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                            filters.methods.includes(method)
+                              ? 'bg-copper/20 text-copper border border-copper/30'
+                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                          }`}
+                        >
+                          {method}
+                        </button>
                       ))}
-                    </select>
-                    {(spiritFilter !== 'All' || searchTerm) && (
-                      <button
-                        onClick={() => { setSpiritFilter('All'); setSearchTerm(''); }}
-                        className="px-3 py-2 text-xs text-copper hover:text-copper-light whitespace-nowrap"
-                      >
-                        Clear filters
-                      </button>
+                    </div>
+                    
+                    {/* Glasses */}
+                    {availableGlasses.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Glass:</span>
+                        {availableGlasses.slice(0, 8).map(glass => (
+                          <button
+                            key={glass}
+                            onClick={() => toggleFilter('glasses', glass)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                              filters.glasses.includes(glass)
+                                ? 'bg-copper/20 text-copper border border-copper/30'
+                                : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                            }`}
+                          >
+                            {glass}
+                          </button>
+                        ))}
+                      </div>
                     )}
+                    
+                    {/* Tags */}
+                    {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'custom') && (
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider self-center mr-1">Tags:</span>
+                        <button
+                          onClick={() => toggleFilter('tags', 'canMake')}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                            filters.tags.includes('canMake')
+                              ? 'bg-emerald-900/30 text-emerald-300 border border-emerald-900/50'
+                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                          }`}
+                        >
+                          Can Make
+                        </button>
+                        <button
+                          onClick={() => toggleFilter('tags', 'almostMake')}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-light transition-colors whitespace-nowrap ${
+                            filters.tags.includes('almostMake')
+                              ? 'bg-amber-900/30 text-amber-300 border border-amber-900/50'
+                              : 'bg-white/[0.02] text-ink-400 hover:bg-white/[0.05] border border-white/[0.06]'
+                          }`}
+                        >
+                          Almost Make
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* Sort & Clear */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-2xs text-ink-600 uppercase tracking-wider">Sort:</span>
+                      <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="px-3 py-1.5 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer"
+                      >
+                        {SORT_OPTIONS.map(opt => (
+                          <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
+                        ))}
+                      </select>
+                      {hasActiveFilters && (
+                        <button
+                          onClick={clearFilters}
+                          className="px-3 py-1.5 text-xs text-copper hover:text-copper-light whitespace-nowrap"
+                        >
+                          Clear all
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -937,7 +1277,11 @@
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-xs text-ink-600 tracking-wide">
                     {displayDrinks.length} {displayDrinks.length === 1 ? 'recipe' : 'recipes'}
-                    {spiritFilter !== 'All' && <span className="text-copper ml-1">· {spiritFilter}</span>}
+                    {hasActiveFilters && (
+                      <span className="text-copper ml-1">
+                        · {filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length} filter{filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length !== 1 ? 's' : ''}
+                      </span>
+                    )}
                   </p>
                   {view === 'almostMake' && displayDrinks.length > 0 && (
                     <button
@@ -1052,6 +1396,30 @@
               ))}
             </div>
           </nav>
+          
+          {/* Update Available Banner */}
+          {updateAvailable && (
+            <div className="fixed bottom-16 sm:bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 bg-copper text-ink-950 px-4 py-3 flex items-center justify-between rounded-lg shadow-xl animate-slide-up">
+              <div className="flex items-center gap-3">
+                <Icon name="RefreshCw" className="w-5 h-5" />
+                <span className="text-sm font-medium">Update available</span>
+              </div>
+              <div className="flex items-center gap-2 ml-4">
+                <button
+                  onClick={reloadForUpdate}
+                  className="px-4 py-2 bg-ink-950 text-cream rounded-lg text-sm font-medium hover:bg-ink-900 transition-colors"
+                >
+                  Refresh
+                </button>
+                <button
+                  onClick={() => setUpdateAvailable(false)}
+                  className="p-2 hover:bg-ink-950/20 rounded-lg transition-colors"
+                >
+                  <Icon name="X" className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Modals */}
           {selectedDrink && (
@@ -1590,6 +1958,7 @@
     const SettingsView = ({ onClose, onExport, onImport, unmatchedIngredients, onImportShared }) => {
       const fileRef = useRef(null);
       const [showDebug, setShowDebug] = useState(false);
+      const [importMode, setImportMode] = useState('replace');
 
       return (
         <div className="animate-fade-in max-w-2xl">
@@ -1614,16 +1983,51 @@
                     </div>
                   </div>
                 </button>
-              <input type="file" ref={fileRef} onChange={onImport} accept=".json" className="hidden" />
+              <input type="file" ref={fileRef} onChange={(e) => onImport(e, importMode)} accept=".json" className="hidden" />
               <button onClick={() => fileRef.current?.click()} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
-                  <div>
-                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Data</p>
+                  <div className="flex-1">
+                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Everything</p>
                     <p className="text-2xs text-ink-500 mt-0.5">Restore from a backup file</p>
                   </div>
                 </div>
               </button>
+              
+              {/* Import mode selection */}
+              <div className="mt-3 pt-3 border-t border-white/[0.03]">
+                <p className="text-2xs text-ink-600 uppercase tracking-wider mb-2">Import Mode</p>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-3 p-2 card rounded-lg cursor-pointer">
+                    <input
+                      type="radio"
+                      name="importMode"
+                      value="replace"
+                      checked={importMode === 'replace'}
+                      onChange={(e) => setImportMode(e.target.value)}
+                      className="text-copper"
+                    />
+                    <div>
+                      <span className="text-sm text-ink-300">Replace</span>
+                      <p className="text-2xs text-ink-600">Overwrite all existing data</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center gap-3 p-2 card rounded-lg cursor-pointer">
+                    <input
+                      type="radio"
+                      name="importMode"
+                      value="merge"
+                      checked={importMode === 'merge'}
+                      onChange={(e) => setImportMode(e.target.value)}
+                      className="text-copper"
+                    />
+                    <div>
+                      <span className="text-sm text-ink-300">Merge</span>
+                      <p className="text-2xs text-ink-600">Combine with existing data</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
               <button onClick={onImportShared} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Share2" className="w-5 h-5 text-copper" />
@@ -1891,8 +2295,12 @@
       const [showIngredientPicker, setShowIngredientPicker] = useState(false);
       const [ingredientSearch, setIngredientSearch] = useState('');
       const [expandedCategory, setExpandedCategory] = useState(null);
+      const [editingIngredientIndex, setEditingIngredientIndex] = useState(null);
+      const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
+      const [showAutocomplete, setShowAutocomplete] = useState(false);
+      const autocompleteRefs = useRef({});
 
-      // Flatten all ingredients for search
+      // Flatten all ingredients for search (including aliases)
       const allIngredients = useMemo(() => {
         if (!ingredientsDb) return [];
         const flat = [];
@@ -1900,32 +2308,76 @@
           cat.subcategories?.forEach(sub => {
             sub.items?.forEach(item => {
               flat.push({ ...item, category: cat.name, subcategory: sub.name });
+              // Add aliases as separate entries for easier matching
+              if (item.aliases) {
+                item.aliases.forEach(alias => {
+                  flat.push({ ...item, name: alias, category: cat.name, subcategory: sub.name, isAlias: true });
+                });
+              }
             });
           });
         });
         return flat;
       }, [ingredientsDb]);
 
-      // Filter ingredients by search
-      const filteredIngredients = useMemo(() => {
-        if (!ingredientSearch.trim()) return null;
-        const term = ingredientSearch.toLowerCase();
-        return allIngredients.filter(ing => 
-          ing.name.toLowerCase().includes(term) || 
-          ing.aliases?.some(a => a.toLowerCase().includes(term))
-        ).slice(0, 15);
-      }, [ingredientSearch, allIngredients]);
+      // Get canonical name for an ingredient
+      const getCanonicalName = (name) => {
+        const normalized = normalizeIngredient(name, ingredientsDb);
+        const found = allIngredients.find(ing => normalizeIngredient(ing.name, ingredientsDb) === normalized && !ing.isAlias);
+        return found ? found.name : null;
+      };
 
-      const addIngredient = (ingredientName) => {
-        setIngredients([...ingredients, { name: ingredientName, amount: '', unit: 'oz' }]);
+      // Filter ingredients by search for autocomplete
+      const getAutocompleteSuggestions = (searchTerm) => {
+        if (!searchTerm.trim() || searchTerm.length < 2) return [];
+        const term = searchTerm.toLowerCase().trim();
+        return allIngredients
+          .filter(ing => {
+            const nameMatch = ing.name.toLowerCase().includes(term);
+            const aliasMatch = ing.aliases?.some(a => a.toLowerCase().includes(term));
+            return (nameMatch || aliasMatch) && !ing.isAlias;
+          })
+          .slice(0, 8)
+          .map(ing => ing.name);
+      };
+
+      const selectAutocompleteSuggestion = (index, suggestion) => {
+        const updated = [...ingredients];
+        updated[index].name = suggestion;
+        setIngredients(updated);
+        setShowAutocomplete(false);
+        setAutocompleteSuggestions([]);
+        setEditingIngredientIndex(null);
+      };
+
+      const addIngredient = (ingredientName = '') => {
+        const canonical = getCanonicalName(ingredientName) || ingredientName;
+        setIngredients([...ingredients, { name: canonical, amount: '', unit: 'oz' }]);
         setShowIngredientPicker(false);
         setIngredientSearch('');
         setExpandedCategory(null);
+        setEditingIngredientIndex(null);
       };
 
       const updateIngredient = (i, field, value) => {
         const updated = [...ingredients];
         updated[i][field] = value;
+        setIngredients(updated);
+        
+        // If updating name, show autocomplete
+        if (field === 'name' && value.length >= 2) {
+          const suggestions = getAutocompleteSuggestions(value);
+          setAutocompleteSuggestions(suggestions);
+          setShowAutocomplete(true);
+          setEditingIngredientIndex(i);
+        } else if (field === 'name' && value.length < 2) {
+          setShowAutocomplete(false);
+        }
+      };
+
+      const quickAddAmount = (index, amount) => {
+        const updated = [...ingredients];
+        updated[index].amount = amount;
         setIngredients(updated);
       };
 
@@ -2001,33 +2453,130 @@
                     {/* Added ingredients */}
                     {ingredients.length > 0 && (
                       <div className="space-y-2 mb-3">
-                        {ingredients.map((ing, i) => (
-                          <div key={i} className="flex items-center gap-2 p-3 card rounded-lg">
-                            <select
-                              value={ing.amount}
-                              onChange={(e) => updateIngredient(i, 'amount', e.target.value)}
-                              className="w-16 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
-                            >
-                              <option value="" className="bg-ink-900">—</option>
-                              {amounts.map(a => (
-                                <option key={a} value={a} className="bg-ink-900">{a}</option>
-                              ))}
-                            </select>
-                            <select
-                              value={ing.unit}
-                              onChange={(e) => updateIngredient(i, 'unit', e.target.value)}
-                              className="w-24 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
-                            >
-                              {measurements.map(m => (
-                                <option key={m.id} value={m.name} className="bg-ink-900">{m.name}</option>
-                              ))}
-                            </select>
-                            <span className="flex-1 text-sm text-ink-300 capitalize">{ing.name}</span>
-                            <button onClick={() => removeIngredient(i)} className="p-1.5 text-ink-600 hover:text-red-400">
-                              <Icon name="X" className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
+                        {ingredients.map((ing, i) => {
+                          const canonicalName = getCanonicalName(ing.name);
+                          const isUnmatched = ing.name.trim() && ing.name.length >= 2 && !canonicalName && editingIngredientIndex !== i;
+                          
+                          return (
+                            <div key={i} className="relative">
+                              <div className={`flex items-center gap-2 p-3 card rounded-lg ${isUnmatched ? 'border border-amber-900/50 bg-amber-950/10' : ''}`}>
+                                {/* Quick amount buttons */}
+                                <div className="flex gap-1">
+                                  {['1/4', '1/2', '3/4', '1'].map(amt => (
+                                    <button
+                                      key={amt}
+                                      onClick={() => quickAddAmount(i, amt)}
+                                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                                        ing.amount === amt 
+                                          ? 'bg-copper/20 text-copper border border-copper/30' 
+                                          : 'bg-white/[0.02] text-ink-500 hover:bg-white/[0.05] border border-white/[0.06]'
+                                      }`}
+                                    >
+                                      {amt}
+                                    </button>
+                                  ))}
+                                </div>
+                                
+                                <select
+                                  value={ing.amount}
+                                  onChange={(e) => updateIngredient(i, 'amount', e.target.value)}
+                                  className="w-20 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
+                                >
+                                  <option value="" className="bg-ink-900">—</option>
+                                  {amounts.map(a => (
+                                    <option key={a} value={a} className="bg-ink-900">{a}</option>
+                                  ))}
+                                </select>
+                                
+                                {/* Unit helpers */}
+                                <div className="flex gap-1">
+                                  {['oz', 'dash', 'tsp', 'barspoon'].map(unit => (
+                                    <button
+                                      key={unit}
+                                      onClick={() => updateIngredient(i, 'unit', unit)}
+                                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                                        ing.unit === unit
+                                          ? 'bg-copper/20 text-copper border border-copper/30'
+                                          : 'bg-white/[0.02] text-ink-500 hover:bg-white/[0.05] border border-white/[0.06]'
+                                      }`}
+                                    >
+                                      {unit}
+                                    </button>
+                                  ))}
+                                </div>
+                                
+                                <select
+                                  value={ing.unit}
+                                  onChange={(e) => updateIngredient(i, 'unit', e.target.value)}
+                                  className="w-24 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
+                                >
+                                  {measurements.map(m => (
+                                    <option key={m.id} value={m.name} className="bg-ink-900">{m.name}</option>
+                                  ))}
+                                </select>
+                                
+                                {/* Ingredient name input with autocomplete */}
+                                <div className="flex-1 relative">
+                                  <input
+                                    type="text"
+                                    value={ing.name}
+                                    onChange={(e) => updateIngredient(i, 'name', e.target.value)}
+                                    onFocus={() => {
+                                      setEditingIngredientIndex(i);
+                                      if (ing.name.length >= 2) {
+                                        setAutocompleteSuggestions(getAutocompleteSuggestions(ing.name));
+                                        setShowAutocomplete(true);
+                                      }
+                                    }}
+                                    onBlur={() => {
+                                      setTimeout(() => {
+                                        setShowAutocomplete(false);
+                                        setEditingIngredientIndex(null);
+                                      }, 200);
+                                    }}
+                                    placeholder="Ingredient name"
+                                    className={`w-full px-3 py-1.5 bg-white/[0.02] border rounded text-sm font-light ${
+                                      isUnmatched 
+                                        ? 'border-amber-900/50 text-amber-300' 
+                                        : canonicalName 
+                                          ? 'border-emerald-900/30 text-ink-300' 
+                                          : 'border-white/[0.06] text-ink-300'
+                                    }`}
+                                  />
+                                  
+                                  {/* Autocomplete dropdown */}
+                                  {showAutocomplete && editingIngredientIndex === i && autocompleteSuggestions.length > 0 && (
+                                    <div className="absolute top-full left-0 right-0 mt-1 bg-ink-900 border border-white/[0.06] rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
+                                      {autocompleteSuggestions.map((suggestion, idx) => (
+                                        <button
+                                          key={idx}
+                                          onMouseDown={(e) => {
+                                            e.preventDefault();
+                                            selectAutocompleteSuggestion(i, suggestion);
+                                          }}
+                                          className="w-full text-left px-3 py-2 text-sm text-ink-300 hover:bg-white/[0.05] hover:text-cream transition-colors"
+                                        >
+                                          {suggestion}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                  
+                                  {/* Validation feedback */}
+                                  {isUnmatched && ing.name.length >= 2 && (
+                                    <div className="absolute top-full left-0 right-0 mt-1 px-2 py-1 text-2xs text-amber-400 bg-amber-950/30 border border-amber-900/50 rounded z-40">
+                                      Unmatched ingredient
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                <button onClick={() => removeIngredient(i)} className="p-1.5 text-ink-600 hover:text-red-400">
+                                  <Icon name="X" className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
 
