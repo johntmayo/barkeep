@@ -368,7 +368,9 @@
       const [view, setView] = useState('recipesHub');
       const [curatedDrinks, setCuratedDrinks] = useState([]);
       const [customDrinks, setCustomDrinks] = useState([]);
-      const [barInventory, setBarInventory] = useState([]);
+      // Multiple bars support
+      const [bars, setBars] = useState([]);
+      const [activeBarId, setActiveBarId] = useState(null);
       const [savedDrinks, setSavedDrinks] = useState(new Set());
       const [favorites, setFavorites] = useState(new Set());
       const [wantToTry, setWantToTry] = useState(new Set());
@@ -484,10 +486,60 @@
         }
       };
 
+      // Migration: Convert old single inventory to bars system
+      const migrateToBars = () => {
+        const oldInv = storage.get('bar-inventory');
+        const barsData = storage.get('bars');
+        const activeBar = storage.get('active-bar-id');
+        
+        // If bars already exist, we're already migrated
+        if (barsData?.value) {
+          const loadedBars = JSON.parse(barsData.value);
+          setBars(loadedBars);
+          const savedActiveId = activeBar?.value;
+          // Find main bar or first bar
+          const mainBar = loadedBars.find(b => b.isMain) || loadedBars[0];
+          setActiveBarId(savedActiveId && loadedBars.find(b => b.id === savedActiveId) ? savedActiveId : (mainBar?.id || null));
+          return;
+        }
+        
+        // Migration: Convert old inventory to "Home" bar
+        if (oldInv?.value) {
+          const oldInventory = JSON.parse(oldInv.value);
+          const homeBar = {
+            id: `bar-${Date.now()}`,
+            name: 'Home',
+            isMain: true,
+            inventory: oldInventory,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          setBars([homeBar]);
+          setActiveBarId(homeBar.id);
+          saveData('bars', [homeBar]);
+          saveData('active-bar-id', homeBar.id);
+        } else {
+          // No existing inventory - create default Home bar
+          const homeBar = {
+            id: `bar-${Date.now()}`,
+            name: 'Home',
+            isMain: true,
+            inventory: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          setBars([homeBar]);
+          setActiveBarId(homeBar.id);
+          saveData('bars', [homeBar]);
+          saveData('active-bar-id', homeBar.id);
+        }
+      };
+
       const loadUserData = () => {
         try {
+          migrateToBars();
+          
           const custom = storage.get('custom-drinks');
-          const inv = storage.get('bar-inventory');
           const saved = storage.get('saved-drinks');
           const fav = storage.get('favorites');
           const tryList = storage.get('want-to-try');
@@ -495,10 +547,6 @@
           const coll = storage.get('collections');
           const made = storage.get('made-counts');
           if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
-          if (inv?.value) {
-            const inventory = JSON.parse(inv.value);
-            setBarInventory(inventory);
-          }
           if (saved?.value) setSavedDrinks(new Set(JSON.parse(saved.value)));
           if (fav?.value) setFavorites(new Set(JSON.parse(fav.value)));
           if (tryList?.value) setWantToTry(new Set(JSON.parse(tryList.value)));
@@ -509,7 +557,9 @@
             setCollections(loaded.filter(c => !c.collectionType || c.collectionType === 'personal'));
           }
           if (made?.value) setMadeCounts(JSON.parse(made.value));
-        } catch { }
+        } catch (err) {
+          console.error('Load error:', err);
+        }
       };
       
       // Save filters and sort per view
@@ -531,7 +581,8 @@
             exportDate: new Date().toISOString(),
             data: {
               customDrinks,
-              barInventory,
+              bars,
+              activeBarId,
               savedDrinks: Array.from(savedDrinks),
               favorites: Array.from(favorites),
               wantToTry: Array.from(wantToTry),
@@ -578,7 +629,8 @@
           exportDate: new Date().toISOString(),
           data: {
             customDrinks,
-            barInventory,
+            bars,
+            activeBarId,
             savedDrinks: Array.from(savedDrinks),
             favorites: Array.from(favorites),
             wantToTry: Array.from(wantToTry),
@@ -615,11 +667,23 @@
                 setCustomDrinks(merged);
                 saveData('custom-drinks', merged);
               }
-              if (data.barInventory) {
-                const existingIds = new Set(barInventory.map(i => i.id));
-                const merged = [...barInventory, ...data.barInventory.filter(i => !existingIds.has(i.id))];
-                setBarInventory(merged);
-                saveData('bar-inventory', merged);
+              // Handle bars (new format) or barInventory (old format)
+              if (data.bars) {
+                // Merge bars - avoid duplicates by id
+                const existingIds = new Set(bars.map(b => b.id));
+                const merged = [...bars, ...data.bars.filter(b => !existingIds.has(b.id))];
+                saveBars(merged);
+                if (data.activeBarId && merged.find(b => b.id === data.activeBarId)) {
+                  saveActiveBarId(data.activeBarId);
+                }
+              } else if (data.barInventory) {
+                // Old format: merge into active bar or create new bar
+                const activeBar = getActiveBar();
+                if (activeBar) {
+                  const existingIds = new Set(activeBar.inventory.map(i => i.id));
+                  const merged = [...activeBar.inventory, ...data.barInventory.filter(i => !existingIds.has(i.id))];
+                  updateActiveBarInventory(merged);
+                }
               }
               if (data.savedDrinks) {
                 const merged = new Set([...savedDrinks, ...data.savedDrinks]);
@@ -655,7 +719,27 @@
             } else {
               // Replace mode: overwrite existing data
               if (data.customDrinks) { setCustomDrinks(data.customDrinks); saveData('custom-drinks', data.customDrinks); }
-              if (data.barInventory) { setBarInventory(data.barInventory); saveData('bar-inventory', data.barInventory); }
+              if (data.bars) {
+                saveBars(data.bars);
+                if (data.activeBarId && data.bars.find(b => b.id === data.activeBarId)) {
+                  saveActiveBarId(data.activeBarId);
+                } else {
+                  const mainBar = data.bars.find(b => b.isMain) || data.bars[0];
+                  if (mainBar) saveActiveBarId(mainBar.id);
+                }
+              } else if (data.barInventory) {
+                // Old format: replace active bar inventory or create default bar
+                const homeBar = {
+                  id: `bar-${Date.now()}`,
+                  name: 'Home',
+                  isMain: true,
+                  inventory: data.barInventory,
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString()
+                };
+                saveBars([homeBar]);
+                saveActiveBarId(homeBar.id);
+              }
               if (data.savedDrinks) { setSavedDrinks(new Set(data.savedDrinks)); saveData('saved-drinks', data.savedDrinks); }
               if (data.favorites) { setFavorites(new Set(data.favorites)); saveData('favorites', data.favorites); }
               if (data.wantToTry) { setWantToTry(new Set(data.wantToTry)); saveData('want-to-try', data.wantToTry); }
@@ -678,6 +762,36 @@
       // Helpers
       const getAllDrinks = () => [...curatedDrinks.map(d => ({...d, source: 'curated'})), ...customDrinks.map(d => ({...d, source: 'custom'}))];
 
+      // Bars management helpers
+      const getActiveBar = () => bars.find(b => b.id === activeBarId) || bars.find(b => b.isMain) || bars[0] || null;
+      const getActiveBarInventory = () => {
+        const activeBar = getActiveBar();
+        return activeBar?.inventory || [];
+      };
+
+      // Save bars to storage
+      const saveBars = (updatedBars) => {
+        setBars(updatedBars);
+        saveData('bars', updatedBars);
+      };
+
+      // Save active bar id
+      const saveActiveBarId = (id) => {
+        setActiveBarId(id);
+        saveData('active-bar-id', id);
+      };
+
+      // Update active bar inventory
+      const updateActiveBarInventory = (inventory) => {
+        const updatedBars = bars.map(b => {
+          if (b.id === activeBarId) {
+            return { ...b, inventory, updatedAt: new Date().toISOString() };
+          }
+          return b;
+        });
+        saveBars(updatedBars);
+      };
+
       const detectSpirit = (drink) => {
         const ings = drink.ingredients?.map(i => i.name.toLowerCase()).join(' ') || '';
         if (ings.includes('gin')) return 'Gin';
@@ -691,6 +805,7 @@
 
       const canMakeDrink = (drink) => {
         if (!drink.ingredients?.length) return false;
+        const barInventory = getActiveBarInventory();
         const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
         return drink.ingredients.every(ing => {
           const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
@@ -700,6 +815,7 @@
 
       const getMissingCount = (drink) => {
         if (!drink.ingredients?.length) return 0;
+        const barInventory = getActiveBarInventory();
         const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
         return drink.ingredients.filter(ing => {
           const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
@@ -1078,6 +1194,7 @@
       };
 
       const addToInventory = (item) => {
+        const barInventory = getActiveBarInventory();
         const canonicalName = normalizeIngredient(item, ingredientsDb);
         if (barInventory.some(i => normalizeIngredient(i.name, ingredientsDb) === canonicalName)) {
           toast('Already in your bar', 'error');
@@ -1085,15 +1202,89 @@
         }
         // Store with original casing for display, but matching uses canonical name
         const updated = [...barInventory, { id: Date.now(), name: item }];
-        setBarInventory(updated);
-        saveData('bar-inventory', updated);
+        updateActiveBarInventory(updated);
         toast(`Added ${item}`, 'success');
       };
 
       const removeFromInventory = (id) => {
+        const barInventory = getActiveBarInventory();
         const updated = barInventory.filter(i => i.id !== id);
-        setBarInventory(updated);
-        saveData('bar-inventory', updated);
+        updateActiveBarInventory(updated);
+      };
+
+      // Bar management functions
+      const createBar = (name) => {
+        const newBar = {
+          id: `bar-${Date.now()}`,
+          name: name.trim(),
+          isMain: bars.length === 0, // First bar is main
+          inventory: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        const updated = [...bars, newBar];
+        saveBars(updated);
+        if (bars.length === 0) {
+          saveActiveBarId(newBar.id);
+        }
+        toast('Bar created', 'success');
+        return newBar;
+      };
+
+      const updateBar = (id, updates) => {
+        const updated = bars.map(b => {
+          if (b.id === id) {
+            return { ...b, ...updates, updatedAt: new Date().toISOString() };
+          }
+          return b;
+        });
+        saveBars(updated);
+        toast('Bar updated', 'success');
+      };
+
+      const deleteBar = (id) => {
+        if (bars.length <= 1) {
+          toast('Cannot delete the last bar', 'error');
+          return;
+        }
+        const updated = bars.filter(b => b.id !== id);
+        saveBars(updated);
+        
+        // Switch to main bar or first available if deleted bar was active
+        if (activeBarId === id) {
+          const mainBar = updated.find(b => b.isMain) || updated[0];
+          saveActiveBarId(mainBar.id);
+        }
+        toast('Bar deleted', 'success');
+      };
+
+      const setMainBar = (id) => {
+        // Only one bar can be main
+        const updated = bars.map(b => ({
+          ...b,
+          isMain: b.id === id,
+          updatedAt: b.id === id ? new Date().toISOString() : b.updatedAt
+        }));
+        saveBars(updated);
+        toast('Main bar updated', 'success');
+      };
+
+      const duplicateBar = (id) => {
+        const barToDuplicate = bars.find(b => b.id === id);
+        if (!barToDuplicate) return;
+        
+        const newBar = {
+          id: `bar-${Date.now()}`,
+          name: `${barToDuplicate.name} (Copy)`,
+          isMain: false,
+          inventory: JSON.parse(JSON.stringify(barToDuplicate.inventory)), // Deep copy
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        const updated = [...bars, newBar];
+        saveBars(updated);
+        toast('Bar duplicated', 'success');
+        return newBar;
       };
 
       // Random cocktail
@@ -1205,7 +1396,7 @@
 
       const navItems = [
         { id: 'recipesHub', label: 'Recipes', icon: 'LayoutGrid' },
-        { id: 'inventory', label: 'Bar', icon: 'Wine', count: barInventory.length },
+        { id: 'inventory', label: 'Bar', icon: 'Wine', count: getActiveBarInventory().length },
         { id: 'search', label: 'Search', icon: 'Search' },
         { id: 'settings', label: 'Settings', icon: 'Settings' },
       ];
@@ -1260,7 +1451,7 @@
           {/* Mobile Header */}
           <header className="sm:hidden sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
             <div className="flex items-center justify-between px-4 h-14">
-              {(view === 'recipesHub' || view === 'settings' || view === 'inventory') ? (
+              {(view === 'recipesHub' || view === 'settings' || view === 'inventory' || view === 'manageBars') ? (
                 <h1 className="font-display text-xl font-light text-cream">Barkeep</h1>
               ) : (
                 <button onClick={() => {
@@ -1304,7 +1495,6 @@
                 getAllCollections={getAllCollections}
                 getCollectionRecipes={getCollectionRecipes}
                 onSelectDrink={setSelectedDrink}
-                barInventory={barInventory}
                 ratings={ratings}
                 savedDrinks={savedDrinks}
                 favorites={favorites}
@@ -1316,6 +1506,7 @@
                   drinks.forEach(drink => {
                     const missing = drink.ingredients?.filter(ing => {
                       const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+                      const barInventory = getActiveBarInventory();
                       const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
                       return !invCanonical.has(ingCanonical);
                     }) || [];
@@ -1345,7 +1536,31 @@
                 }}
               />
             ) : view === 'inventory' ? (
-              <InventoryView inventory={barInventory} onAdd={addToInventory} onRemove={removeFromInventory} ingredientsDb={ingredientsDb} />
+              <InventoryView 
+                inventory={getActiveBarInventory()} 
+                activeBar={getActiveBar()}
+                bars={bars}
+                onAdd={addToInventory} 
+                onRemove={removeFromInventory}
+                onSwitchBar={(barId) => saveActiveBarId(barId)}
+                onManageBars={() => setView('manageBars')}
+                ingredientsDb={ingredientsDb} 
+              />
+            ) : view === 'manageBars' ? (
+              <ManageBarsView
+                bars={bars}
+                activeBarId={activeBarId}
+                onCreateBar={createBar}
+                onUpdateBar={updateBar}
+                onDeleteBar={deleteBar}
+                onSetMainBar={setMainBar}
+                onDuplicateBar={duplicateBar}
+                onSwitchBar={(barId) => {
+                  saveActiveBarId(barId);
+                  setView('inventory');
+                }}
+                onClose={() => setView('inventory')}
+              />
             ) : view === 'settings' ? (
               <SettingsView
                 onClose={() => setView('browse')}
@@ -1531,6 +1746,7 @@
                         displayDrinks.forEach(drink => {
                           const missing = drink.ingredients?.filter(ing => {
                             const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+                            const barInventory = getActiveBarInventory();
                             const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
                             return !invCanonical.has(ingCanonical);
                           }) || [];
@@ -1668,7 +1884,7 @@
               isFavorite={favorites.has(selectedDrink.id)}
               isWantToTry={wantToTry.has(selectedDrink.id)}
               canMake={canMakeDrink(selectedDrink)}
-              inventory={barInventory}
+              inventory={getActiveBarInventory()}
               ingredientsDb={ingredientsDb}
               collections={collections}
               onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', selectedDrink.id, 'Saved', 'Removed')}
@@ -1757,7 +1973,8 @@
     const RecipesHub = ({ 
       savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
       onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
-      onSelectDrink, barInventory, ratings, savedDrinks, favorites, getMissingCount, canMakeDrink, ingredientsDb, onCreateShoppingList
+      onSelectDrink, barInventory, ratings, savedDrinks, favorites, getMissingCount, canMakeDrink, ingredientsDb, 
+      bars, activeBar, onSwitchBar, onCreateShoppingList
     }) => {
       // Featured collections: prefer curated, rotate by day if needed
       // Simple selection: first 2-3 curated collections (or all if less than 3)
@@ -1780,7 +1997,7 @@
       ];
 
       // Empty state if bar is empty
-      if (barInventory.length === 0) {
+      if (getActiveBarInventory().length === 0) {
         return (
           <div className="animate-fade-in">
             <div className="card rounded-xl p-8 text-center mb-6">
@@ -1827,8 +2044,36 @@
         );
       }
 
+      const activeBar = getActiveBar();
+
       return (
         <div className="animate-fade-in space-y-8">
+          {/* Quick Bar Switch (if multiple bars) */}
+          {bars.length > 1 && (
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 text-sm text-ink-500">
+                <Icon name="Wine" className="w-4 h-4" />
+                <span>Active bar:</span>
+                <span className="text-cream font-medium">{activeBar?.name || 'Bar'}</span>
+                {activeBar?.isMain && (
+                  <span className="text-2xs px-1.5 py-0.5 rounded-full bg-copper/10 text-copper border border-copper/20">
+                    Main
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  const nextBar = bars.find(b => b.id !== activeBar?.id) || bars[0];
+                  saveActiveBarId(nextBar.id);
+                }}
+                className="text-xs text-copper hover:text-copper-light flex items-center gap-1"
+              >
+                <Icon name="RefreshCw" className="w-3.5 h-3.5" />
+                Switch
+              </button>
+            </div>
+          )}
+
           {/* You can make section */}
           {canMakeRecipes.length > 0 ? (
             <section>
@@ -3305,7 +3550,7 @@
       );
     };
 
-    const InventoryView = ({ inventory, onAdd, onRemove, ingredientsDb }) => {
+    const InventoryView = ({ inventory, activeBar, bars, onAdd, onRemove, onSwitchBar, onManageBars, ingredientsDb }) => {
       const [newItem, setNewItem] = useState('');
       const [isAdding, setIsAdding] = useState(false);
       const [showSuggestions, setShowSuggestions] = useState(false);
@@ -3553,6 +3798,47 @@
 
       return (
         <div className="max-w-2xl mx-auto animate-fade-in">
+          {/* Bar Selector */}
+          <div className="card rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Icon name="Wine" className="w-5 h-5 text-copper" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-cream font-medium">{activeBar?.name || 'Bar'}</span>
+                    {activeBar?.isMain && (
+                      <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/20 text-copper border border-copper/30">
+                        Main
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-2xs text-ink-500 mt-0.5">{inventory.length} ingredients</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onManageBars}
+                  className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-colors"
+                >
+                  <Icon name="Settings" className="w-3.5 h-3.5 inline mr-1.5" />
+                  Manage
+                </button>
+                {bars.length > 1 && (
+                  <button
+                    onClick={() => {
+                      const nextBar = bars.find(b => b.id !== activeBar?.id) || bars[0];
+                      onSwitchBar(nextBar.id);
+                    }}
+                    className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30 rounded-lg hover:border-copper/50 transition-colors"
+                  >
+                    <Icon name="RefreshCw" className="w-3.5 h-3.5 inline mr-1.5" />
+                    Switch
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="font-display text-2xl text-cream font-light">Your Bar</h2>
@@ -3755,6 +4041,247 @@
             </div>
             <button onClick={onClose} className="w-full mt-5 py-3 text-sm text-ink-500 hover:text-ink-300">Cancel</button>
           </div>
+        </div>
+      );
+    };
+
+    const ManageBarsView = ({ bars, activeBarId, onCreateBar, onUpdateBar, onDeleteBar, onSetMainBar, onDuplicateBar, onSwitchBar, onClose }) => {
+      const [editingId, setEditingId] = useState(null);
+      const [editName, setEditName] = useState('');
+      const [showCreate, setShowCreate] = useState(false);
+      const [newBarName, setNewBarName] = useState('');
+      const [deletingId, setDeletingId] = useState(null);
+
+      const handleStartEdit = (bar) => {
+        setEditingId(bar.id);
+        setEditName(bar.name);
+      };
+
+      const handleSaveEdit = () => {
+        if (editName.trim()) {
+          onUpdateBar(editingId, { name: editName.trim() });
+          setEditingId(null);
+          setEditName('');
+        }
+      };
+
+      const handleCreate = () => {
+        if (newBarName.trim()) {
+          onCreateBar(newBarName.trim());
+          setNewBarName('');
+          setShowCreate(false);
+        }
+      };
+
+      const handleDelete = (id) => {
+        onDeleteBar(id);
+        setDeletingId(null);
+      };
+
+      return (
+        <div className="max-w-3xl mx-auto animate-fade-in">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="font-display text-2xl text-cream font-light">Manage Bars</h2>
+              <p className="text-ink-500 text-sm mt-0.5">Create and organize multiple bar inventories</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-sm text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-colors"
+            >
+              <Icon name="X" className="w-4 h-4 inline mr-2" />
+              Close
+            </button>
+          </div>
+
+          {/* Create New Bar */}
+          {showCreate ? (
+            <div className="card rounded-xl p-4 mb-4">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newBarName}
+                  onChange={(e) => setNewBarName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleCreate();
+                    if (e.key === 'Escape') {
+                      setShowCreate(false);
+                      setNewBarName('');
+                    }
+                  }}
+                  placeholder="Bar name (e.g., Home, Cabin)"
+                  className="flex-1 px-4 py-2 input-field rounded-lg text-cream"
+                  autoFocus
+                />
+                <button
+                  onClick={handleCreate}
+                  disabled={!newBarName.trim()}
+                  className="px-4 py-2 btn-copper rounded-lg text-sm font-medium disabled:opacity-50"
+                >
+                  Create
+                </button>
+                <button
+                  onClick={() => {
+                    setShowCreate(false);
+                    setNewBarName('');
+                  }}
+                  className="px-4 py-2 text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowCreate(true)}
+              className="mb-4 px-4 py-2.5 btn-copper rounded-lg text-sm font-medium w-full"
+            >
+              <Icon name="Plus" className="w-4 h-4 inline mr-2" />
+              Create New Bar
+            </button>
+          )}
+
+          {/* Bars List */}
+          <div className="space-y-3">
+            {bars.map(bar => (
+              <div
+                key={bar.id}
+                className={`card rounded-xl p-4 ${bar.id === activeBarId ? 'border-copper/30 bg-copper/5' : ''}`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    {editingId === bar.id ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSaveEdit();
+                            if (e.key === 'Escape') {
+                              setEditingId(null);
+                              setEditName('');
+                            }
+                          }}
+                          className="flex-1 px-3 py-1.5 input-field rounded-lg text-cream text-sm"
+                          autoFocus
+                        />
+                        <button
+                          onClick={handleSaveEdit}
+                          className="px-3 py-1.5 text-xs text-copper hover:text-copper-light"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingId(null);
+                            setEditName('');
+                          }}
+                          className="px-3 py-1.5 text-xs text-ink-500 hover:text-ink-300"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-cream font-medium">{bar.name}</span>
+                          {bar.isMain && (
+                            <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/20 text-copper border border-copper/30">
+                              Main
+                            </span>
+                          )}
+                          {bar.id === activeBarId && (
+                            <span className="text-2xs px-2 py-0.5 rounded-full bg-emerald-900/30 text-emerald-300 border border-emerald-900/50">
+                              Active
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-2xs text-ink-500">
+                          {bar.inventory.length} ingredients
+                          {bar.updatedAt && ` • Updated ${new Date(bar.updatedAt).toLocaleDateString()}`}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {editingId !== bar.id && (
+                    <div className="flex items-center gap-2">
+                      {bar.id !== activeBarId && (
+                        <button
+                          onClick={() => onSwitchBar(bar.id)}
+                          className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30 rounded-lg hover:border-copper/50"
+                        >
+                          Switch
+                        </button>
+                      )}
+                      {!bar.isMain && (
+                        <button
+                          onClick={() => onSetMainBar(bar.id)}
+                          className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                          title="Set as main bar"
+                        >
+                          <Icon name="Star" className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => onDuplicateBar(bar.id)}
+                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                        title="Duplicate bar"
+                      >
+                        <Icon name="Copy" className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleStartEdit(bar)}
+                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                        title="Rename"
+                      >
+                        <Icon name="Edit" className="w-3.5 h-3.5" />
+                      </button>
+                      {bars.length > 1 && (
+                        <button
+                          onClick={() => setDeletingId(bar.id)}
+                          className="px-3 py-1.5 text-xs text-red-400 hover:text-red-300 border border-red-900/30 rounded-lg"
+                          title="Delete"
+                        >
+                          <Icon name="Trash2" className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Delete Confirmation */}
+          {deletingId && (
+            <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4">
+              <div className="max-w-xs w-full card rounded-2xl p-5 animate-scale-in text-center">
+                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
+                  <Icon name="Trash2" className="w-5 h-5 text-red-400" />
+                </div>
+                <h3 className="font-display text-lg text-cream mb-2">Delete Bar</h3>
+                <p className="text-sm text-ink-400 font-light mb-5">
+                  Are you sure you want to delete "{bars.find(b => b.id === deletingId)?.name}"? This cannot be undone.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setDeletingId(null)}
+                    className="flex-1 py-3 text-sm text-ink-400 hover:text-ink-200 card rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleDelete(deletingId)}
+                    className="flex-1 py-3 text-sm bg-red-900/30 text-red-400 hover:bg-red-900/40 rounded-lg"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       );
     };
