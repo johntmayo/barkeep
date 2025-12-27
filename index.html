@@ -803,6 +803,73 @@
         return 'Other';
       };
 
+      // Extract 3-5 key modifiers from ingredients (vermouth, amaro, bitters, liqueurs)
+      const extractModifiers = (drink, ingredientsDb) => {
+        if (!drink.ingredients?.length || !ingredientsDb) return [];
+        
+        const modifiers = [];
+        const modifierKeywords = [
+          'vermouth', 'amaro', 'bitters', 'liqueur', 'chartreuse', 'campari', 'aperol',
+          'cynar', 'fernet', 'benedictine', 'maraschino', 'cointreau', 'triple sec',
+          'st germain', 'elderflower', 'domaine', 'allspice', 'peychaud', 'angostura',
+          'orange bitters', 'chocolate bitters', 'aromatic bitters'
+        ];
+        
+        // Get base spirits to exclude
+        const spiritKeywords = ['gin', 'vodka', 'whiskey', 'whisky', 'bourbon', 'rye', 'scotch', 'rum', 'tequila', 'mezcal', 'brandy', 'cognac'];
+        const citrusKeywords = ['lemon juice', 'lime juice', 'orange juice', 'grapefruit juice', 'citrus'];
+        
+        for (const ing of drink.ingredients) {
+          const ingLower = ing.name.toLowerCase();
+          const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+          
+          // Skip base spirits and citrus
+          const isSpirit = spiritKeywords.some(s => ingLower.includes(s));
+          const isCitrus = citrusKeywords.some(c => ingLower.includes(c));
+          if (isSpirit || isCitrus) continue;
+          
+          // Check if it's a modifier
+          const isModifier = modifierKeywords.some(keyword => ingLower.includes(keyword));
+          if (isModifier) {
+            // Get display name from ingredients DB if available, otherwise use original
+            let displayName = ing.name;
+            if (ingredientsDb) {
+              for (const category of ingredientsDb.categories || []) {
+                for (const subcategory of category.subcategories || []) {
+                  for (const item of subcategory.items || []) {
+                    const itemCanonical = normalizeIngredient(item.name, ingredientsDb);
+                    if (itemCanonical === ingCanonical || 
+                        item.aliases?.some(alias => normalizeIngredient(alias, ingredientsDb) === ingCanonical)) {
+                      displayName = item.name;
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+            
+            // Avoid duplicates
+            if (!modifiers.find(m => normalizeIngredient(m, ingredientsDb) === ingCanonical)) {
+              modifiers.push(displayName);
+            }
+          }
+        }
+        
+        // Prioritize: Vermouth > Amaro > Bitters > Other liqueurs
+        const priority = (name) => {
+          const n = name.toLowerCase();
+          if (n.includes('vermouth')) return 1;
+          if (n.includes('amaro') || n.includes('cynar') || n.includes('fernet') || n.includes('campari') || n.includes('aperol')) return 2;
+          if (n.includes('bitters')) return 3;
+          return 4;
+        };
+        
+        modifiers.sort((a, b) => priority(a) - priority(b));
+        
+        // Return 3-5 items max
+        return modifiers.slice(0, 5);
+      };
+
       const canMakeDrink = (drink) => {
         if (!drink.ingredients?.length) return false;
         const barInventory = getActiveBarInventory();
@@ -1589,6 +1656,14 @@
                 onNavigateBack={() => setView('collections')}
                 onNavigateToRecipe={(drink) => setSelectedDrink(drink)}
                 onRemoveRecipe={removeRecipeFromCollection}
+                canMakeDrink={canMakeDrink}
+                getMissingCount={getMissingCount}
+                ratings={ratings}
+                savedDrinks={savedDrinks}
+                favorites={favorites}
+                onToggleSaved={(id) => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', id, 'Saved', 'Removed from saved')}
+                onToggleFavorite={(id) => toggle(favorites, setFavorites, 'favorites', id, 'Added to favorites', 'Removed from favorites')}
+                ingredientsDb={ingredientsDb}
               />
             ) : (
               <>
@@ -1783,25 +1858,23 @@
                   )}
                 </div>
 
-                {/* Recipe Grid */}
+                {/* Recipe List */}
                 {loading ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="card rounded-xl overflow-hidden">
                     {[...Array(6)].map((_, i) => (
-                      <div key={i} className="card rounded-xl overflow-hidden animate-pulse">
-                        <div className="h-40 bg-ink-800" />
-                        <div className="p-4 space-y-2">
-                          <div className="h-5 bg-ink-800 rounded w-3/4" />
-                          <div className="h-3 bg-ink-800 rounded w-1/2" />
-                        </div>
+                      <div key={i} className="py-3 px-4 border-b border-white/[0.03] animate-pulse">
+                        <div className="h-5 bg-ink-800 rounded w-1/3 mb-2" />
+                        <div className="h-3 bg-ink-800 rounded w-1/4 mb-1" />
+                        <div className="h-2.5 bg-ink-800 rounded w-1/2" />
                       </div>
                     ))}
                   </div>
                 ) : displayDrinks.length === 0 ? (
                   <EmptyState view={view} onAction={() => view === 'canMake' ? setView('inventory') : setShowAddDrink(true)} />
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="card rounded-xl overflow-hidden">
                     {displayDrinks.map((drink, i) => (
-                      <RecipeCard
+                      <RecipeRow
                         key={drink.id}
                         drink={drink}
                         rating={ratings[drink.id]}
@@ -1812,7 +1885,7 @@
                         onClick={() => setSelectedDrink(drink)}
                         onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', drink.id, 'Saved', 'Removed from saved')}
                         onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', drink.id, 'Added to favorites', 'Removed from favorites')}
-                        className="stagger-item"
+                        ingredientsDb={ingredientsDb}
                       />
                     ))}
                   </div>
@@ -2085,9 +2158,9 @@
                   <Icon name="ArrowRight" className="w-4 h-4" />
                 </button>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="card rounded-xl overflow-hidden">
                 {canMakeRecipes.map(drink => (
-                  <RecipeCard
+                  <RecipeRow
                     key={drink.id}
                     drink={drink}
                     rating={ratings[drink.id] || 0}
@@ -2098,6 +2171,7 @@
                     onClick={() => onSelectDrink(drink)}
                     onToggleSaved={() => {}}
                     onToggleFavorite={() => {}}
+                    ingredientsDb={ingredientsDb}
                   />
                 ))}
               </div>
@@ -2138,11 +2212,11 @@
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="card rounded-xl overflow-hidden">
                 {almostMakeRecipes.map(drink => {
                   const missing = getMissingCount(drink);
                   return (
-                    <RecipeCard
+                    <RecipeRow
                       key={drink.id}
                       drink={drink}
                       rating={ratings[drink.id] || 0}
@@ -2153,6 +2227,7 @@
                       onClick={() => onSelectDrink(drink)}
                       onToggleSaved={() => {}}
                       onToggleFavorite={() => {}}
+                      ingredientsDb={ingredientsDb}
                     />
                   );
                 })}
@@ -2631,7 +2706,7 @@
       );
     };
 
-    const CollectionDetailView = ({ collection, allDrinks, getCollectionRecipes, onNavigateBack, onNavigateToRecipe, onRemoveRecipe }) => {
+    const CollectionDetailView = ({ collection, allDrinks, getCollectionRecipes, onNavigateBack, onNavigateToRecipe, onRemoveRecipe, canMakeDrink, getMissingCount, ratings, savedDrinks, favorites, onToggleSaved, onToggleFavorite, ingredientsDb }) => {
       if (!collection) {
         return (
           <div className="animate-fade-in">
@@ -2684,35 +2759,32 @@
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="card rounded-xl overflow-hidden">
               {recipes.map(drink => (
-                <div key={drink.id} className="card rounded-xl overflow-hidden group cursor-pointer transition-all hover:border-white/[0.06]">
-                  <div className="relative h-36 sm:h-44 overflow-hidden bg-ink-900" onClick={() => onNavigateToRecipe(drink)}>
-                    {drink.image ? (
-                      <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-ink-850 to-ink-900">
-                        <span className="font-display text-4xl text-ink-700">{drink.name.charAt(0)}</span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent" />
-                    {collection.collectionType !== 'curated' && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onRemoveRecipe(drink.id, collection.id);
-                        }}
-                        className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-ink-950/60 backdrop-blur-sm text-ink-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
-                      >
-                        <Icon name="X" className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                  <div className="p-3 sm:p-4" onClick={() => onNavigateToRecipe(drink)}>
-                    <h3 className="font-display text-base sm:text-lg text-cream font-normal leading-tight group-hover:text-copper-light transition-colors">
-                      {drink.name}
-                    </h3>
-                  </div>
+                <div key={drink.id} className="relative group">
+                  <RecipeRow
+                    drink={drink}
+                    rating={ratings[drink.id]}
+                    isSaved={savedDrinks.has(drink.id)}
+                    isFavorite={favorites.has(drink.id)}
+                    canMake={canMakeDrink(drink)}
+                    missingCount={getMissingCount(drink)}
+                    onClick={() => onNavigateToRecipe(drink)}
+                    onToggleSaved={() => onToggleSaved(drink.id)}
+                    onToggleFavorite={() => onToggleFavorite(drink.id)}
+                    ingredientsDb={ingredientsDb}
+                  />
+                  {collection.collectionType !== 'curated' && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemoveRecipe(drink.id, collection.id);
+                      }}
+                      className="absolute right-16 top-1/2 -translate-y-1/2 p-1.5 rounded text-ink-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Icon name="X" className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -2925,6 +2997,111 @@
         </div>
       </div>
     );
+
+    const RecipeRow = ({ drink, rating, isSaved, isFavorite, canMake, missingCount, onClick, onToggleSaved, onToggleFavorite, showImage = false, ingredientsDb }) => {
+      const spirit = detectSpirit(drink);
+      const method = detectMethod(drink);
+      const modifiers = extractModifiers(drink, ingredientsDb);
+      const category = drink.category || drink.ibaCategory;
+      
+      // Status indicator
+      const getStatusIndicator = () => {
+        if (canMake) {
+          return (
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-ink-600" />
+            </div>
+          );
+        } else if (missingCount > 0 && missingCount <= 2) {
+          return (
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full bg-ink-600" />
+              <span className="text-ink-500 text-2xs">{missingCount}</span>
+            </div>
+          );
+        }
+        return null;
+      };
+      
+      // Build secondary line: spirit · method · glass
+      const secondaryParts = [];
+      if (spirit && spirit !== 'Other') secondaryParts.push(spirit);
+      if (method) secondaryParts.push(method);
+      if (drink.glass) secondaryParts.push(drink.glass);
+      const secondaryLine = secondaryParts.join(' · ');
+      
+      return (
+        <div 
+          className="w-full py-3 px-4 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors cursor-pointer group last:border-0"
+          onClick={onClick}
+        >
+          <div className="flex items-start gap-3">
+            {/* Optional thumbnail */}
+            {showImage && drink.image && (
+              <img 
+                src={drink.image} 
+                alt={drink.name}
+                className="w-12 h-12 rounded object-cover flex-shrink-0"
+                loading="lazy"
+              />
+            )}
+            
+            <div className="flex-1 min-w-0">
+              {/* Primary line: Recipe name */}
+              <div className="flex items-start justify-between gap-3 mb-1">
+                <h3 className="font-display text-base text-cream font-medium group-hover:text-copper-light transition-colors line-clamp-1">
+                  {drink.name}
+                </h3>
+                {getStatusIndicator()}
+              </div>
+              
+              {/* Category (if available) */}
+              {category && (
+                <div className="mb-1">
+                  <span className="text-ink-500 text-xs font-medium">{category}</span>
+                </div>
+              )}
+              
+              {/* Secondary line: spirit · method · glass */}
+              {secondaryLine && (
+                <p className="text-ink-500 text-xs font-light mb-0.5 line-clamp-1">
+                  {secondaryLine}
+                </p>
+              )}
+              
+              {/* Tertiary line: modifiers */}
+              {modifiers.length > 0 && (
+                <p className="text-ink-600 text-2xs font-light line-clamp-1">
+                  {modifiers.slice(0, 5).join(' · ')}
+                  {modifiers.length > 5 && ' · ...'}
+                </p>
+              )}
+            </div>
+            
+            {/* Right side: rating and quick actions */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {rating > 0 && (
+                <StarRating rating={rating} readonly size="text-2xs" />
+              )}
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
+                  className={`p-1.5 rounded transition-colors ${isFavorite ? 'text-copper' : 'text-ink-500 hover:text-copper'}`}
+                >
+                  <Icon name="Heart" className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); onToggleSaved(); }}
+                  className={`p-1.5 rounded transition-colors ${isSaved ? 'text-copper' : 'text-ink-500 hover:text-copper'}`}
+                >
+                  <Icon name="Bookmark" className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
 
     const RecipeDetail = ({ drink, onClose, rating, isSaved, isFavorite, isWantToTry, canMake, inventory, ingredientsDb, collections, onToggleSaved, onToggleFavorite, onToggleWantToTry, onRate, onDelete, onShare, onAddToCollection }) => {
       const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
