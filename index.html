@@ -1633,7 +1633,11 @@
                 onRemove={removeFromInventory}
                 onSwitchBar={(barId) => saveActiveBarId(barId)}
                 onManageBars={() => setView('manageBars')}
-                ingredientsDb={ingredientsDb} 
+                ingredientsDb={ingredientsDb}
+                getAllDrinks={getAllDrinks}
+                canMakeDrink={canMakeDrink}
+                getActiveBarInventory={getActiveBarInventory}
+                normalizeIngredient={normalizeIngredient}
               />
             ) : view === 'manageBars' ? (
               <ManageBarsView
@@ -3796,7 +3800,7 @@
       );
     };
 
-    const InventoryView = ({ inventory, activeBar, bars, onAdd, onRemove, onSwitchBar, onManageBars, ingredientsDb }) => {
+    const InventoryView = ({ inventory, activeBar, bars, onAdd, onRemove, onSwitchBar, onManageBars, ingredientsDb, getAllDrinks, canMakeDrink, getActiveBarInventory, normalizeIngredient }) => {
       const [newItem, setNewItem] = useState('');
       const [isAdding, setIsAdding] = useState(false);
       const [showSuggestions, setShowSuggestions] = useState(false);
@@ -4042,6 +4046,68 @@
         return result;
       }, [inventory, ingredientsDb]);
 
+      // Calculate gateway bottles: ingredients that would unlock recipes
+      const gatewayBottles = useMemo(() => {
+        if (!getAllDrinks || !canMakeDrink || !ingredientsDb || !inventory) return [];
+        
+        const allDrinks = getAllDrinks();
+        const currentInventory = getActiveBarInventory();
+        const invCanonical = new Set(currentInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
+        
+        // Collect all ingredients from recipes that aren't in inventory
+        const ingredientImpact = {};
+        
+        allDrinks.forEach(drink => {
+          // Check if this drink can't be made currently
+          const currentlyCanMake = drink.ingredients?.every(ing => {
+            const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+            return invCanonical.has(ingCanonical);
+          }) || false;
+          
+          if (!currentlyCanMake && drink.ingredients) {
+            // Find missing ingredients
+            drink.ingredients.forEach(ing => {
+              const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+              if (!invCanonical.has(ingCanonical)) {
+                // Check if adding this ingredient would make this drink makeable
+                const wouldMake = drink.ingredients.every(ing2 => {
+                  const ing2Canonical = normalizeIngredient(ing2.name, ingredientsDb);
+                  return invCanonical.has(ing2Canonical) || ing2Canonical === ingCanonical;
+                });
+                
+                if (wouldMake) {
+                  const key = ingCanonical;
+                  if (!ingredientImpact[key]) {
+                    ingredientImpact[key] = {
+                      name: ing.name,
+                      canonical: ingCanonical,
+                      recipes: []
+                    };
+                  }
+                  // Avoid duplicate recipes
+                  if (!ingredientImpact[key].recipes.find(r => r.id === drink.id)) {
+                    ingredientImpact[key].recipes.push({
+                      id: drink.id,
+                      name: drink.name
+                    });
+                  }
+                }
+              }
+            });
+          }
+        });
+        
+        // Convert to array and sort by recipe count
+        return Object.values(ingredientImpact)
+          .map(item => ({
+            name: item.name,
+            count: item.recipes.length,
+            recipes: item.recipes
+          }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 20); // Top 20 gateway bottles
+      }, [getAllDrinks, canMakeDrink, ingredientsDb, inventory, getActiveBarInventory, normalizeIngredient]);
+
       return (
         <div className="max-w-2xl mx-auto animate-fade-in">
           {/* Bar Selector */}
@@ -4252,6 +4318,48 @@
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* Gateway Bottles Section */}
+          {gatewayBottles.length > 0 && (
+            <div className="mt-8">
+              <div className="mb-4">
+                <h2 className="font-display text-xl text-cream font-light mb-1">Gateway Bottles</h2>
+                <p className="text-ink-500 text-sm">Adding one of these would unlock new recipes</p>
+              </div>
+              <div className="card rounded-xl overflow-hidden">
+                {gatewayBottles.map((item) => (
+                  <div
+                    key={item.name}
+                    className="py-3 px-4 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors last:border-0 group"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-display text-base text-cream font-medium group-hover:text-copper-light transition-colors">
+                            {item.name}
+                          </h3>
+                          <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/20 text-copper border border-copper/30 font-medium">
+                            {item.count} {item.count === 1 ? 'recipe' : 'recipes'}
+                          </span>
+                        </div>
+                        <p className="text-ink-600 text-2xs font-light line-clamp-1">
+                          {item.recipes.slice(0, 5).map(r => r.name).join(' · ')}
+                          {item.recipes.length > 5 && ' · ...'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => onAdd(item.name)}
+                        className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30 hover:border-copper/50 rounded-lg transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
+                        title="Add to bar"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
