@@ -1689,59 +1689,60 @@
               />
             ) : (
               <>
-                {/* Search & Filters */}
-                <div className="flex flex-col gap-3 mb-5">
-                  <div className="flex gap-2">
-                    <div className="flex-1 relative">
-                      <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
-                      <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search recipes or ingredients..."
-                        className="w-full pl-10 pr-10 py-3 input-field rounded-lg text-sm text-ink-200 font-light"
-                      />
-                      {searchTerm && (
-                        <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-600 hover:text-ink-400">
-                          <Icon name="X" className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                    <button
-                      onClick={pickRandom}
-                      className="px-3 py-3 input-field rounded-lg text-ink-500 hover:text-copper hover:border-copper/30 transition-colors"
-                      title="Random cocktail"
-                    >
-                      <Icon name="Shuffle" className="w-4 h-4" />
-                    </button>
-                  </div>
-                  
-                  {/* Filter Toggle Button */}
-                  <div className="flex items-center justify-between">
-                    <button
-                      onClick={() => setFiltersExpanded(!filtersExpanded)}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-ink-400 hover:text-cream transition-colors"
-                    >
-                      <Icon name={filtersExpanded ? "ChevronUp" : "ChevronDown"} className="w-4 h-4" />
-                      <span>Filters {hasActiveFilters && `(${filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length})`}</span>
-                    </button>
-                    {/* Sort (always visible) */}
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xs text-ink-600 uppercase tracking-wider">Sort:</span>
-                      <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="px-3 py-1.5 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer"
+                {/* Search & Filters - Sticky Container */}
+                <div className="sticky top-0 z-30 bg-ink-950/95 backdrop-blur-sm pb-3 -mx-4 px-4 pt-2 mb-5">
+                  <div className="flex flex-col gap-3">
+                    <div className="flex gap-2">
+                      <div className="flex-1 relative">
+                        <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
+                        <input
+                          type="text"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          placeholder="Search recipes or ingredients..."
+                          className="w-full pl-10 pr-10 py-3 input-field rounded-lg text-sm text-ink-200 font-light"
+                        />
+                        {searchTerm && (
+                          <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-600 hover:text-ink-400">
+                            <Icon name="X" className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                      <button
+                        onClick={pickRandom}
+                        className="px-3 py-3 input-field rounded-lg text-ink-500 hover:text-copper hover:border-copper/30 transition-colors"
+                        title="Random cocktail"
                       >
-                        {SORT_OPTIONS.map(opt => (
-                          <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
-                        ))}
-                      </select>
+                        <Icon name="Shuffle" className="w-4 h-4" />
+                      </button>
                     </div>
-                  </div>
-                  
-                  {/* Expandable Filter Drawer */}
-                  {filtersExpanded && (
+                    
+                    {/* Filter Toggle Button */}
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={() => setFiltersExpanded(!filtersExpanded)}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-ink-400 hover:text-cream transition-colors"
+                      >
+                        <Icon name={filtersExpanded ? "ChevronUp" : "ChevronDown"} className="w-4 h-4" />
+                        <span>Filters {hasActiveFilters && `(${filters.spirits.length + filters.methods.length + filters.glasses.length + filters.tags.length + filters.categories.length})`}</span>
+                      </button>
+                      {/* Sort (always visible) */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xs text-ink-600 uppercase tracking-wider">Sort:</span>
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value)}
+                          className="px-3 py-1.5 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer"
+                        >
+                          {SORT_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    
+                    {/* Expandable Filter Drawer */}
+                    {filtersExpanded && (
                     <div className="space-y-3 pt-3 border-t border-white/[0.03]">
                       {/* Categories */}
                       {availableCategories.length > 0 && (
@@ -1859,6 +1860,7 @@
                       )}
                     </div>
                   )}
+                  </div>
                 </div>
 
                 {/* Results info */}
@@ -1938,11 +1940,13 @@
                         rating={ratings[drink.id]}
                         isSaved={savedDrinks.has(drink.id)}
                         isFavorite={favorites.has(drink.id)}
+                        isWantToTry={wantToTry.has(drink.id)}
                         canMake={canMakeDrink(drink)}
                         missingCount={getMissingCount(drink)}
                         onClick={() => setSelectedDrink(drink)}
                         onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', drink.id, 'Saved', 'Removed from saved')}
                         onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', drink.id, 'Added to favorites', 'Removed from favorites')}
+                        onToggleWantToTry={() => toggle(wantToTry, setWantToTry, 'want-to-try', drink.id, 'Added to want to try', 'Removed from want to try')}
                         ingredientsDb={ingredientsDb}
                       />
                     ))}
@@ -3056,24 +3060,24 @@
       </div>
     );
 
-    const RecipeRow = ({ drink, rating, isSaved, isFavorite, canMake, missingCount, onClick, onToggleSaved, onToggleFavorite, showImage = false, ingredientsDb }) => {
+    const RecipeRow = ({ drink, rating, isSaved, isFavorite, isWantToTry, canMake, missingCount, onClick, onToggleSaved, onToggleFavorite, onToggleWantToTry, showImage = false, ingredientsDb }) => {
       const spirit = detectSpirit(drink);
       const method = detectMethod(drink);
       const modifiers = extractModifiers(drink, ingredientsDb);
       const category = drink.category || drink.ibaCategory;
       
-      // Status indicator
+      // Status indicator - smaller and more subtle
       const getStatusIndicator = () => {
         if (canMake) {
           return (
-            <div className="flex items-center justify-center w-5 h-5">
-              <Icon name="Check" className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center justify-center w-3 h-3">
+              <Icon name="Check" className="w-2.5 h-2.5 text-ink-500" />
             </div>
           );
         } else if (missingCount > 0) {
           return (
-            <div className="flex items-center justify-center w-5 h-5 border border-ink-600 rounded-full">
-              <span className="text-ink-500 text-xs font-medium">{missingCount}</span>
+            <div className="flex items-center justify-center w-3.5 h-3.5 border border-ink-700 rounded-full">
+              <span className="text-ink-600 text-[10px] font-medium leading-none">{missingCount}</span>
             </div>
           );
         }
@@ -3126,11 +3130,25 @@
                 </p>
               )}
               
-              {/* Tertiary line: modifiers */}
-              {modifiers.length > 0 && (
+              {/* Tertiary line: modifiers + additional info */}
+              {(modifiers.length > 0 || drink.source === 'custom' || drink.ingredients) && (
                 <p className="text-ink-600 text-2xs font-light line-clamp-1">
-                  {modifiers.slice(0, 5).join(' · ')}
-                  {modifiers.length > 5 && ' · ...'}
+                  {modifiers.length > 0 && (
+                    <>
+                      {modifiers.slice(0, 5).join(' · ')}
+                      {modifiers.length > 5 && ' · ...'}
+                    </>
+                  )}
+                  {drink.source === 'custom' && (
+                    <span className={modifiers.length > 0 ? ' · ' : ''}>
+                      <span className="text-ink-700">Custom</span>
+                    </span>
+                  )}
+                  {drink.ingredients && (
+                    <span className={modifiers.length > 0 || drink.source === 'custom' ? ' · ' : ''}>
+                      {drink.ingredients.length} {drink.ingredients.length === 1 ? 'ingredient' : 'ingredients'}
+                    </span>
+                  )}
                 </p>
               )}
             </div>
@@ -3153,6 +3171,14 @@
                 >
                   <Icon name="Bookmark" className="w-3.5 h-3.5" />
                 </button>
+                {onToggleWantToTry && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onToggleWantToTry(); }}
+                    className={`p-1.5 rounded transition-colors ${isWantToTry ? 'text-copper' : 'text-ink-500 hover:text-copper'}`}
+                  >
+                    <Icon name="Star" className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
             </div>
           </div>
