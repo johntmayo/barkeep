@@ -549,10 +549,7 @@
       // Multiple bars support
       const [bars, setBars] = useState([]);
       const [activeBarId, setActiveBarId] = useState(null);
-      const [savedDrinks, setSavedDrinks] = useState(new Set());
-      const [favorites, setFavorites] = useState(new Set());
-      const [wantToTry, setWantToTry] = useState(new Set());
-      const [ratings, setRatings] = useState({});
+      const [keepers, setKeepers] = useState(new Set()); // Binary flag: recipes that "stood out"
       const [searchTerm, setSearchTerm] = useState('');
       const [loading, setLoading] = useState(true);
       const [selectedDrink, setSelectedDrink] = useState(null);
@@ -670,22 +667,94 @@
         }
       };
 
+      // Migration: Convert old favorites/saved/ratings to new system
+      const migrateRatingSystem = () => {
+        const migrated = storage.get('rating-system-migrated');
+        if (migrated?.value === 'true') return; // Already migrated
+        
+        const saved = storage.get('saved-drinks');
+        const fav = storage.get('favorites');
+        const tryList = storage.get('want-to-try');
+        const coll = storage.get('collections');
+        
+        const migratedKeepers = new Set();
+        let migratedCollections = [];
+        const toTryRecipeIds = new Set();
+        
+        // Migrate favorites → keepers
+        if (fav?.value) {
+          const favorites = JSON.parse(fav.value);
+          favorites.forEach(id => migratedKeepers.add(id));
+        }
+        
+        // Migrate saved/bookmarked → to_try collection
+        if (saved?.value) {
+          const savedIds = JSON.parse(saved.value);
+          savedIds.forEach(id => toTryRecipeIds.add(id));
+        }
+        
+        // Migrate wantToTry → to_try collection (merge)
+        if (tryList?.value) {
+          const wantToTryIds = JSON.parse(tryList.value);
+          wantToTryIds.forEach(id => toTryRecipeIds.add(id));
+        }
+        
+        // Load existing collections
+        if (coll?.value) {
+          migratedCollections = JSON.parse(coll.value).filter(c => !c.collectionType || c.collectionType === 'personal');
+        }
+        
+        // Ensure to_try system collection exists
+        const toTryCollection = migratedCollections.find(c => c.id === 'to_try');
+        if (toTryCollection) {
+          // Merge migrated IDs into existing to_try collection
+          const existingIds = new Set(toTryCollection.recipeIds || []);
+          toTryRecipeIds.forEach(id => existingIds.add(id));
+          const updated = migratedCollections.map(c => 
+            c.id === 'to_try' 
+              ? { ...c, recipeIds: Array.from(existingIds) }
+              : c
+          );
+          migratedCollections = updated;
+        } else {
+          // Create to_try system collection
+          migratedCollections.push({
+            id: 'to_try',
+            name: 'To Try',
+            description: 'Recipes you want to try',
+            collectionType: 'personal',
+            recipeIds: Array.from(toTryRecipeIds)
+          });
+        }
+        
+        // Save migrated data
+        if (migratedKeepers.size > 0) {
+          saveData('keepers', Array.from(migratedKeepers));
+        }
+        if (migratedCollections.length > 0) {
+          saveData('collections', migratedCollections);
+        }
+        
+        // Mark as migrated and clean up old data
+        storage.set('rating-system-migrated', 'true');
+        storage.set('saved-drinks', ''); // Clear old data
+        storage.set('favorites', '');
+        storage.set('want-to-try', '');
+        storage.set('ratings', '');
+      };
+
       const loadUserData = () => {
         try {
           migrateToBars();
+          migrateRatingSystem();
           
           const custom = storage.get('custom-drinks');
-          const saved = storage.get('saved-drinks');
-          const fav = storage.get('favorites');
-          const tryList = storage.get('want-to-try');
-          const rate = storage.get('ratings');
+          const keep = storage.get('keepers');
           const coll = storage.get('collections');
           const made = storage.get('made-counts');
+          
           if (custom?.value) setCustomDrinks(JSON.parse(custom.value));
-          if (saved?.value) setSavedDrinks(new Set(JSON.parse(saved.value)));
-          if (fav?.value) setFavorites(new Set(JSON.parse(fav.value)));
-          if (tryList?.value) setWantToTry(new Set(JSON.parse(tryList.value)));
-          if (rate?.value) setRatings(JSON.parse(rate.value));
+          if (keep?.value) setKeepers(new Set(JSON.parse(keep.value)));
           if (coll?.value) {
             // Only load personal collections (curated are system-defined)
             const loaded = JSON.parse(coll.value);
@@ -699,7 +768,7 @@
       
       // Save filters and sort per view
       useEffect(() => {
-        if (view && (view === 'browse' || view === 'saved' || view === 'favorites' || view === 'canMake' || view === 'almostMake' || view === 'custom')) {
+        if (view && (view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom')) {
           storage.set(`filters-${view}`, JSON.stringify(filters));
           storage.set(`sort-${view}`, sortBy);
         }
@@ -784,10 +853,7 @@
               customDrinks,
               bars,
               activeBarId,
-              savedDrinks: Array.from(savedDrinks),
-              favorites: Array.from(favorites),
-              wantToTry: Array.from(wantToTry),
-              ratings,
+            keepers: Array.from(keepers),
               collections,
               madeCounts
             }
@@ -826,16 +892,13 @@
       const exportEverything = () => {
         const data = {
           schema: 'barkeep-v1',
-          version: '1.0.0',
+          version: '1.1.0',
           exportDate: new Date().toISOString(),
           data: {
             customDrinks,
             bars,
             activeBarId,
-            savedDrinks: Array.from(savedDrinks),
-            favorites: Array.from(favorites),
-            wantToTry: Array.from(wantToTry),
-            ratings,
+            keepers: Array.from(keepers),
             collections,
             madeCounts
           }
@@ -886,25 +949,52 @@
                   updateActiveBarInventory(merged);
                 }
               }
-              if (data.savedDrinks) {
-                const merged = new Set([...savedDrinks, ...data.savedDrinks]);
-                setSavedDrinks(merged);
-                saveData('saved-drinks', Array.from(merged));
+              // Handle keepers (new format) or migrate from old format
+              if (data.keepers) {
+                const merged = new Set([...keepers, ...data.keepers]);
+                setKeepers(merged);
+                saveData('keepers', Array.from(merged));
+              } else {
+                // Migrate old favorites to keepers
+                if (data.favorites) {
+                  const merged = new Set([...keepers, ...data.favorites]);
+                  setKeepers(merged);
+                  saveData('keepers', Array.from(merged));
+                }
               }
-              if (data.favorites) {
-                const merged = new Set([...favorites, ...data.favorites]);
-                setFavorites(merged);
-                saveData('favorites', Array.from(merged));
-              }
-              if (data.wantToTry) {
-                const merged = new Set([...wantToTry, ...data.wantToTry]);
-                setWantToTry(merged);
-                saveData('want-to-try', Array.from(merged));
-              }
-              if (data.ratings) {
-                const merged = { ...ratings, ...data.ratings };
-                setRatings(merged);
-                saveData('ratings', merged);
+              
+              // Handle to_try collection migration from old saved/wantToTry
+              if (data.collections) {
+                const merged = [...collections, ...data.collections.filter(c => !collections.some(existing => existing.id === c.id))];
+                
+                // Migrate old saved/wantToTry to to_try collection
+                const toTryIds = new Set();
+                if (data.savedDrinks) toTryIds.add(...data.savedDrinks);
+                if (data.wantToTry) toTryIds.add(...data.wantToTry);
+                
+                if (toTryIds.size > 0) {
+                  let toTryColl = merged.find(c => c.id === 'to_try');
+                  if (!toTryColl) {
+                    toTryColl = {
+                      id: 'to_try',
+                      name: 'To Try',
+                      description: 'Recipes you want to try',
+                      collectionType: 'personal',
+                      recipeIds: []
+                    };
+                    merged.push(toTryColl);
+                  }
+                  const existingIds = new Set(toTryColl.recipeIds || []);
+                  toTryIds.forEach(id => existingIds.add(id));
+                  const updated = merged.map(c => 
+                    c.id === 'to_try' ? { ...c, recipeIds: Array.from(existingIds) } : c
+                  );
+                  setCollections(updated);
+                  saveData('collections', updated);
+                } else {
+                  setCollections(merged);
+                  saveData('collections', merged);
+                }
               }
               if (data.collections) {
                 const merged = [...collections, ...data.collections.filter(c => !collections.some(existing => existing.id === c.id))];
@@ -941,11 +1031,48 @@
                 saveBars([homeBar]);
                 saveActiveBarId(homeBar.id);
               }
-              if (data.savedDrinks) { setSavedDrinks(new Set(data.savedDrinks)); saveData('saved-drinks', data.savedDrinks); }
-              if (data.favorites) { setFavorites(new Set(data.favorites)); saveData('favorites', data.favorites); }
-              if (data.wantToTry) { setWantToTry(new Set(data.wantToTry)); saveData('want-to-try', data.wantToTry); }
-              if (data.ratings) { setRatings(data.ratings); saveData('ratings', data.ratings); }
-              if (data.collections) { setCollections(data.collections); saveData('collections', data.collections); }
+              // Handle keepers (new format) or migrate from old format
+              if (data.keepers) {
+                setKeepers(new Set(data.keepers));
+                saveData('keepers', data.keepers);
+              } else if (data.favorites) {
+                // Migrate old favorites to keepers
+                setKeepers(new Set(data.favorites));
+                saveData('keepers', data.favorites);
+              }
+              
+              // Handle collections and migrate old saved/wantToTry to to_try
+              if (data.collections) {
+                let updatedCollections = data.collections;
+                
+                // Migrate old saved/wantToTry to to_try collection
+                const toTryIds = new Set();
+                if (data.savedDrinks) data.savedDrinks.forEach(id => toTryIds.add(id));
+                if (data.wantToTry) data.wantToTry.forEach(id => toTryIds.add(id));
+                
+                if (toTryIds.size > 0) {
+                  let toTryColl = updatedCollections.find(c => c.id === 'to_try');
+                  if (!toTryColl) {
+                    toTryColl = {
+                      id: 'to_try',
+                      name: 'To Try',
+                      description: 'Recipes you want to try',
+                      collectionType: 'personal',
+                      recipeIds: Array.from(toTryIds)
+                    };
+                    updatedCollections.push(toTryColl);
+                  } else {
+                    const existingIds = new Set(toTryColl.recipeIds || []);
+                    toTryIds.forEach(id => existingIds.add(id));
+                    updatedCollections = updatedCollections.map(c => 
+                      c.id === 'to_try' ? { ...c, recipeIds: Array.from(existingIds) } : c
+                    );
+                  }
+                }
+                
+                setCollections(updatedCollections);
+                saveData('collections', updatedCollections);
+              }
               if (data.madeCounts) { setMadeCounts(data.madeCounts); saveData('made-counts', data.madeCounts); }
               toast('Data replaced successfully', 'success');
             }
@@ -1016,19 +1143,71 @@
       const getMakeableDrinks = () => getAllDrinks().filter(canMakeDrink);
 
       // Actions with toast feedback
-      const toggle = (set, setFn, key, id, addMsg, removeMsg) => {
-        const newSet = new Set(set);
+      const toggleKeeper = (id) => {
+        const newSet = new Set(keepers);
         const wasAdded = !newSet.has(id);
         wasAdded ? newSet.add(id) : newSet.delete(id);
-        setFn(newSet);
-        saveData(key, Array.from(newSet));
-        if (addMsg && removeMsg) toast(wasAdded ? addMsg : removeMsg, 'success');
+        setKeepers(newSet);
+        saveData('keepers', Array.from(newSet));
+        toast(wasAdded ? 'Added to Keepers' : 'Removed from Keepers', 'success');
       };
 
-      const rateDrink = (id, r) => {
-        const newRatings = { ...ratings, [id]: r };
-        setRatings(newRatings);
-        saveData('ratings', newRatings);
+      // Get or create to_try collection
+      const getToTryCollection = () => {
+        let toTry = collections.find(c => c.id === 'to_try');
+        if (!toTry) {
+          toTry = {
+            id: 'to_try',
+            name: 'To Try',
+            description: 'Recipes you want to try',
+            collectionType: 'personal',
+            recipeIds: []
+          };
+          const updated = [...collections, toTry];
+          setCollections(updated);
+          saveData('collections', updated);
+        }
+        return toTry;
+      };
+
+      // Toggle recipe in to_try collection
+      const toggleToTry = (recipeId) => {
+        const toTry = getToTryCollection();
+        const recipeIds = new Set(toTry.recipeIds || []);
+        const wasAdded = !recipeIds.has(recipeId);
+        
+        if (wasAdded) {
+          recipeIds.add(recipeId);
+        } else {
+          recipeIds.delete(recipeId);
+        }
+        
+        const updatedCollections = collections.map(c => 
+          c.id === 'to_try'
+            ? { ...c, recipeIds: Array.from(recipeIds) }
+            : c
+        );
+        
+        // If to_try didn't exist, add it
+        if (!collections.find(c => c.id === 'to_try')) {
+          updatedCollections.push({
+            id: 'to_try',
+            name: 'To Try',
+            description: 'Recipes you want to try',
+            collectionType: 'personal',
+            recipeIds: Array.from(recipeIds)
+          });
+        }
+        
+        setCollections(updatedCollections);
+        saveData('collections', updatedCollections);
+        toast(wasAdded ? 'Added to To Try' : 'Removed from To Try', 'success');
+      };
+
+      // Check if recipe is in to_try collection
+      const isInToTry = (recipeId) => {
+        const toTry = collections.find(c => c.id === 'to_try');
+        return toTry?.recipeIds?.includes(recipeId) || false;
       };
 
       const addCustomDrink = (drink) => {
@@ -1299,11 +1478,23 @@
         return true;
       };
 
-      // Get all collections (curated + personal)
+      // Get all collections (curated + personal, including system collections)
       const getAllCollections = useMemo(() => {
         const personal = collections.filter(c => !c.collectionType || c.collectionType === 'personal');
         return [...CURATED_COLLECTIONS, ...personal];
       }, [collections]);
+
+      // Get system collections (to_try is a personal collection, keepers is a view)
+      const getSystemCollections = () => {
+        const toTry = collections.find(c => c.id === 'to_try') || {
+          id: 'to_try',
+          name: 'To Try',
+          description: 'Recipes you want to try',
+          collectionType: 'personal',
+          recipeIds: []
+        };
+        return [toTry];
+      };
 
       // Get recipes for a collection (rule-based for curated, recipeIds for personal)
       const getCollectionRecipes = useMemo(() => {
@@ -1489,9 +1680,12 @@
       const displayDrinks = useMemo(() => {
         let drinks = getAllDrinks();
         
-        if (view === 'saved') drinks = drinks.filter(d => savedDrinks.has(d.id));
-        else if (view === 'favorites') drinks = drinks.filter(d => favorites.has(d.id));
-        else if (view === 'wantToTry') drinks = drinks.filter(d => wantToTry.has(d.id));
+        // Get to_try collection IDs
+        const toTryCollection = collections.find(c => c.id === 'to_try');
+        const toTryIds = new Set(toTryCollection?.recipeIds || []);
+        
+        if (view === 'keepers') drinks = drinks.filter(d => keepers.has(d.id));
+        else if (view === 'toTry') drinks = drinks.filter(d => toTryIds.has(d.id));
         else if (view === 'canMake') drinks = drinks.filter(d => canMakeDrink(d));
         else if (view === 'almostMake') drinks = drinks.filter(d => {
           const missing = getMissingCount(d);
@@ -1536,10 +1730,15 @@
             return missing > 0 && missing <= 2 && !canMakeDrink(d);
           });
         }
+        if (filters.tags.includes('keepers')) {
+          drinks = drinks.filter(d => keepers.has(d.id));
+        }
+        if (filters.tags.includes('toTry')) {
+          drinks = drinks.filter(d => toTryIds.has(d.id));
+        }
         
         // Sort
         drinks = [...drinks].sort((a, b) => {
-          if (sortBy === 'rating') return (ratings[b.id] || 0) - (ratings[a.id] || 0);
           if (sortBy === 'newest') {
             const aDate = a.dateAdded ? new Date(a.dateAdded) : new Date(0);
             const bDate = b.dateAdded ? new Date(b.dateAdded) : new Date(0);
@@ -1553,7 +1752,7 @@
         });
         
         return drinks;
-      }, [view, curatedDrinks, customDrinks, savedDrinks, favorites, wantToTry, bars, activeBarId, ingredientsDb, searchTerm, filters, sortBy, ratings, madeCounts, canMakeDrink, getMissingCount]);
+      }, [view, curatedDrinks, customDrinks, keepers, collections, bars, activeBarId, ingredientsDb, searchTerm, filters, sortBy, madeCounts, canMakeDrink, getMissingCount]);
       
       const toggleFilter = (category, value) => {
         setFilters(prev => {
@@ -1617,7 +1816,7 @@
               <div className="flex items-center justify-between h-16">
                 <h1 className="font-display text-2xl font-light tracking-wide text-cream">Barkeep</h1>
                 <div className="flex items-center gap-1">
-                  {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'canMake' || view === 'almostMake' || view === 'wantToTry' || view === 'custom') && (
+                  {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom') && (
                     <button onClick={() => setShowAddDrink(true)} className="p-2.5 text-ink-500 hover:text-copper btn-ghost rounded-lg" title="New Recipe">
                       <Icon name="Plus" className="w-4 h-4" />
                     </button>
@@ -1683,11 +1882,11 @@
           <main ref={mainRef} className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-4 sm:py-6">
             {view === 'recipesHub' ? (
               <RecipesHub
-                savedCount={savedDrinks.size}
-                favoritesCount={favorites.size}
+                savedCount={keepers.size}
+                favoritesCount={keepers.size}
                 canMakeCount={getMakeableDrinks().length}
                 almostMakeCount={getAlmostMakeCount()}
-                wantToTryCount={wantToTry.size}
+                wantToTryCount={(collections.find(c => c.id === 'to_try')?.recipeIds || []).length}
                 customCount={customDrinks.length}
                 allCount={getAllDrinks().length}
                 collectionsCount={getAllCollections.length}
@@ -1703,12 +1902,14 @@
                 getAllCollections={getAllCollections}
                 getCollectionRecipes={getCollectionRecipes}
                 onSelectDrink={setSelectedDrink}
-                ratings={ratings}
-                savedDrinks={savedDrinks}
-                favorites={favorites}
+                keepers={keepers}
+                collections={collections}
                 getMissingCount={getMissingCount}
                 canMakeDrink={canMakeDrink}
                 ingredientsDb={ingredientsDb}
+                toggleKeeper={toggleKeeper}
+                toggleToTry={toggleToTry}
+                isInToTry={isInToTry}
                 onCreateShoppingList={(drinks) => {
                   const ingredientCounts = {};
                   drinks.forEach(drink => {
@@ -1792,8 +1993,15 @@
                 onUpdateCollection={updateCollection}
                 onDeleteCollection={deleteCollection}
                 onRemoveRecipe={removeRecipeFromCollection}
-                onNavigate={(collectionId) => setView(`collection-${collectionId}`)}
+                onNavigate={(collectionId) => {
+                  if (collectionId === 'keepers') {
+                    setView('keepers');
+                  } else {
+                    setView(`collection-${collectionId}`);
+                  }
+                }}
                 onNavigateToRecipe={(drink) => setSelectedDrink(drink)}
+                keepers={keepers}
               />
             ) : view?.startsWith('collection-') ? (
               <CollectionDetailView
@@ -1805,11 +2013,10 @@
                 onRemoveRecipe={removeRecipeFromCollection}
                 canMakeDrink={canMakeDrink}
                 getMissingCount={getMissingCount}
-                ratings={ratings}
-                savedDrinks={savedDrinks}
-                favorites={favorites}
-                onToggleSaved={(id) => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', id, 'Saved', 'Removed from saved')}
-                onToggleFavorite={(id) => toggle(favorites, setFavorites, 'favorites', id, 'Added to favorites', 'Removed from favorites')}
+                keepers={keepers}
+                isInToTry={isInToTry}
+                toggleKeeper={toggleKeeper}
+                toggleToTry={toggleToTry}
                 ingredientsDb={ingredientsDb}
               />
             ) : (
@@ -1959,7 +2166,7 @@
                       )}
                       
                       {/* Tags */}
-                      {(view === 'browse' || view === 'saved' || view === 'favorites' || view === 'custom') && (
+                      {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'custom') && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
                           <span className="text-2xs text-ink-600 uppercase tracking-wider mr-2 mb-1">Tags</span>
                           <div className="flex flex-wrap gap-1.5">
@@ -1983,6 +2190,30 @@
                             >
                               Almost Make
                             </button>
+                            {view === 'browse' && (
+                              <>
+                                <button
+                                  onClick={() => toggleFilter('tags', 'keepers')}
+                                  className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                    filters.tags.includes('keepers')
+                                      ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                      : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                  }`}
+                                >
+                                  Keepers
+                                </button>
+                                <button
+                                  onClick={() => toggleFilter('tags', 'toTry')}
+                                  className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                    filters.tags.includes('toTry')
+                                      ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
+                                      : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                  }`}
+                                >
+                                  To Try
+                                </button>
+                              </>
+                            )}
                           </div>
                         </div>
                       )}
@@ -2078,15 +2309,13 @@
                         key={drink.id}
                         drink={drink}
                         rating={ratings[drink.id]}
-                        isSaved={savedDrinks.has(drink.id)}
-                        isFavorite={favorites.has(drink.id)}
-                        isWantToTry={wantToTry.has(drink.id)}
+                        isKeeper={keepers.has(drink.id)}
+                        isToTry={isInToTry(drink.id)}
                         canMake={canMakeDrink(drink)}
                         missingCount={getMissingCount(drink)}
                         onClick={() => setSelectedDrink(drink)}
-                        onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', drink.id, 'Saved', 'Removed from saved')}
-                        onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', drink.id, 'Added to favorites', 'Removed from favorites')}
-                        onToggleWantToTry={() => toggle(wantToTry, setWantToTry, 'want-to-try', drink.id, 'Added to want to try', 'Removed from want to try')}
+                        onToggleKeeper={() => toggleKeeper(drink.id)}
+                        onToggleToTry={() => toggleToTry(drink.id)}
                         ingredientsDb={ingredientsDb}
                       />
                     ))}
@@ -2155,17 +2384,14 @@
               drink={selectedDrink}
               onClose={() => setSelectedDrink(null)}
               rating={ratings[selectedDrink.id]}
-              isSaved={savedDrinks.has(selectedDrink.id)}
-              isFavorite={favorites.has(selectedDrink.id)}
-              isWantToTry={wantToTry.has(selectedDrink.id)}
+              isKeeper={keepers.has(selectedDrink.id)}
+              isToTry={isInToTry(selectedDrink.id)}
               canMake={canMakeDrink(selectedDrink)}
               inventory={getActiveBarInventory()}
               ingredientsDb={ingredientsDb}
               collections={collections}
-              onToggleSaved={() => toggle(savedDrinks, setSavedDrinks, 'saved-drinks', selectedDrink.id, 'Saved', 'Removed')}
-              onToggleFavorite={() => toggle(favorites, setFavorites, 'favorites', selectedDrink.id, 'Favorited', 'Unfavorited')}
-              onToggleWantToTry={() => toggle(wantToTry, setWantToTry, 'want-to-try', selectedDrink.id, 'Added to try list', 'Removed from try list')}
-              onRate={(r) => rateDrink(selectedDrink.id, r)}
+              onToggleKeeper={() => toggleKeeper(selectedDrink.id)}
+              onToggleToTry={() => toggleToTry(selectedDrink.id)}
               onDelete={selectedDrink.source === 'custom' ? () => setShowConfirmDelete(selectedDrink.id) : null}
               onShare={shareRecipe}
               onAddToCollection={addRecipeToCollection}
@@ -2266,9 +2492,8 @@
       
       const recipeItems = [
         { id: 'browse', label: 'All Recipes', icon: 'LayoutGrid', count: allCount, description: 'Browse all cocktails' },
-        { id: 'favorites', label: 'Favorites', icon: 'Heart', count: favoritesCount, description: 'Your favorites' },
-        { id: 'saved', label: 'Saved', icon: 'Bookmark', count: savedCount, description: 'Saved recipes' },
-        { id: 'wantToTry', label: 'Want to Try', icon: 'Star', count: wantToTryCount, description: 'On your list' },
+        { id: 'keepers', label: 'Keepers', icon: 'Star', count: favoritesCount, description: 'Recipes that stood out' },
+        { id: 'toTry', label: 'To Try', icon: 'Bookmark', count: wantToTryCount, description: 'Your queue' },
         { id: 'custom', label: 'My Recipes', icon: 'FlaskConical', count: customCount, description: 'Your custom recipes' },
         { id: 'collections', label: 'Collections', icon: 'Folder', count: collectionsCount, description: 'Organize recipes' },
       ];
@@ -2364,19 +2589,18 @@
               </div>
               <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
                 {canMakeRecipes.map(drink => (
-                  <RecipeRow
-                    key={drink.id}
-                    drink={drink}
-                    rating={ratings[drink.id] || 0}
-                    isSaved={savedDrinks.has(drink.id)}
-                    isFavorite={favorites.has(drink.id)}
-                    canMake={true}
-                    missingCount={0}
-                    onClick={() => onSelectDrink(drink)}
-                    onToggleSaved={() => {}}
-                    onToggleFavorite={() => {}}
-                    ingredientsDb={ingredientsDb}
-                  />
+                      <RecipeRow
+                        key={drink.id}
+                        drink={drink}
+                        isKeeper={keepers.has(drink.id)}
+                        isToTry={isInToTry(drink.id)}
+                        canMake={true}
+                        missingCount={0}
+                        onClick={() => onSelectDrink(drink)}
+                        onToggleKeeper={() => toggleKeeper(drink.id)}
+                        onToggleToTry={() => toggleToTry(drink.id)}
+                        ingredientsDb={ingredientsDb}
+                      />
                 ))}
               </div>
             </section>
@@ -2423,14 +2647,13 @@
                     <RecipeRow
                       key={drink.id}
                       drink={drink}
-                      rating={ratings[drink.id] || 0}
-                      isSaved={savedDrinks.has(drink.id)}
-                      isFavorite={favorites.has(drink.id)}
+                      isKeeper={keepers.has(drink.id)}
+                      isToTry={isInToTry(drink.id)}
                       canMake={false}
                       missingCount={missing}
                       onClick={() => onSelectDrink(drink)}
-                      onToggleSaved={() => {}}
-                      onToggleFavorite={() => {}}
+                      onToggleKeeper={() => toggleKeeper(drink.id)}
+                      onToggleToTry={() => toggleToTry(drink.id)}
                       ingredientsDb={ingredientsDb}
                     />
                   );
@@ -2695,7 +2918,7 @@
       );
     };
 
-    const CollectionsView = ({ collections, allDrinks, getCollectionRecipes, onAddCollection, onUpdateCollection, onDeleteCollection, onRemoveRecipe, onNavigate, onNavigateToRecipe }) => {
+    const CollectionsView = ({ collections, allDrinks, getCollectionRecipes, onAddCollection, onUpdateCollection, onDeleteCollection, onRemoveRecipe, onNavigate, onNavigateToRecipe, keepers }) => {
       const [showAddCollection, setShowAddCollection] = useState(false);
       const [editingId, setEditingId] = useState(null);
       const [newName, setNewName] = useState('');
@@ -2725,8 +2948,24 @@
         setShowAddCollection(true);
       };
       
+      // Get keepers count for display
+      const keepersCount = allDrinks.filter(d => keepers.has(d.id)).length;
+      
       const curatedCollections = collections.filter(c => c.collectionType === 'curated');
       const personalCollections = collections.filter(c => !c.collectionType || c.collectionType === 'personal');
+      
+      // System collections: Keepers (virtual view) and To Try (collection)
+      const toTryCollection = personalCollections.find(c => c.id === 'to_try') || {
+        id: 'to_try',
+        name: 'To Try',
+        description: 'Recipes you want to try',
+        collectionType: 'personal',
+        recipeIds: []
+      };
+      const systemCollections = [toTryCollection];
+      
+      // Keepers is a view, not a collection - we'll handle it specially
+      const otherPersonalCollections = personalCollections.filter(c => c.id !== 'to_try');
       
       return (
         <div className="animate-fade-in">
@@ -2792,6 +3031,60 @@
             </div>
           )}
           
+          {/* System Collections (Keepers view + To Try) */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-sm text-ink-500 uppercase tracking-wider">System</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Keepers View */}
+              <button
+                onClick={() => onNavigate('keepers')}
+                className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-display text-lg text-cream font-normal">Keepers</h3>
+                      <span className="text-2xs px-1.5 py-0.5 rounded bg-copper/10 text-copper uppercase tracking-wider">View</span>
+                    </div>
+                    <p className="text-2xs text-ink-500 mb-2">Recipes that stood out</p>
+                    <p className="text-2xs text-ink-600">{keepersCount || 0} {keepersCount === 1 ? 'recipe' : 'recipes'}</p>
+                  </div>
+                </div>
+              </button>
+              
+              {/* To Try Collection */}
+              {toTryCollection && (
+                <div className="card rounded-xl p-4 hover:border-white/[0.08] transition-all">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3
+                          className="font-display text-lg text-cream font-normal cursor-pointer hover:text-copper-light transition-colors"
+                          onClick={() => onNavigate(toTryCollection.id)}
+                        >
+                          {toTryCollection.name}
+                        </h3>
+                        <span className="text-2xs px-1.5 py-0.5 rounded bg-copper/10 text-copper uppercase tracking-wider">System</span>
+                      </div>
+                      {toTryCollection.description && (
+                        <p className="text-2xs text-ink-500 mb-2">{toTryCollection.description}</p>
+                      )}
+                      <p className="text-2xs text-ink-600">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => onNavigate(toTryCollection.id)}
+                    className="w-full mt-3 py-2 text-sm text-copper hover:text-copper-light border border-copper/30 hover:border-copper/50 rounded-lg transition-colors"
+                  >
+                    View Collection
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          
           {/* Curated Collections */}
           {curatedCollections.length > 0 && (
             <div className="mb-8">
@@ -2849,14 +3142,14 @@
                 <p className="text-ink-400 font-light">No collections yet</p>
                 <p className="text-ink-600 text-sm mt-1">Create collections to organize your recipes</p>
               </div>
-            ) : personalCollections.length === 0 ? (
+            ) : otherPersonalCollections.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-ink-500 text-sm">No personal collections yet</p>
                 <p className="text-ink-600 text-2xs mt-1">Create one to get started</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {personalCollections.map(coll => {
+                {otherPersonalCollections.map(coll => {
                   const recipeCount = coll.recipeIds?.length || 0;
                   return (
                     <div key={coll.id} className="card rounded-xl p-4 hover:border-white/[0.08] transition-all">
@@ -2910,7 +3203,7 @@
       );
     };
 
-    const CollectionDetailView = ({ collection, allDrinks, getCollectionRecipes, onNavigateBack, onNavigateToRecipe, onRemoveRecipe, canMakeDrink, getMissingCount, ratings, savedDrinks, favorites, onToggleSaved, onToggleFavorite, ingredientsDb }) => {
+    const CollectionDetailView = ({ collection, allDrinks, getCollectionRecipes, onNavigateBack, onNavigateToRecipe, onRemoveRecipe, canMakeDrink, getMissingCount, keepers, isInToTry, toggleKeeper, toggleToTry, ingredientsDb }) => {
       if (!collection) {
         return (
           <div className="animate-fade-in">
@@ -2968,14 +3261,13 @@
                 <div key={drink.id} className="relative group">
                   <RecipeRow
                     drink={drink}
-                    rating={ratings[drink.id]}
-                    isSaved={savedDrinks.has(drink.id)}
-                    isFavorite={favorites.has(drink.id)}
+                    isKeeper={keepers.has(drink.id)}
+                    isToTry={isInToTry(drink.id)}
                     canMake={canMakeDrink(drink)}
                     missingCount={getMissingCount(drink)}
                     onClick={() => onNavigateToRecipe(drink)}
-                    onToggleSaved={() => onToggleSaved(drink.id)}
-                    onToggleFavorite={() => onToggleFavorite(drink.id)}
+                    onToggleKeeper={() => toggleKeeper(drink.id)}
+                    onToggleToTry={() => toggleToTry(drink.id)}
                     ingredientsDb={ingredientsDb}
                   />
                   {collection.collectionType !== 'curated' && (
@@ -3133,11 +3425,10 @@
     const EmptyState = ({ view, onAction }) => {
       const config = {
         browse: { icon: 'Search', title: 'No recipes found', subtitle: 'Try a different search', action: null },
-        saved: { icon: 'Bookmark', title: 'No saved recipes', subtitle: 'Save recipes to find them quickly', action: null },
-        favorites: { icon: 'Heart', title: 'No favorites yet', subtitle: 'Heart the recipes you love', action: null },
+        keepers: { icon: 'Star', title: 'No keepers yet', subtitle: 'Mark recipes that stand out', action: null },
+        toTry: { icon: 'Bookmark', title: 'To Try list is empty', subtitle: 'Add recipes to your queue', action: null },
         canMake: { icon: 'Wine', title: 'Add ingredients to your bar', subtitle: 'See what cocktails you can make', action: 'Stock Your Bar', actionFn: onAction },
         almostMake: { icon: 'Clock', title: 'No almost-ready recipes', subtitle: 'Add more ingredients to unlock', action: null },
-        wantToTry: { icon: 'Star', title: 'No recipes to try', subtitle: 'Mark recipes you want to try', action: null },
         custom: { icon: 'FlaskConical', title: 'No custom recipes', subtitle: 'Create your own cocktail specs', action: 'Create Recipe', actionFn: onAction },
       };
       const c = config[view] || config.browse;
@@ -3221,7 +3512,7 @@
       </div>
     );
 
-    const RecipeRow = ({ drink, rating, isSaved, isFavorite, isWantToTry, canMake, missingCount, onClick, onToggleSaved, onToggleFavorite, onToggleWantToTry, showImage = false, ingredientsDb }) => {
+    const RecipeRow = ({ drink, isKeeper, isToTry, canMake, missingCount, onClick, onToggleKeeper, onToggleToTry, showImage = false, ingredientsDb }) => {
       const spirit = detectSpirit(drink);
       const method = detectMethod(drink);
       const modifiers = extractModifiers(drink, ingredientsDb);
@@ -3269,11 +3560,32 @@
             )}
             
             <div className="flex-1 min-w-0">
-              {/* Primary line: Recipe name with status indicator in margin */}
-              <div className="flex items-start gap-3">
+              {/* Primary line: Recipe name with status indicator and toggles */}
+              <div className="flex items-start gap-2">
                 <h3 className="font-display text-base text-ink-100 font-medium group-hover:text-ink-50 transition-colors line-clamp-1 flex-1">
                   {drink.name}
                 </h3>
+                {/* Action toggles - subtle */}
+                <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {onToggleKeeper && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onToggleKeeper(); }}
+                      className={`p-1 rounded transition-colors ${isKeeper ? 'text-copper' : 'text-ink-600 hover:text-ink-400'}`}
+                      title={isKeeper ? 'Remove from Keepers' : 'Add to Keepers'}
+                    >
+                      <Icon name="Star" className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                  {onToggleToTry && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onToggleToTry(); }}
+                      className={`p-1 rounded transition-colors ${isToTry ? 'text-copper' : 'text-ink-600 hover:text-ink-400'}`}
+                      title={isToTry ? 'Remove from To Try' : 'Add to To Try'}
+                    >
+                      <Icon name="Bookmark" className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
                 {/* Status indicator in right margin - neutral and small */}
                 <div className="flex-shrink-0 w-4 text-right">
                   {getStatusIndicator()}
@@ -3309,7 +3621,7 @@
       );
     };
 
-    const RecipeDetail = ({ drink, onClose, rating, isSaved, isFavorite, isWantToTry, canMake, inventory, ingredientsDb, collections, onToggleSaved, onToggleFavorite, onToggleWantToTry, onRate, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit }) => {
+    const RecipeDetail = ({ drink, onClose, isKeeper, isToTry, canMake, inventory, ingredientsDb, collections, onToggleKeeper, onToggleToTry, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit }) => {
       const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
       const [showCollectionPicker, setShowCollectionPicker] = useState(false);
       
@@ -3343,25 +3655,20 @@
               </div>
               
               <div className="p-5 sm:p-6 space-y-6">
-                {/* Rating & Actions */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xs text-ink-500 uppercase tracking-widest">Rating</span>
-                    <StarRating rating={rating || 0} onRate={onRate} size="text-xl" />
-                  </div>
+                {/* Actions */}
+                <div className="flex items-center justify-end">
                   <div className="flex gap-1.5">
                     {[
-                      { active: isFavorite, onClick: onToggleFavorite, icon: 'Heart' },
-                      { active: isSaved, onClick: onToggleSaved, icon: 'Bookmark' },
-                      { active: isWantToTry, onClick: onToggleWantToTry, icon: 'Clock' },
-                      { onClick: () => onShare?.(drink), icon: 'Share2' },
-                      { onClick: () => setShowCollectionPicker(true), icon: 'FolderPlus' },
+                      { active: isKeeper, onClick: onToggleKeeper, icon: 'Star', title: isKeeper ? 'Remove from Keepers' : 'Add to Keepers' },
+                      { active: isToTry, onClick: onToggleToTry, icon: 'Bookmark', title: isToTry ? 'Remove from To Try' : 'Add to To Try' },
+                      { onClick: () => onShare?.(drink), icon: 'Share2', title: 'Share recipe' },
+                      { onClick: () => setShowCollectionPicker(true), icon: 'FolderPlus', title: 'Add to collection' },
                     ].map((btn, i) => (
                       <button
                         key={i}
                         onClick={btn.onClick}
                         className={`p-2.5 rounded-lg transition-colors ${btn.active ? 'bg-copper/20 text-copper' : 'bg-white/[0.03] text-ink-500 hover:text-copper'}`}
-                        title={btn.icon === 'Share2' ? 'Share recipe' : btn.icon === 'FolderPlus' ? 'Add to collection' : ''}
+                        title={btn.title}
                       >
                         <Icon name={btn.icon} className="w-4 h-4" />
                       </button>
@@ -3395,7 +3702,7 @@
                         <li key={i} className="flex items-center gap-3 py-2.5 border-b border-white/[0.02] last:border-0">
                           <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-emerald-500' : 'bg-ink-700'}`} />
                           <span className="text-copper-light font-light min-w-[4rem]">{displayMeasure}</span>
-                          <span className="text-ink-300 font-light capitalize">{ing.name}</span>
+                          <span className="text-ink-300 font-light">{ing.name}</span>
                         </li>
                       );
                     })}
