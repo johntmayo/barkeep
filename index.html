@@ -3085,11 +3085,13 @@
       const modifiers = extractModifiers(drink, ingredientsDb);
       const category = drink.category || drink.ibaCategory;
       
-      // Status indicator - neutral margin language (no color emphasis)
+      // Status indicator - neutral margin language (very subtle gray checkmark for ready)
       const getStatusIndicator = () => {
         if (canMake) {
-          // Ready: show nothing OR tiny neutral dot (no checkmark, no green)
-          return null;
+          // Ready: show tiny neutral gray checkmark
+          return (
+            <Icon name="Check" className="w-2.5 h-2.5 text-ink-600" />
+          );
         } else if (missingCount > 0 && missingCount <= 2) {
           // Missing 1-2: show tiny neutral number
           return (
@@ -3391,6 +3393,21 @@
           .slice(0, 8)
           .map(ing => ing.name);
       };
+
+      // Filter ingredients for the ingredient picker
+      const filteredIngredients = useMemo(() => {
+        if (!ingredientSearch.trim()) return [];
+        const term = ingredientSearch.toLowerCase().trim();
+        return allIngredients
+          .filter(ing => {
+            const nameMatch = ing.name.toLowerCase().includes(term);
+            const aliasMatch = ing.aliases?.some(a => a.toLowerCase().includes(term));
+            const categoryMatch = ing.category?.toLowerCase().includes(term);
+            const subcategoryMatch = ing.subcategory?.toLowerCase().includes(term);
+            return (nameMatch || aliasMatch || categoryMatch || subcategoryMatch) && !ing.isAlias;
+          })
+          .slice(0, 20);
+      }, [ingredientSearch, allIngredients]);
 
       const selectAutocompleteSuggestion = (index, suggestion) => {
         const updated = [...ingredients];
