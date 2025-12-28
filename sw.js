@@ -34,16 +34,29 @@ self.addEventListener('fetch', event => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
   
+  // Skip caching for unsupported schemes (chrome-extension, etc.)
+  // These schemes cannot be cached by service workers
+  if (event.request.url.startsWith('chrome-extension://') || 
+      event.request.url.startsWith('moz-extension://') ||
+      event.request.url.startsWith('safari-extension://')) {
+    return; // Let the browser handle it normally, don't intercept
+  }
+  
   // Network first for HTML to get latest updates
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          // Clone the response before caching
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseToCache);
-          });
+          // Only cache if response is ok and not from unsupported scheme
+          if (response.ok && 
+              !response.url.startsWith('chrome-extension://') &&
+              !response.url.startsWith('moz-extension://') &&
+              !response.url.startsWith('safari-extension://')) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            }).catch(() => {});
+          }
           return response;
         })
         .catch(() => caches.match(event.request))
@@ -56,10 +69,16 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         const fetchPromise = fetch(event.request).then(response => {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseToCache);
-          });
+          // Only cache if response is ok and not from unsupported scheme
+          if (response.ok && 
+              !response.url.startsWith('chrome-extension://') &&
+              !response.url.startsWith('moz-extension://') &&
+              !response.url.startsWith('safari-extension://')) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseToCache);
+            }).catch(() => {});
+          }
           return response;
         });
         return cachedResponse || fetchPromise;
@@ -75,18 +94,32 @@ self.addEventListener('fetch', event => {
         if (response) {
           // Update cache in background
           fetch(event.request).then(fetchResponse => {
+            // Skip caching if response is not ok or from unsupported scheme
+            if (!fetchResponse.ok || 
+                fetchResponse.url.startsWith('chrome-extension://') ||
+                fetchResponse.url.startsWith('moz-extension://') ||
+                fetchResponse.url.startsWith('safari-extension://')) {
+              return;
+            }
             const responseToCache = fetchResponse.clone();
             caches.open(CACHE_NAME).then(cache => {
               cache.put(event.request, responseToCache);
-            });
+            }).catch(() => {});
           }).catch(() => {});
           return response;
         }
         return fetch(event.request).then(response => {
+          // Skip caching if response is not ok or from unsupported scheme
+          if (!response.ok || 
+              response.url.startsWith('chrome-extension://') ||
+              response.url.startsWith('moz-extension://') ||
+              response.url.startsWith('safari-extension://')) {
+            return response;
+          }
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, responseToCache);
-          });
+          }).catch(() => {});
           return response;
         });
       })

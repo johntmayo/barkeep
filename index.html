@@ -203,7 +203,9 @@
       } catch (e) {
         document.documentElement.setAttribute('data-theme', 'light');
         document.documentElement.style.backgroundColor = '#ffffff';
-        document.body.style.backgroundColor = '#ffffff';
+        if (document.body) {
+          document.body.style.backgroundColor = '#ffffff';
+        }
       }
     })();
   </script>
@@ -547,8 +549,9 @@
           return `${Math.round(mlValue * 2) / 2} ml`; // Round to nearest 0.5ml for small amounts
         }
         // Round to nearest 2.5ml for better readability
-        const = Math.round(mlValue / 2.5) * 2.5;
-        return `${rounded % 1 === 0 ? :} ml`;
+        const rounded = Math.round(mlValue / 2.5) * 2.5;
+        // Format as integer if whole number, otherwise show one decimal
+        return `${rounded % 1 === 0 ? rounded : rounded.toFixed(1)} ml`;
       }
 
       // Convert ml to oz
@@ -583,7 +586,7 @@
         }
 
         // Otherwise round to one decimal max
-        const = Math.round(ozValue * 4) / 4; // Round to nearest 0.25
+        const rounded = Math.round(ozValue * 4) / 4; // Round to nearest 0.25
         return `${rounded} oz`;
       }
 
