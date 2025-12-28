@@ -49,8 +49,8 @@
             }
           },
           fontFamily: {
-            'display': ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            'body': ['Inter', 'system-ui', 'sans-serif'],
+            'display': ['Courier New', 'Monaco', 'Menlo', 'Consolas', 'monospace'],
+            'body': ['Courier New', 'Monaco', 'Menlo', 'Consolas', 'monospace'],
           },
           fontSize: {
             '2xs': '0.65rem',
@@ -84,13 +84,13 @@
     }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace;
       background-color: var(--bg-primary);
       color: var(--text-primary);
       font-weight: 400;
       overscroll-behavior: none;
     }
-    .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .font-display { font-family: 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace; }
     
     /* Subtle texture */
     .paper-texture::before {
@@ -1871,7 +1871,7 @@
           <header className="hidden sm:block sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
             <div className="max-w-6xl mx-auto px-6">
               <div className="flex items-center justify-between h-16">
-                <h1 className="font-display text-2xl font-light tracking-wide text-cream">Barkeep</h1>
+                <h1 className="text-2xl font-bold text-ink-100 uppercase">Barkeep</h1>
                 <div className="flex items-center gap-1">
                   {/* Theme Toggle */}
                   <button
@@ -1911,7 +1911,7 @@
                         setShowRecipesHub(false);
                       }}
                       className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light transition-all ${
-                        (view === item.id || (item.id === 'search' && view === 'browse')) ? 'bg-white/[0.05] text-cream' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
+                        (view === item.id || (item.id === 'search' && view === 'browse')) ? 'bg-white/[0.05] text-ink-100' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
                       }`}
                     >
                       <Icon name={item.icon} className="w-4 h-4" />
@@ -1932,11 +1932,11 @@
           <header className="sm:hidden sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
             <div className="flex items-center justify-between px-4 h-14">
               {(view === 'recipesHub' || view === 'settings' || view === 'inventory' || view === 'manageBars') ? (
-                <h1 className="font-display text-xl font-light text-cream">Barkeep</h1>
+                <h1 className="text-xl font-bold text-ink-100 uppercase">Barkeep</h1>
               ) : (
                 <button onClick={() => {
                   setView('recipesHub');
-                }} className="flex items-center gap-2 text-cream">
+                }} className="flex items-center gap-2 text-ink-100">
                   <Icon name="ArrowLeft" className="w-5 h-5" />
                   <span className="font-display text-xl font-light">Recipes</span>
                 </button>
@@ -3136,40 +3136,29 @@
           
           {/* System Collections (Keepers view + To Try) */}
           <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-sm text-ink-500 uppercase tracking-wider">System</h3>
-            </div>
-            <div className="space-y-6">
+            <h3 className="text-base font-bold text-ink-100 uppercase mb-4">System</h3>
+            <hr className="border-ink-700 mb-4" />
+            <div className="space-y-4">
               {/* Keepers View */}
-              <div className="pb-4 border-b border-ink-700 last:border-0">
+              <div className="pb-3 border-b border-ink-700 last:border-0">
                 <button
                   onClick={() => onNavigate('keepers')}
-                  className="text-left hover:text-copper transition-colors"
+                  className="text-left hover:text-ink-300 transition-colors"
                 >
-                  <h3 className="text-xl font-semibold text-ink-100 mb-2">
-                    Keepers
-                    <span className="ml-2 text-xs text-ink-500 font-mono uppercase">view</span>
-                  </h3>
-                  <p className="text-ink-400 text-sm mb-1">Recipes that stood out</p>
-                  <p className="text-ink-500 text-sm font-mono">{keepersCount || 0} {keepersCount === 1 ? 'recipe' : 'recipes'}</p>
+                  <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">Keepers</h3>
+                  <p className="text-ink-500 text-sm">{keepersCount || 0} {keepersCount === 1 ? 'recipe' : 'recipes'}</p>
                 </button>
               </div>
 
               {/* To Try Collection */}
               {toTryCollection && (
-                <div className="pb-4 border-b border-ink-700 last:border-0">
+                <div className="pb-3 border-b border-ink-700 last:border-0">
                   <button
                     onClick={() => onNavigate(toTryCollection.id)}
-                    className="text-left hover:text-copper transition-colors"
+                    className="text-left hover:text-ink-300 transition-colors"
                   >
-                    <h3 className="text-xl font-semibold text-ink-100 mb-2">
-                      {toTryCollection.name}
-                      <span className="ml-2 text-xs text-ink-500 font-mono uppercase">system</span>
-                    </h3>
-                    {toTryCollection.description && (
-                      <p className="text-ink-400 text-sm mb-1">{toTryCollection.description}</p>
-                    )}
-                    <p className="text-ink-500 text-sm font-mono">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
+                    <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">{toTryCollection.name}</h3>
+                    <p className="text-ink-500 text-sm">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
                   </button>
                 </div>
               )}
@@ -3179,27 +3168,19 @@
           {/* Curated Collections */}
           {curatedCollections.length > 0 && (
             <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-sm text-ink-500 uppercase tracking-wider">Curated</h3>
-                <span className="text-2xs text-ink-600">Auto-updating</span>
-              </div>
-              <div className="space-y-6">
+              <h3 className="text-base font-bold text-ink-100 uppercase mb-4">Curated</h3>
+              <hr className="border-ink-700 mb-4" />
+              <div className="space-y-4">
                 {curatedCollections.map(coll => {
                   const recipeCount = getCollectionRecipes ? getCollectionRecipes(coll).length : 0;
                   return (
-                    <div key={coll.id} className="pb-4 border-b border-ink-700 last:border-0">
+                    <div key={coll.id} className="pb-3 border-b border-ink-700 last:border-0">
                       <button
                         onClick={() => onNavigate(coll.id)}
-                        className="text-left hover:text-copper transition-colors w-full"
+                        className="text-left hover:text-ink-300 transition-colors w-full"
                       >
-                        <h3 className="text-xl font-semibold text-ink-100 mb-2">
-                          {coll.name}
-                          <span className="ml-2 text-xs text-ink-500 font-mono uppercase">curated</span>
-                        </h3>
-                        {coll.description && (
-                          <p className="text-ink-400 text-sm mb-1">{coll.description}</p>
-                        )}
-                        <p className="text-ink-500 text-sm font-mono">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
+                        <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">{coll.name}</h3>
+                        <p className="text-ink-500 text-sm">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
                       </button>
                     </div>
                   );
@@ -3211,9 +3192,10 @@
           {/* Personal Collections */}
           <div>
             {curatedCollections.length > 0 && (
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-sm text-ink-500 uppercase tracking-wider">Yours</h3>
-              </div>
+              <>
+                <h3 className="text-base font-bold text-ink-100 uppercase mb-4">Yours</h3>
+                <hr className="border-ink-700 mb-4" />
+              </>
             )}
             {personalCollections.length === 0 && curatedCollections.length === 0 ? (
               <div className="text-center py-16">
@@ -3229,21 +3211,18 @@
                 <p className="text-ink-600 text-2xs mt-1">Create one to get started</p>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {otherPersonalCollections.map(coll => {
                   const recipeCount = coll.recipeIds?.length || 0;
                   return (
-                    <div key={coll.id} className="pb-4 border-b border-ink-700 last:border-0">
+                    <div key={coll.id} className="pb-3 border-b border-ink-700 last:border-0">
                       <div className="flex items-start justify-between">
                         <button
                           onClick={() => onNavigate(coll.id)}
-                          className="text-left hover:text-copper transition-colors flex-1"
+                          className="text-left hover:text-ink-300 transition-colors flex-1"
                         >
-                          <h3 className="text-xl font-semibold text-ink-100 mb-2">{coll.name}</h3>
-                          {coll.description && (
-                            <p className="text-ink-400 text-sm mb-1">{coll.description}</p>
-                          )}
-                          <p className="text-ink-500 text-sm font-mono">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
+                          <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">{coll.name}</h3>
+                          <p className="text-ink-500 text-sm">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
                         </button>
                         <div className="flex gap-2 ml-4">
                           <button
@@ -3259,7 +3238,7 @@
                                 onDeleteCollection(coll.id);
                               }
                             }}
-                            className="text-ink-500 hover:text-red-400 text-sm"
+                            className="text-ink-500 hover:text-ink-300 text-sm"
                             title="Delete"
                           >
                             delete
@@ -3629,48 +3608,26 @@
 
             <div className="flex-1 min-w-0">
               {/* Recipe name */}
-              <h3 className="text-lg font-semibold text-ink-100 mb-1">
+              <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">
                 {drink.name}
+                {isKeeper && <span className="ml-2 text-ink-100">★ keeper</span>}
               </h3>
-
-              {/* Secondary info line */}
-              <div className="text-sm text-ink-400 font-mono mb-2">
-                {[spirit && spirit !== 'Other' && spirit,
-                 method,
-                 drink.glass,
-                 category].filter(Boolean).join(' · ')}
-              </div>
 
               {/* Ingredients line */}
               {drink.ingredients && drink.ingredients.length > 0 && (
-                <div className="text-sm text-ink-500">
-                  {drink.ingredients.slice(0, 4).map(ing => ing.name).join(', ')}
-                  {drink.ingredients.length > 4 && ` +${drink.ingredients.length - 4} more`}
-                  {drink.source === 'custom' && (
-                    <span className="ml-2 text-ink-600">· custom</span>
-                  )}
+                <div className="text-sm text-ink-500 mb-1">
+                  {drink.ingredients.map(ing => ing.name).join(' · ')}
                 </div>
               )}
 
-              {/* Action buttons - always visible */}
-              <div className="flex items-center gap-4 mt-3 text-sm">
-                {onToggleKeeper && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onToggleKeeper(); }}
-                    className={`hover:text-copper transition-colors ${isKeeper ? 'text-copper' : 'text-ink-500'}`}
-                  >
-                    {isKeeper ? '★ remove from keepers' : '☆ add to keepers'}
-                  </button>
-                )}
-                {onToggleToTry && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onToggleToTry(); }}
-                    className={`hover:text-copper transition-colors ${isToTry ? 'text-copper' : 'text-ink-500'}`}
-                  >
-                    {isToTry ? '− remove from to try' : '+ add to to try'}
-                  </button>
-                )}
-              </div>
+              {/* Secondary info line */}
+              {[spirit && spirit !== 'Other' && spirit,
+               method].filter(Boolean).length > 0 && (
+                <div className="text-xs text-ink-500">
+                  {[spirit && spirit !== 'Other' && spirit,
+                   method].filter(Boolean).join(' / ')}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -3706,36 +3663,36 @@
                 <div className="w-12" />
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {/* Title */}
                 <div>
-                  <h1 className="text-3xl font-bold text-ink-100 leading-tight">{drink.name}</h1>
-                  {drink.glass && <p className="text-ink-500 mt-2 font-mono text-sm">{drink.glass}</p>}
+                  <h1 className="text-2xl font-bold text-ink-100 uppercase mb-2">{drink.name}</h1>
+                  <hr className="border-ink-700 mb-4" />
                 </div>
 
                 {/* Actions */}
                 <div className="text-sm space-x-4">
                   <button
                     onClick={onToggleKeeper}
-                    className={`hover:text-copper transition-colors ${isKeeper ? 'text-copper' : 'text-ink-500'}`}
+                    className={`hover:text-ink-100 transition-colors ${isKeeper ? 'text-ink-100' : 'text-ink-500'}`}
                   >
-                    {isKeeper ? '★ remove from keepers' : '☆ add to keepers'}
+                    {isKeeper ? '★ keeper' : '☆ keeper'}
                   </button>
                   <button
                     onClick={onToggleToTry}
-                    className={`hover:text-copper transition-colors ${isToTry ? 'text-copper' : 'text-ink-500'}`}
+                    className={`hover:text-ink-100 transition-colors ${isToTry ? 'text-ink-100' : 'text-ink-500'}`}
                   >
-                    {isToTry ? '− remove from to try' : '+ add to to try'}
+                    {isToTry ? '— to try' : '+ to try'}
                   </button>
                   <button
                     onClick={() => onShare?.(drink)}
-                    className="text-ink-500 hover:text-copper transition-colors"
+                    className="text-ink-500 hover:text-ink-100 transition-colors"
                   >
                     share
                   </button>
                   <button
                     onClick={() => setShowCollectionPicker(true)}
-                    className="text-ink-500 hover:text-copper transition-colors"
+                    className="text-ink-500 hover:text-ink-100 transition-colors"
                   >
                     + collection
                   </button>
@@ -3757,22 +3714,14 @@
 
                 {/* Ingredients */}
                 <div>
-                  <h2 className="text-lg font-semibold text-ink-200 mb-4">Ingredients</h2>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {drink.ingredients?.map((ing, i) => {
                       const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
                       const hasIt = invCanonical.has(ingCanonical);
                       const displayMeasure = convertMeasure(ing.measure, unitPreference);
                       return (
-                        <div key={i} className="flex items-center gap-4 py-1">
-                          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${hasIt ? 'bg-emerald-500' : 'bg-ink-600'}`} />
-                          <span className="font-mono text-ink-300 min-w-[4rem] text-sm">{displayMeasure}</span>
-                          <button
-                            onClick={() => onNavigateToIngredient?.(ingCanonical)}
-                            className="text-ink-200 hover:text-copper transition-colors text-left"
-                          >
-                            {ing.name}
-                          </button>
+                        <div key={i} className="text-ink-100">
+                          {displayMeasure} {ing.name}
                         </div>
                       );
                     })}
@@ -3783,8 +3732,17 @@
 
                 {/* Method */}
                 <div>
-                  <h2 className="text-lg font-semibold text-ink-200 mb-4">Method</h2>
-                  <p className="text-ink-300 leading-relaxed">{drink.instructions || 'No instructions provided.'}</p>
+                  {drink.instructions ? (
+                    <div className="space-y-1">
+                      {drink.instructions.split(/[\.!?]\s+/).filter(Boolean).map((sentence, i) => (
+                        <div key={i} className="text-ink-100">
+                          {sentence.trim()}{sentence.trim().match(/[\.!?]$/) ? '' : '.'}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-ink-500">No instructions provided.</div>
+                  )}
                 </div>
 
                 {drink.notes && (
@@ -3909,39 +3867,32 @@
                 <div className="w-12" />
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {/* Ingredient Info */}
                 <div>
-                  <h2 className="text-3xl font-bold text-ink-100 mb-2">{ingredientDetails?.name || ingredient}</h2>
-                  <p className="text-ink-500 font-mono text-sm">{category} → {subcategory}</p>
+                  <h2 className="text-2xl font-bold text-ink-100 mb-2 uppercase">{ingredientDetails?.name || ingredient}</h2>
+                  <hr className="border-ink-700 mb-4" />
                 </div>
 
                 {ingredientDetails?.aliases && ingredientDetails.aliases.length > 0 && (
                   <>
-                    <hr className="border-ink-700" />
                     <div>
-                      <h3 className="text-lg font-semibold text-ink-200 mb-3">Also known as</h3>
-                      <p className="text-ink-300 text-sm">{ingredientDetails.aliases.join(', ')}</p>
+                      <div className="text-ink-100 text-sm">{ingredientDetails.aliases.join(', ')}</div>
                     </div>
+                    <hr className="border-ink-700" />
                   </>
                 )}
 
-                <hr className="border-ink-700" />
-
                 <div>
-                  <h3 className="text-lg font-semibold text-ink-200 mb-4">Appears in</h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {cocktailsUsingIngredient.map(drink => (
-                      <div key={drink.id} className="py-2 border-b border-ink-700 last:border-0">
+                      <div key={drink.id} className="py-1 border-b border-ink-700 last:border-0">
                         <button
                           onClick={() => onNavigateToRecipe(drink)}
-                          className="text-ink-200 hover:text-copper transition-colors text-left"
+                          className="text-ink-100 hover:text-ink-300 transition-colors text-left uppercase font-bold"
                         >
                           {drink.name}
                         </button>
-                        <div className="text-ink-500 text-xs mt-1 font-mono">
-                          {drink.ingredients?.length || 0} ingredients
-                        </div>
                       </div>
                     ))}
                   </div>
