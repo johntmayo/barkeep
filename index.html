@@ -17,7 +17,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -49,8 +49,8 @@
             }
           },
           fontFamily: {
-            'display': ['Courier New', 'Monaco', 'Menlo', 'Consolas', 'monospace'],
-            'body': ['Courier New', 'Monaco', 'Menlo', 'Consolas', 'monospace'],
+            'display': ['JetBrains Mono', 'Courier New', 'Monaco', 'Menlo', 'Consolas', 'monospace'],
+            'body': ['JetBrains Mono', 'Courier New', 'Monaco', 'Menlo', 'Consolas', 'monospace'],
           },
           fontSize: {
             '2xs': '0.65rem',
@@ -87,7 +87,7 @@
       background-color: var(--bg-primary);
     }
     body {
-      font-family: 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace;
+      font-family: 'JetBrains Mono', 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace;
       background-color: var(--bg-primary);
       color: var(--text-primary);
       font-weight: 400;
@@ -95,7 +95,7 @@
       margin: 0;
       padding: 0;
     }
-    .font-display { font-family: 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace; }
+    .font-display { font-family: 'JetBrains Mono', 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace; }
     
     /* Subtle texture */
     .paper-texture::before {
@@ -5271,7 +5271,7 @@
     } catch (error) {
       console.error('Failed to render app:', error);
       document.body.innerHTML = `
-        <div style="padding: 2rem; text-align: center; color: #d6d3d1; font-family: monospace;">
+        <div style="padding: 2rem; text-align: center; color: #d6d3d1; font-family: 'JetBrains Mono', monospace;">
           <h1 style="color: #d4a574; margin-bottom: 1rem;">Barkeep</h1>
           <p style="color: #a8a29e; margin-bottom: 1rem;">Failed to load application</p>
           <p style="color: #78716c; font-size: 0.875rem;">${error.message}</p>
