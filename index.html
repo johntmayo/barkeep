@@ -696,31 +696,50 @@
 
       // Load data
       useEffect(() => {
+        // Set a timeout to ensure loading state doesn't stay true forever
+        const timeout = setTimeout(() => {
+          console.warn('Data loading timeout - rendering app anyway');
+          setLoading(false);
+        }, 10000); // 10 second timeout
+        
         loadCuratedCocktails();
         loadIngredientsDb();
         loadUserData();
+        
+        return () => clearTimeout(timeout);
       }, []);
 
       const loadCuratedCocktails = async () => {
         try {
           const response = await fetch('./cocktails.json');
+          if (!response.ok) {
+            throw new Error(`Failed to load cocktails: ${response.status} ${response.statusText}`);
+          }
           const data = await response.json();
           setCuratedDrinks(data);
         } catch (error) {
           console.error('Failed to load cocktails:', error);
+          // Set empty array as fallback
+          setCuratedDrinks([]);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       };
 
       const loadIngredientsDb = async () => {
         try {
           const response = await fetch('./ingredients.json');
+          if (!response.ok) {
+            throw new Error(`Failed to load ingredients: ${response.status} ${response.statusText}`);
+          }
           const data = await response.json();
           setIngredientsDb(data);
           // Build alias map when ingredients DB loads
           buildIngredientAliasMap(data);
         } catch (error) {
           console.error('Failed to load ingredients:', error);
+          // Set empty object as fallback
+          setIngredientsDb({ categories: [] });
         }
       };
 
@@ -5234,12 +5253,31 @@
 
     // ============ RENDER ============
     
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(
-      <ToastProvider>
-        <App />
-      </ToastProvider>
-    );
+    try {
+      const rootElement = document.getElementById('root');
+      if (!rootElement) {
+        throw new Error('Root element not found');
+      }
+      
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(
+        <ToastProvider>
+          <App />
+        </ToastProvider>
+      );
+    } catch (error) {
+      console.error('Failed to render app:', error);
+      document.body.innerHTML = `
+        <div style="padding: 2rem; text-align: center; color: #d6d3d1; font-family: monospace;">
+          <h1 style="color: #d4a574; margin-bottom: 1rem;">Barkeep</h1>
+          <p style="color: #a8a29e; margin-bottom: 1rem;">Failed to load application</p>
+          <p style="color: #78716c; font-size: 0.875rem;">${error.message}</p>
+          <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #a16207; color: white; border: none; cursor: pointer;">
+            Reload
+          </button>
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
