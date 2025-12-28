@@ -83,12 +83,17 @@
       --accent: #a16207;
     }
 
+    html {
+      background-color: var(--bg-primary);
+    }
     body {
       font-family: 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace;
       background-color: var(--bg-primary);
       color: var(--text-primary);
       font-weight: 400;
       overscroll-behavior: none;
+      margin: 0;
+      padding: 0;
     }
     .font-display { font-family: 'Courier New', 'Monaco', 'Menlo', 'Consolas', monospace; }
     
@@ -192,8 +197,13 @@
         const saved = localStorage.getItem('theme-preference');
         const theme = saved || 'light';
         document.documentElement.setAttribute('data-theme', theme);
+        // Also set a default background color immediately
+        document.documentElement.style.backgroundColor = theme === 'light' ? '#ffffff' : '#0c0a09';
+        document.body.style.backgroundColor = theme === 'light' ? '#ffffff' : '#0c0a09';
       } catch (e) {
         document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.style.backgroundColor = '#ffffff';
+        document.body.style.backgroundColor = '#ffffff';
       }
     })();
   </script>
@@ -1871,7 +1881,7 @@
       ];
 
       return (
-        <div className="min-h-screen flex flex-col pb-16 sm:pb-0">
+        <div className="min-h-screen flex flex-col pb-16 sm:pb-0 bg-ink-950">
           {/* Desktop Header */}
           <header className="hidden sm:block sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="max-w-6xl mx-auto px-6">
