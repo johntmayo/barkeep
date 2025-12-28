@@ -28,14 +28,14 @@
               950: 'var(--bg-primary)',
               900: 'var(--bg-secondary)',
               850: 'var(--bg-tertiary)',
-              800: '#292524',
-              700: '#44403c',
+              800: '#374151',
+              700: 'var(--border)',
               600: 'var(--text-muted)',
               500: 'var(--text-secondary)',
               400: 'var(--text-secondary)',
               300: 'var(--text-primary)',
-              200: '#e7e5e4',
-              100: '#f5f5f4',
+              200: '#f3f4f6',
+              100: '#f9fafb',
             },
             copper: {
               DEFAULT: '#d4a574',
@@ -68,20 +68,18 @@
       --text-primary: #d6d3d1;
       --text-secondary: #a8a29e;
       --text-muted: #78716c;
-      --border: rgba(255,255,255,0.03);
-      --border-hover: rgba(255,255,255,0.05);
+      --border: #374151;
       --accent: #a16207;
     }
 
     [data-theme="light"] {
-      --bg-primary: #fafaf9;
-      --bg-secondary: #f5f5f4;
-      --bg-tertiary: #e7e5e4;
-      --text-primary: #1c1917;
-      --text-secondary: #57534e;
-      --text-muted: #78716c;
-      --border: rgba(0,0,0,0.05);
-      --border-hover: rgba(0,0,0,0.08);
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --bg-tertiary: #f3f4f6;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --border: #e5e7eb;
       --accent: #a16207;
     }
 
@@ -89,7 +87,7 @@
       font-family: 'Inter', system-ui, sans-serif;
       background-color: var(--bg-primary);
       color: var(--text-primary);
-      font-weight: 300;
+      font-weight: 400;
       overscroll-behavior: none;
     }
     .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
@@ -105,14 +103,10 @@
       z-index: 9999;
     }
     
-    /* Cards */
+    /* Minimal styling for any remaining cards */
     .card {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-    }
-    .card-elevated {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-hover);
     }
     
     /* Scrollbar */
@@ -2535,7 +2529,7 @@
           
           {showShoppingList && (
             <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={() => setShowShoppingList(null)}>
-              <div className="max-w-xl w-full card rounded-2xl p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
+              <div className="max-w-xl w-full bg-ink-900 p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-display text-xl text-cream font-light">Shopping List</h2>
                   <button onClick={() => setShowShoppingList(null)} className="p-2 text-ink-500 hover:text-ink-300">
@@ -2864,7 +2858,7 @@
       const recipeCollections = personalCollections.filter(c => c.recipeIds?.includes(recipeId));
       
       return (
-        <div className="absolute top-full left-0 right-0 mt-2 p-3 card-elevated rounded-xl z-50 animate-slide-down">
+        <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-ink-800 z-50 animate-slide-down">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-sm text-cream font-light">Add to Collection</h4>
             <button onClick={onClose} className="p-1 text-ink-500 hover:text-ink-300">
@@ -2923,7 +2917,7 @@
         
         return (
           <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onClose}>
-            <div className="max-w-xl w-full card rounded-2xl p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
+            <div className="max-w-xl w-full bg-ink-900 p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
               <h2 className="font-display text-xl text-cream font-light mb-4">Import Shared Recipe</h2>
               <textarea
                 value={pasteValue}
@@ -3145,49 +3139,37 @@
             <div className="flex items-center gap-2 mb-4">
               <h3 className="text-sm text-ink-500 uppercase tracking-wider">System</h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="space-y-6">
               {/* Keepers View */}
-              <button
-                onClick={() => onNavigate('keepers')}
-                className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-display text-lg text-cream font-normal">Keepers</h3>
-                      <span className="text-2xs px-1.5 py-0.5 rounded bg-copper/10 text-copper uppercase tracking-wider">View</span>
-                    </div>
-                    <p className="text-2xs text-ink-500 mb-2">Recipes that stood out</p>
-                    <p className="text-2xs text-ink-600">{keepersCount || 0} {keepersCount === 1 ? 'recipe' : 'recipes'}</p>
-                  </div>
-                </div>
-              </button>
-              
+              <div className="pb-4 border-b border-ink-700 last:border-0">
+                <button
+                  onClick={() => onNavigate('keepers')}
+                  className="text-left hover:text-copper transition-colors"
+                >
+                  <h3 className="text-xl font-semibold text-ink-100 mb-2">
+                    Keepers
+                    <span className="ml-2 text-xs text-ink-500 font-mono uppercase">view</span>
+                  </h3>
+                  <p className="text-ink-400 text-sm mb-1">Recipes that stood out</p>
+                  <p className="text-ink-500 text-sm font-mono">{keepersCount || 0} {keepersCount === 1 ? 'recipe' : 'recipes'}</p>
+                </button>
+              </div>
+
               {/* To Try Collection */}
               {toTryCollection && (
-                <div className="card rounded-xl p-4 hover:border-white/[0.08] transition-all">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3
-                          className="font-display text-lg text-cream font-normal cursor-pointer hover:text-copper-light transition-colors"
-                          onClick={() => onNavigate(toTryCollection.id)}
-                        >
-                          {toTryCollection.name}
-                        </h3>
-                        <span className="text-2xs px-1.5 py-0.5 rounded bg-copper/10 text-copper uppercase tracking-wider">System</span>
-                      </div>
-                      {toTryCollection.description && (
-                        <p className="text-2xs text-ink-500 mb-2">{toTryCollection.description}</p>
-                      )}
-                      <p className="text-2xs text-ink-600">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
-                    </div>
-                  </div>
+                <div className="pb-4 border-b border-ink-700 last:border-0">
                   <button
                     onClick={() => onNavigate(toTryCollection.id)}
-                    className="w-full mt-3 py-2 text-sm text-copper hover:text-copper-light border border-copper/30 hover:border-copper/50 rounded-lg transition-colors"
+                    className="text-left hover:text-copper transition-colors"
                   >
-                    View Collection
+                    <h3 className="text-xl font-semibold text-ink-100 mb-2">
+                      {toTryCollection.name}
+                      <span className="ml-2 text-xs text-ink-500 font-mono uppercase">system</span>
+                    </h3>
+                    {toTryCollection.description && (
+                      <p className="text-ink-400 text-sm mb-1">{toTryCollection.description}</p>
+                    )}
+                    <p className="text-ink-500 text-sm font-mono">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
                   </button>
                 </div>
               )}
@@ -3201,33 +3183,23 @@
                 <h3 className="text-sm text-ink-500 uppercase tracking-wider">Curated</h3>
                 <span className="text-2xs text-ink-600">Auto-updating</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-6">
                 {curatedCollections.map(coll => {
                   const recipeCount = getCollectionRecipes ? getCollectionRecipes(coll).length : 0;
                   return (
-                    <div key={coll.id} className="card rounded-xl p-4 hover:border-white/[0.08] transition-all">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3
-                              className="font-display text-lg text-cream font-normal cursor-pointer hover:text-copper-light transition-colors"
-                              onClick={() => onNavigate(coll.id)}
-                            >
-                              {coll.name}
-                            </h3>
-                            <span className="text-2xs px-1.5 py-0.5 rounded bg-copper/10 text-copper uppercase tracking-wider">Curated</span>
-                          </div>
-                          {coll.description && (
-                            <p className="text-2xs text-ink-500 mb-2">{coll.description}</p>
-                          )}
-                          <p className="text-2xs text-ink-600">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
-                        </div>
-                      </div>
+                    <div key={coll.id} className="pb-4 border-b border-ink-700 last:border-0">
                       <button
                         onClick={() => onNavigate(coll.id)}
-                        className="w-full mt-3 py-2 text-sm text-copper hover:text-copper-light border border-copper/30 hover:border-copper/50 rounded-lg transition-colors"
+                        className="text-left hover:text-copper transition-colors w-full"
                       >
-                        View Collection
+                        <h3 className="text-xl font-semibold text-ink-100 mb-2">
+                          {coll.name}
+                          <span className="ml-2 text-xs text-ink-500 font-mono uppercase">curated</span>
+                        </h3>
+                        {coll.description && (
+                          <p className="text-ink-400 text-sm mb-1">{coll.description}</p>
+                        )}
+                        <p className="text-ink-500 text-sm font-mono">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
                       </button>
                     </div>
                   );
@@ -3257,31 +3229,29 @@
                 <p className="text-ink-600 text-2xs mt-1">Create one to get started</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-6">
                 {otherPersonalCollections.map(coll => {
                   const recipeCount = coll.recipeIds?.length || 0;
                   return (
-                    <div key={coll.id} className="card rounded-xl p-4 hover:border-white/[0.08] transition-all">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <h3
-                            className="font-display text-lg text-cream font-normal mb-1 cursor-pointer hover:text-copper-light transition-colors"
-                            onClick={() => onNavigate(coll.id)}
-                          >
-                            {coll.name}
-                          </h3>
+                    <div key={coll.id} className="pb-4 border-b border-ink-700 last:border-0">
+                      <div className="flex items-start justify-between">
+                        <button
+                          onClick={() => onNavigate(coll.id)}
+                          className="text-left hover:text-copper transition-colors flex-1"
+                        >
+                          <h3 className="text-xl font-semibold text-ink-100 mb-2">{coll.name}</h3>
                           {coll.description && (
-                            <p className="text-2xs text-ink-500 mb-2">{coll.description}</p>
+                            <p className="text-ink-400 text-sm mb-1">{coll.description}</p>
                           )}
-                          <p className="text-2xs text-ink-600">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
-                        </div>
-                        <div className="flex gap-1">
+                          <p className="text-ink-500 text-sm font-mono">{recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}</p>
+                        </button>
+                        <div className="flex gap-2 ml-4">
                           <button
                             onClick={() => startEdit(coll)}
-                            className="p-2 text-ink-500 hover:text-ink-300"
+                            className="text-ink-500 hover:text-ink-300 text-sm"
                             title="Edit"
                           >
-                            <Icon name="Edit" className="w-4 h-4" />
+                            edit
                           </button>
                           <button
                             onClick={() => {
@@ -3289,19 +3259,13 @@
                                 onDeleteCollection(coll.id);
                               }
                             }}
-                            className="p-2 text-ink-500 hover:text-red-400"
+                            className="text-ink-500 hover:text-red-400 text-sm"
                             title="Delete"
                           >
-                            <Icon name="Trash2" className="w-4 h-4" />
+                            delete
                           </button>
                         </div>
                       </div>
-                      <button
-                        onClick={() => onNavigate(coll.id)}
-                        className="w-full mt-3 py-2 text-sm text-copper hover:text-copper-light border border-copper/30 hover:border-copper/50 rounded-lg transition-colors"
-                      >
-                        View Collection
-                      </button>
                     </div>
                   );
                 })}
@@ -3436,7 +3400,7 @@
             <div className="card rounded-xl p-5">
               <h3 className="font-display text-lg text-cream font-normal mb-4">Backup & Restore</h3>
               <div className="space-y-3">
-                <button onClick={onExport} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
+                <button onClick={onExport} className="w-full p-4 bg-ink-800 text-left hover:bg-ink-700 transition-colors group">
                   <div className="flex items-center gap-3">
                     <Icon name="Download" className="w-5 h-5 text-copper" />
                     <div>
@@ -3446,7 +3410,7 @@
                   </div>
                 </button>
               <input type="file" ref={fileRef} onChange={(e) => onImport(e, importMode)} accept=".json" className="hidden" />
-              <button onClick={() => fileRef.current?.click()} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
+              <button onClick={() => fileRef.current?.click()} className="w-full p-4 bg-ink-800 text-left hover:bg-ink-700 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
                   <div className="flex-1">
@@ -3490,7 +3454,7 @@
                   </label>
                 </div>
               </div>
-              <button onClick={onImportShared} className="w-full p-4 card-elevated rounded-lg text-left hover:border-white/[0.08] transition-colors group">
+              <button onClick={onImportShared} className="w-full p-4 bg-ink-800 text-left hover:bg-ink-700 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Share2" className="w-5 h-5 text-copper" />
                   <div>
@@ -3653,77 +3617,60 @@
       const secondaryLine = secondaryParts.join(' · ');
       
       return (
-        <div 
-          className="w-full py-2.5 px-4 border-b border-white/[0.02] hover:bg-white/[0.015] transition-colors cursor-pointer group last:border-0"
+        <div
+          className="py-4 border-b border-ink-700 cursor-pointer hover:bg-ink-900/20 transition-colors last:border-0"
           onClick={onClick}
         >
-          <div className="flex items-start gap-3">
-            {/* Optional thumbnail */}
-            {showImage && drink.image && (
-              <img 
-                src={drink.image} 
-                alt={drink.name}
-                className="w-12 h-12 rounded object-cover flex-shrink-0"
-                loading="lazy"
-              />
-            )}
-            
+          <div className="flex items-start gap-4">
+            {/* Status indicator */}
+            <div className="flex-shrink-0 mt-1">
+              {getStatusIndicator()}
+            </div>
+
             <div className="flex-1 min-w-0">
-              {/* Primary line: Recipe name with status indicator and toggles */}
-              <div className="flex items-start gap-2">
-                <h3 className="font-display text-base text-ink-100 font-medium group-hover:text-ink-50 transition-colors line-clamp-1 flex-1">
-                  {drink.name}
-                </h3>
-                {/* Action toggles - subtle */}
-                <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {onToggleKeeper && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); onToggleKeeper(); }}
-                      className={`p-1 rounded transition-colors ${isKeeper ? 'text-copper' : 'text-ink-600 hover:text-ink-400'}`}
-                      title={isKeeper ? 'Remove from Keepers' : 'Add to Keepers'}
-                    >
-                      <Icon name="Star" className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                  {onToggleToTry && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); onToggleToTry(); }}
-                      className={`p-1 rounded transition-colors ${isToTry ? 'text-copper' : 'text-ink-600 hover:text-ink-400'}`}
-                      title={isToTry ? 'Remove from To Try' : 'Add to To Try'}
-                    >
-                      <Icon name="Bookmark" className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-                {/* Status indicator in right margin - neutral and small */}
-                <div className="flex-shrink-0 w-4 text-right">
-                  {getStatusIndicator()}
-                </div>
+              {/* Recipe name */}
+              <h3 className="text-lg font-semibold text-ink-100 mb-1">
+                {drink.name}
+              </h3>
+
+              {/* Secondary info line */}
+              <div className="text-sm text-ink-400 font-mono mb-2">
+                {[spirit && spirit !== 'Other' && spirit,
+                 method,
+                 drink.glass,
+                 category].filter(Boolean).join(' · ')}
               </div>
-              
-              {/* Category (if available) */}
-              {category && (
-                <div className="mt-0.5 mb-0.5">
-                  <span className="text-ink-600 text-xs font-medium">{category}</span>
+
+              {/* Ingredients line */}
+              {drink.ingredients && drink.ingredients.length > 0 && (
+                <div className="text-sm text-ink-500">
+                  {drink.ingredients.slice(0, 4).map(ing => ing.name).join(', ')}
+                  {drink.ingredients.length > 4 && ` +${drink.ingredients.length - 4} more`}
+                  {drink.source === 'custom' && (
+                    <span className="ml-2 text-ink-600">· custom</span>
+                  )}
                 </div>
               )}
-              
-              {/* Secondary line: spirit · method · glass */}
-              {secondaryLine && (
-                <p className="text-ink-500 text-xs font-light mt-0.5 line-clamp-1">
-                  {secondaryLine}
-                </p>
-              )}
-              
-              {/* Tertiary line: all ingredients + additional info */}
-              {drink.ingredients && drink.ingredients.length > 0 && (
-                <p className="text-ink-600/80 text-2xs font-light overflow-hidden text-ellipsis whitespace-nowrap mt-0.5">
-                  {drink.ingredients.map(ing => ing.name).join(' · ')}
-                  {drink.source === 'custom' && (
-                    <span className="text-ink-700"> · Custom</span>
-                  )}
-                </p>
-              )}
+
+              {/* Action buttons - always visible */}
+              <div className="flex items-center gap-4 mt-3 text-sm">
+                {onToggleKeeper && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onToggleKeeper(); }}
+                    className={`hover:text-copper transition-colors ${isKeeper ? 'text-copper' : 'text-ink-500'}`}
+                  >
+                    {isKeeper ? '★ remove from keepers' : '☆ add to keepers'}
+                  </button>
+                )}
+                {onToggleToTry && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onToggleToTry(); }}
+                    className={`hover:text-copper transition-colors ${isToTry ? 'text-copper' : 'text-ink-500'}`}
+                  >
+                    {isToTry ? '− remove from to try' : '+ add to to try'}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -3745,55 +3692,55 @@
       
       return (
         <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
-          <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
-            <div className="max-w-2xl mx-auto bg-ink-950 sm:card sm:rounded-2xl animate-slide-up">
+          <div className="min-h-screen py-8 px-4" onClick={e => e.stopPropagation()}>
+            <div className="max-w-2xl mx-auto">
               {/* Header */}
-              <div className="relative h-56 sm:h-64 sm:rounded-t-2xl overflow-hidden">
-                {drink.image ? (
-                  <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-60" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-ink-850 to-ink-900 flex items-center justify-center">
-                    <span className="font-display text-7xl text-ink-800">{drink.name.charAt(0)}</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/20" />
-                
-                <button onClick={onClose} className="absolute top-4 right-4 p-2.5 rounded-full bg-ink-950/50 backdrop-blur-sm text-ink-400 hover:text-cream transition-colors">
-                  <Icon name="X" className="w-5 h-5" />
+              <div className="flex items-center justify-between mb-8">
+                <button onClick={onClose} className="text-ink-500 hover:text-ink-300 transition-colors">
+                  ← Back
                 </button>
-                
-                <div className="absolute bottom-5 left-5 right-5">
-                  <div className="flex gap-2 mb-2">
-                    {canMake && <span className="text-2xs px-2.5 py-1 rounded bg-emerald-900/80 text-emerald-300 tracking-wide uppercase">Ready to make</span>}
-                    {drink.source === 'custom' && <span className="text-2xs px-2.5 py-1 rounded bg-copper/20 text-copper tracking-wide uppercase">Custom</span>}
-                  </div>
-                  <h2 className="font-display text-2xl sm:text-3xl text-cream font-light leading-tight">{drink.name}</h2>
-                  {drink.glass && <p className="text-ink-400 text-sm mt-1 font-light">{drink.glass}</p>}
+                <div className="text-center">
+                  {canMake && <span className="text-xs text-emerald-400 uppercase tracking-wide">Ready to make</span>}
+                  {drink.source === 'custom' && <span className="text-xs text-copper uppercase tracking-wide ml-2">Custom</span>}
                 </div>
+                <div className="w-12" />
               </div>
-              
-              <div className="p-5 sm:p-6 space-y-6">
-                {/* Actions */}
-                <div className="flex items-center justify-end">
-                  <div className="flex gap-1.5">
-                    {[
-                      { active: isKeeper, onClick: onToggleKeeper, icon: 'Star', title: isKeeper ? 'Remove from Keepers' : 'Add to Keepers' },
-                      { active: isToTry, onClick: onToggleToTry, icon: 'Bookmark', title: isToTry ? 'Remove from To Try' : 'Add to To Try' },
-                      { onClick: () => onShare?.(drink), icon: 'Share2', title: 'Share recipe' },
-                      { onClick: () => setShowCollectionPicker(true), icon: 'FolderPlus', title: 'Add to collection' },
-                    ].map((btn, i) => (
-                      <button
-                        key={i}
-                        onClick={btn.onClick}
-                        className={`p-2.5 rounded-lg transition-colors ${btn.active ? 'bg-copper/20 text-copper' : 'bg-white/[0.03] text-ink-500 hover:text-copper'}`}
-                        title={btn.title}
-                      >
-                        <Icon name={btn.icon} className="w-4 h-4" />
-                      </button>
-                    ))}
-                  </div>
+
+              <div className="space-y-8">
+                {/* Title */}
+                <div>
+                  <h1 className="text-3xl font-bold text-ink-100 leading-tight">{drink.name}</h1>
+                  {drink.glass && <p className="text-ink-500 mt-2 font-mono text-sm">{drink.glass}</p>}
                 </div>
-                
+
+                {/* Actions */}
+                <div className="text-sm space-x-4">
+                  <button
+                    onClick={onToggleKeeper}
+                    className={`hover:text-copper transition-colors ${isKeeper ? 'text-copper' : 'text-ink-500'}`}
+                  >
+                    {isKeeper ? '★ remove from keepers' : '☆ add to keepers'}
+                  </button>
+                  <button
+                    onClick={onToggleToTry}
+                    className={`hover:text-copper transition-colors ${isToTry ? 'text-copper' : 'text-ink-500'}`}
+                  >
+                    {isToTry ? '− remove from to try' : '+ add to to try'}
+                  </button>
+                  <button
+                    onClick={() => onShare?.(drink)}
+                    className="text-ink-500 hover:text-copper transition-colors"
+                  >
+                    share
+                  </button>
+                  <button
+                    onClick={() => setShowCollectionPicker(true)}
+                    className="text-ink-500 hover:text-copper transition-colors"
+                  >
+                    + collection
+                  </button>
+                </div>
+
                 {showCollectionPicker && (
                   <CollectionPicker
                     collections={collections || []}
@@ -3805,88 +3752,92 @@
                     onClose={() => setShowCollectionPicker(false)}
                   />
                 )}
-                
-                <div className="divider" />
-                
+
+                <hr className="border-ink-700" />
+
                 {/* Ingredients */}
                 <div>
-                  <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Ingredients</h3>
-                  <ul className="space-y-1">
+                  <h2 className="text-lg font-semibold text-ink-200 mb-4">Ingredients</h2>
+                  <div className="space-y-2">
                     {drink.ingredients?.map((ing, i) => {
                       const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
                       const hasIt = invCanonical.has(ingCanonical);
                       const displayMeasure = convertMeasure(ing.measure, unitPreference);
                       return (
-                        <li key={i} className="flex items-center gap-3 py-2.5 border-b border-white/[0.02] last:border-0">
-                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-emerald-500' : 'bg-ink-700'}`} />
-                          <span className="text-copper-light font-light min-w-[4rem]">{displayMeasure}</span>
+                        <div key={i} className="flex items-center gap-4 py-1">
+                          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${hasIt ? 'bg-emerald-500' : 'bg-ink-600'}`} />
+                          <span className="font-mono text-ink-300 min-w-[4rem] text-sm">{displayMeasure}</span>
                           <button
                             onClick={() => onNavigateToIngredient?.(ingCanonical)}
-                            className="text-ink-300 hover:text-copper font-light text-left transition-colors"
+                            className="text-ink-200 hover:text-copper transition-colors text-left"
                           >
                             {ing.name}
                           </button>
-                        </li>
+                        </div>
                       );
                     })}
-                  </ul>
+                  </div>
                 </div>
-                
-                <div className="divider" />
-                
+
+                <hr className="border-ink-700" />
+
                 {/* Method */}
                 <div>
-                  <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Method</h3>
-                  <p className="text-ink-300 font-light leading-relaxed">{drink.instructions || 'No instructions provided.'}</p>
+                  <h2 className="text-lg font-semibold text-ink-200 mb-4">Method</h2>
+                  <p className="text-ink-300 leading-relaxed">{drink.instructions || 'No instructions provided.'}</p>
                 </div>
-                
+
                 {drink.notes && (
                   <>
-                    <div className="divider" />
+                    <hr className="border-ink-700" />
                     <div>
-                      <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Notes</h3>
-                      <p className="text-ink-400 font-light leading-relaxed italic">{drink.notes}</p>
+                      <h2 className="text-lg font-semibold text-ink-200 mb-4">Notes</h2>
+                      <p className="text-ink-400 leading-relaxed italic">{drink.notes}</p>
                     </div>
                   </>
                 )}
-                
+
                 {/* Origin section - only shows if origin data exists */}
                 {(drink.originTitle || drink.originAuthor || drink.originSourceType || drink.originUrl || drink.originYear || drink.originNotes) && (
                   <>
-                    <div className="divider" />
+                    <hr className="border-ink-700" />
                     <div>
-                      <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Origin</h3>
-                      <div className="space-y-2 text-sm text-ink-300 font-light">
+                      <h2 className="text-lg font-semibold text-ink-200 mb-4">Origin</h2>
+                      <div className="space-y-3 text-sm text-ink-300">
                         {drink.originTitle && (
-                          <div>
-                            <span className="text-ink-500">Title:</span> <span className="text-cream">{drink.originTitle}</span>
+                          <div className="flex gap-2">
+                            <span className="font-mono text-ink-500 min-w-[4rem]">Title:</span>
+                            <span className="text-ink-200">{drink.originTitle}</span>
                           </div>
                         )}
                         {drink.originAuthor && (
-                          <div>
-                            <span className="text-ink-500">Author:</span> <span className="text-cream">{drink.originAuthor}</span>
+                          <div className="flex gap-2">
+                            <span className="font-mono text-ink-500 min-w-[4rem]">Author:</span>
+                            <span className="text-ink-200">{drink.originAuthor}</span>
                           </div>
                         )}
                         {drink.originSourceType && (
-                          <div>
-                            <span className="text-ink-500">Source:</span> <span className="text-cream capitalize">{drink.originSourceType}</span>
+                          <div className="flex gap-2">
+                            <span className="font-mono text-ink-500 min-w-[4rem]">Source:</span>
+                            <span className="text-ink-200 capitalize">{drink.originSourceType}</span>
                           </div>
                         )}
                         {drink.originUrl && (
-                          <div>
-                            <span className="text-ink-500">URL:</span>{' '}
-                            <a href={drink.originUrl} target="_blank" rel="noopener noreferrer" className="text-copper hover:text-copper-light underline">
+                          <div className="flex gap-2">
+                            <span className="font-mono text-ink-500 min-w-[4rem]">URL:</span>
+                            <a href={drink.originUrl} target="_blank" rel="noopener noreferrer" className="text-copper hover:text-copper-light">
                               {drink.originUrl}
                             </a>
                           </div>
                         )}
                         {drink.originYear && (
-                          <div>
-                            <span className="text-ink-500">Year:</span> <span className="text-cream">{drink.originYear}</span>
+                          <div className="flex gap-2">
+                            <span className="font-mono text-ink-500 min-w-[4rem]">Year:</span>
+                            <span className="text-ink-200">{drink.originYear}</span>
                           </div>
                         )}
                         {drink.originNotes && (
-                          <div className="pt-2 border-t border-white/[0.03]">
+                          <div className="mt-4 pt-4 border-t border-ink-700">
                             <p className="text-ink-400 italic">{drink.originNotes}</p>
                           </div>
                         )}
@@ -3894,13 +3845,15 @@
                     </div>
                   </>
                 )}
-                
+
                 {onDelete && (
                   <>
-                    <div className="divider" />
-                    <button onClick={onDelete} className="w-full py-3 text-sm text-ink-600 hover:text-red-400 transition-colors">
-                      Delete recipe
-                    </button>
+                    <hr className="border-ink-700" />
+                    <div className="pt-4">
+                      <button onClick={onDelete} className="text-sm text-ink-600 hover:text-red-400 transition-colors">
+                        delete recipe
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
@@ -3948,42 +3901,48 @@
           <div className="min-h-screen py-8 px-4">
             <div className="max-w-2xl mx-auto">
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300">
-                  <Icon name="ArrowLeft" className="w-5 h-5" />
+              <div className="flex items-center justify-between mb-8">
+                <button onClick={onClose} className="text-ink-500 hover:text-ink-300 transition-colors">
+                  ← Back
                 </button>
-                <h1 className="text-xl font-display font-light text-cream">Ingredient</h1>
-                <div className="w-9" /> {/* Spacer for centering */}
+                <h1 className="text-xl font-bold text-ink-100">Ingredient</h1>
+                <div className="w-12" />
               </div>
 
-              {/* Ingredient Info */}
-              <div className="space-y-6">
+              <div className="space-y-8">
+                {/* Ingredient Info */}
                 <div>
-                  <h2 className="text-2xl font-display font-light text-cream mb-2">{ingredientDetails?.name || ingredient}</h2>
-                  <p className="text-ink-400 text-sm font-light">{category} → {subcategory}</p>
+                  <h2 className="text-3xl font-bold text-ink-100 mb-2">{ingredientDetails?.name || ingredient}</h2>
+                  <p className="text-ink-500 font-mono text-sm">{category} → {subcategory}</p>
                 </div>
 
                 {ingredientDetails?.aliases && ingredientDetails.aliases.length > 0 && (
-                  <div>
-                    <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-3">Also known as</h3>
-                    <p className="text-ink-300 font-light text-sm">{ingredientDetails.aliases.join(', ')}</p>
-                  </div>
+                  <>
+                    <hr className="border-ink-700" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-ink-200 mb-3">Also known as</h3>
+                      <p className="text-ink-300 text-sm">{ingredientDetails.aliases.join(', ')}</p>
+                    </div>
+                  </>
                 )}
 
+                <hr className="border-ink-700" />
+
                 <div>
-                  <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-4">Appears in</h3>
-                  <div className="space-y-2">
+                  <h3 className="text-lg font-semibold text-ink-200 mb-4">Appears in</h3>
+                  <div className="space-y-3">
                     {cocktailsUsingIngredient.map(drink => (
-                      <button
-                        key={drink.id}
-                        onClick={() => onNavigateToRecipe(drink)}
-                        className="w-full text-left p-3 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-colors border border-white/[0.02]"
-                      >
-                        <div className="text-ink-200 font-light">{drink.name}</div>
-                        <div className="text-ink-500 text-xs mt-1 font-light">
+                      <div key={drink.id} className="py-2 border-b border-ink-700 last:border-0">
+                        <button
+                          onClick={() => onNavigateToRecipe(drink)}
+                          className="text-ink-200 hover:text-copper transition-colors text-left"
+                        >
+                          {drink.name}
+                        </button>
+                        <div className="text-ink-500 text-xs mt-1 font-mono">
                           {drink.ingredients?.length || 0} ingredients
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -5031,7 +4990,7 @@
       const fileRef = useRef(null);
       return (
         <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onClose}>
-          <div className="max-w-sm w-full card rounded-2xl p-5 animate-scale-in" onClick={e => e.stopPropagation()}>
+          <div className="max-w-sm w-full bg-ink-900 p-5 animate-scale-in" onClick={e => e.stopPropagation()}>
             <h2 className="font-display text-xl text-cream font-light mb-5">Backup & Restore</h2>
             <div className="space-y-3">
               <button onClick={onExport} className="w-full p-4 card-elevated rounded-xl text-left hover:border-white/[0.08] transition-colors group">
@@ -5272,7 +5231,7 @@
           {/* Delete Confirmation */}
           {deletingId && (
             <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4">
-              <div className="max-w-xs w-full card rounded-2xl p-5 animate-scale-in text-center">
+              <div className="max-w-xs w-full bg-ink-900 p-5 animate-scale-in text-center">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
                   <Icon name="Trash2" className="w-5 h-5 text-red-400" />
                 </div>
