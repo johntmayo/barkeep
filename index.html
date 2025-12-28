@@ -123,10 +123,10 @@
     @keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .animate-fade-in { animation: fadeIn 0.2s ease; }
-    .animate-slide-up { animation: slideUp 0.3s ease; }
-    .animate-slide-down { animation: slideDown 0.3s ease; }
-    .animate-scale-in { animation: scaleIn 0.2s ease; }
+    . { animation: fadeIn 0.2s ease; }
+    . { animation: slideUp 0.3s ease; }
+    . { animation: slideDown 0.3s ease; }
+    . { animation: scaleIn 0.2s ease; }
     .animate-pulse { animation: pulse 2s ease infinite; }
     
     /* Staggered grid animation */
@@ -145,28 +145,21 @@
     /* Focus & inputs */
     input:focus, textarea:focus, select:focus, button:focus-visible { outline: none; }
     .input-field {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
-      transition: all 0.2s ease;
+      background: transparent;
+      border: 1px solid var(--border);
     }
     .input-field:focus {
-      background: rgba(255,255,255,0.04);
-      border-color: rgba(212, 165, 116, 0.3);
+      border-color: var(--border);
     }
     .input-field::placeholder { color: #57534e; }
     
-    /* Buttons */
-    .btn-ghost:hover { background: rgba(255,255,255,0.04); }
+    /* Buttons - plain text links only */
     .btn-copper {
-      background: linear-gradient(145deg, #d4a574, #b8956a);
-      color: #0c0a09;
-      transition: all 0.2s ease;
+      color: var(--accent);
     }
-    .btn-copper:hover { background: linear-gradient(145deg, #e8c9a8, #d4a574); }
-    .btn-copper:active { transform: scale(0.98); }
-    
-    /* Divider */
-    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent); }
+    .btn-copper:hover {
+      color: var(--text-primary);
+    }
     
     /* Star rating */
     .star-rating { display: inline-flex; gap: 1px; }
@@ -348,7 +341,7 @@
             {toasts.map(toast => (
               <div
                 key={toast.id}
-                className={`${toast.exiting ? 'toast-exit' : 'toast-enter'} px-4 py-3 rounded-lg bg-ink-800 border border-white/5 shadow-xl flex items-center gap-3 pointer-events-auto`}
+                className={`${toast.exiting ? 'toast-exit' : 'toast-enter'} px-4 py-3 bg-ink-900 border border-ink-700 flex items-center gap-3 pointer-events-auto`}
               >
                 {toast.type === 'success' && <Icon name="Check" className="w-4 h-4 text-emerald-400" />}
                 {toast.type === 'error' && <Icon name="X" className="w-4 h-4 text-red-400" />}
@@ -544,8 +537,8 @@
           return `${Math.round(mlValue * 2) / 2} ml`; // Round to nearest 0.5ml for small amounts
         }
         // Round to nearest 2.5ml for better readability
-        const rounded = Math.round(mlValue / 2.5) * 2.5;
-        return `${rounded % 1 === 0 ? rounded : rounded} ml`;
+        const = Math.round(mlValue / 2.5) * 2.5;
+        return `${rounded % 1 === 0 ? :} ml`;
       }
 
       // Convert ml to oz
@@ -580,7 +573,7 @@
         }
 
         // Otherwise round to one decimal max
-        const rounded = Math.round(ozValue * 4) / 4; // Round to nearest 0.25
+        const = Math.round(ozValue * 4) / 4; // Round to nearest 0.25
         return `${rounded} oz`;
       }
 
@@ -1880,7 +1873,7 @@
       return (
         <div className="min-h-screen flex flex-col pb-16 sm:pb-0">
           {/* Desktop Header */}
-          <header className="hidden sm:block sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
+          <header className="hidden sm:block sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="max-w-6xl mx-auto px-6">
               <div className="flex items-center justify-between h-16">
                 <h1 className="text-2xl font-bold text-ink-100 uppercase">Barkeep</h1>
@@ -1888,7 +1881,7 @@
                   {/* Theme Toggle */}
                   <button
                     onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
-                    className="p-2.5 text-ink-500 hover:text-ink-300 bg-white/[0.02] hover:bg-white/[0.05] rounded-lg"
+                    className="p-2 text-ink-500 hover:text-ink-300"
                     title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                   >
                     <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
@@ -1896,13 +1889,13 @@
                   {/* Unit Toggle */}
                   <button
                     onClick={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
-                    className="px-3 py-2 text-xs text-ink-500 hover:text-ink-300 bg-white/[0.02] hover:bg-white/[0.05] rounded-lg font-mono"
+                    className="px-2 py-1 text-xs text-ink-500 hover:text-ink-300 font-mono"
                     title={`Switch to ${unitPreference === 'oz' ? 'ml' : 'oz'}`}
                   >
                     {unitPreference.toUpperCase()}
                   </button>
                   {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom') && (
-                    <button onClick={() => setShowAddDrink(true)} className="p-2.5 text-ink-500 hover:text-copper btn-ghost rounded-lg" title="New Recipe">
+                    <button onClick={() => setShowAddDrink(true)} className="p-2 text-ink-500 hover:text-ink-300" title="New Recipe">
                       <Icon name="Plus" className="w-4 h-4" />
                     </button>
                   )}
@@ -1922,14 +1915,14 @@
                         }
                         setShowRecipesHub(false);
                       }}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light transition-all ${
-                        (view === item.id || (item.id === 'search' && view === 'browse')) ? 'bg-white/[0.05] text-ink-100' : 'text-ink-500 hover:text-ink-300 hover:bg-white/[0.02]'
+                      className={`flex items-center gap-2 px-3 py-2 text-sm ${
+                        (view === item.id || (item.id === 'search' && view === 'browse')) ? 'text-ink-100 font-bold' : 'text-ink-500 hover:text-ink-300'
                       }`}
                     >
                       <Icon name={item.icon} className="w-4 h-4" />
                       <span>{item.label}</span>
                       {item.count > 0 && (
-                        <span className={`text-2xs px-1.5 py-0.5 rounded-full ${view === item.id ? 'bg-copper/20 text-copper' : 'bg-white/5 text-ink-500'}`}>
+                        <span className={`text-2xs px-1.5 py-0.5  ${view === item.id ? 'bg-copper/20 text-copper' : 'bg-transparent5 text-ink-500'}`}>
                           {item.count}
                         </span>
                       )}
@@ -1941,7 +1934,7 @@
           </header>
 
           {/* Mobile Header */}
-          <header className="sm:hidden sticky top-0 z-40 bg-ink-950/95 backdrop-blur-sm border-b border-white/[0.03]">
+          <header className="sm:hidden sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="flex items-center justify-between px-4 h-14">
               {(view === 'recipesHub' || view === 'settings' || view === 'inventory' || view === 'manageBars') ? (
                 <h1 className="text-xl font-bold text-ink-100 uppercase">Barkeep</h1>
@@ -1949,15 +1942,14 @@
                 <button onClick={() => {
                   setView('recipesHub');
                 }} className="flex items-center gap-2 text-ink-100">
-                  <Icon name="ArrowLeft" className="w-5 h-5" />
-                  <span className="font-display text-xl font-light">Recipes</span>
+                  ← <span className="text-xl font-bold uppercase">Recipes</span>
                 </button>
               )}
               <div className="flex items-center gap-1">
                 {/* Theme Toggle */}
                 <button
                   onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
-                  className="p-2 text-ink-500 hover:text-ink-300 bg-white/[0.02] rounded"
+                  className="p-2 text-ink-500 hover:text-ink-300"
                   title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                 >
                   <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
@@ -1965,7 +1957,7 @@
                 {/* Unit Toggle */}
                 <button
                   onClick={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
-                  className="px-2 py-1 text-xs text-ink-500 hover:text-ink-300 bg-white/[0.02] rounded font-mono"
+                  className="px-2 py-1 text-xs text-ink-500 hover:text-ink-300 font-mono"
                   title={`Switch to ${unitPreference === 'oz' ? 'ml' : 'oz'}`}
                 >
                   {unitPreference.toUpperCase()}
@@ -2123,7 +2115,7 @@
             ) : (
               <>
                 {/* Search & Filters - Sticky Container */}
-                <div className="sticky top-0 z-30 bg-ink-950/95 backdrop-blur-sm pb-3 -mx-4 px-4 pt-2 mb-5">
+                <div className="sticky top-0 z-30 bg-ink-950 pb-3 -mx-4 px-4 pt-2 mb-5 border-b border-ink-700">
                   <div className="flex flex-col gap-3">
                     <div className="flex gap-2">
                       <div className="flex-1 relative">
@@ -2133,7 +2125,7 @@
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                           placeholder="Search recipes or ingredients..."
-                          className="w-full pl-10 pr-10 py-3 input-field rounded-lg text-sm text-ink-200 font-light"
+                          className="w-full pl-10 pr-10 py-3 input-field  text-sm text-ink-200 font-light"
                         />
                         {searchTerm && (
                           <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-600 hover:text-ink-400">
@@ -2143,7 +2135,7 @@
                       </div>
                       <button
                         onClick={pickRandom}
-                        className="px-3 py-3 input-field rounded-lg text-ink-500 hover:text-copper hover:border-copper/30 transition-colors"
+                        className="px-3 py-3 input-field  text-ink-500 hover:text-copper copper/30 transition-colors"
                         title="Random cocktail"
                       >
                         <Icon name="Shuffle" className="w-4 h-4" />
@@ -2170,7 +2162,7 @@
                         <select
                           value={sortBy}
                           onChange={(e) => setSortBy(e.target.value)}
-                          className="px-3 py-1.5 input-field rounded-lg text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer"
+                          className="px-3 py-1.5 input-field  text-xs text-ink-400 font-light bg-transparent appearance-none cursor-pointer"
                         >
                           {SORT_OPTIONS.map(opt => (
                             <option key={opt.value} value={opt.value} className="bg-ink-900">{opt.label}</option>
@@ -2181,7 +2173,7 @@
                     
                     {/* Expandable Filter Drawer */}
                     {filtersExpanded && (
-                    <div className="space-y-4 pt-3 border-t border-white/[0.03]">
+                    <div className="space-y-4 pt-3 border-t border-ink-700">
                       {/* Categories */}
                       {availableCategories.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 items-baseline">
@@ -2191,10 +2183,10 @@
                               <button
                                 key={category}
                                 onClick={() => toggleFilter('categories', category)}
-                                className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                className={`px-2 py-1 text-xs whitespace-nowrap ${
                                   filters.categories.includes(category)
-                                    ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                    : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                    ? 'text-ink-100 font-bold'
+                                    : 'text-ink-500 hover:text-ink-300'
                                 }`}
                               >
                                 {category}
@@ -2212,10 +2204,10 @@
                             <button
                               key={spirit}
                               onClick={() => toggleFilter('spirits', spirit)}
-                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                              className={`px-2 py-1 text-xs whitespace-nowrap ${
                                 filters.spirits.includes(spirit)
-                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                  ? 'text-ink-100 font-bold'
+                                  : 'text-ink-500 hover:text-ink-300'
                               }`}
                             >
                               {spirit}
@@ -2232,10 +2224,10 @@
                             <button
                               key={method}
                               onClick={() => toggleFilter('methods', method)}
-                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                              className={`px-2 py-1 text-xs whitespace-nowrap ${
                                 filters.methods.includes(method)
-                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                  ? 'text-ink-100 font-bold'
+                                  : 'text-ink-500 hover:text-ink-300'
                               }`}
                             >
                               {method}
@@ -2253,10 +2245,10 @@
                               <button
                                 key={glass}
                                 onClick={() => toggleFilter('glasses', glass)}
-                                className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                className={`px-2 py-1 text-xs whitespace-nowrap ${
                                   filters.glasses.includes(glass)
-                                    ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                    : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                    ? 'text-ink-100 font-bold'
+                                    : 'text-ink-500 hover:text-ink-300'
                                 }`}
                               >
                                 {glass}
@@ -2273,20 +2265,20 @@
                           <div className="flex flex-wrap gap-1.5">
                             <button
                               onClick={() => toggleFilter('tags', 'canMake')}
-                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                              className={`px-2 py-1 text-xs whitespace-nowrap ${
                                 filters.tags.includes('canMake')
-                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                  ? 'text-ink-100 font-bold'
+                                  : 'text-ink-500 hover:text-ink-300'
                               }`}
                             >
                               Can Make
                             </button>
                             <button
                               onClick={() => toggleFilter('tags', 'almostMake')}
-                              className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                              className={`px-2 py-1 text-xs whitespace-nowrap ${
                                 filters.tags.includes('almostMake')
-                                  ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                  : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                  ? 'text-ink-100 font-bold'
+                                  : 'text-ink-500 hover:text-ink-300'
                               }`}
                             >
                               Almost Make
@@ -2295,20 +2287,20 @@
                               <>
                                 <button
                                   onClick={() => toggleFilter('tags', 'keepers')}
-                                  className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                  className={`px-2 py-1 text-xs whitespace-nowrap ${
                                     filters.tags.includes('keepers')
-                                      ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                      : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                      ? 'text-ink-100 font-bold'
+                                      : 'text-ink-500 hover:text-ink-300'
                                   }`}
                                 >
                                   Keepers
                                 </button>
                                 <button
                                   onClick={() => toggleFilter('tags', 'toTry')}
-                                  className={`px-2.5 py-1 rounded text-xs font-light transition-colors whitespace-nowrap ${
+                                  className={`px-2 py-1 text-xs whitespace-nowrap ${
                                     filters.tags.includes('toTry')
-                                      ? 'bg-white/[0.08] text-ink-200 border border-white/[0.1]'
-                                      : 'bg-transparent text-ink-500 hover:text-ink-300 border border-white/[0.04]'
+                                      ? 'text-ink-100 font-bold'
+                                      : 'text-ink-500 hover:text-ink-300'
                                   }`}
                                 >
                                   To Try
@@ -2382,7 +2374,7 @@
                           setShowShoppingList(shoppingList);
                         });
                       }}
-                      className="px-4 py-2 btn-copper rounded-lg text-sm font-medium"
+                      className="px-4 py-2 btn-copper text-sm font-medium"
                     >
                       <Icon name="ShoppingCart" className="w-4 h-4 inline mr-2" />
                       <span>Create Shopping List</span>
@@ -2392,19 +2384,19 @@
 
                 {/* Recipe List */}
                 {loading ? (
-                  <div className="bg-transparent border border-white/[0.02] rounded">
+                  <div>
                     {[...Array(6)].map((_, i) => (
-                      <div key={i} className="py-2.5 px-4 border-b border-white/[0.02] animate-pulse last:border-0">
-                        <div className="h-5 bg-ink-800 rounded w-1/3 mb-1.5" />
-                        <div className="h-3 bg-ink-800 rounded w-1/4 mb-1" />
-                        <div className="h-2.5 bg-ink-800 rounded w-1/2" />
+                      <div key={i} className="py-2.5 px-4 border-b border-ink-700 animate-pulse last:border-0">
+                        <div className="h-5 bg-ink-800 w-1/3 mb-1.5" />
+                        <div className="h-3 bg-ink-800 w-1/4 mb-1" />
+                        <div className="h-2.5 bg-ink-800 w-1/2" />
                       </div>
                     ))}
                   </div>
                 ) : displayDrinks.length === 0 ? (
                   <EmptyState view={view} onAction={() => view === 'canMake' ? setView('inventory') : setShowAddDrink(true)} />
                 ) : (
-                  <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
+                  <div className="bg-transparent border border-ink-700 overflow-hidden">
                     {displayDrinks.map((drink, i) => (
                       <RecipeRow
                         key={drink.id}
@@ -2426,7 +2418,7 @@
           </main>
 
           {/* Mobile Bottom Nav */}
-          <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-ink-950/95 backdrop-blur-sm border-t border-white/[0.03] mobile-bottom-nav z-40">
+          <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-ink-950 border-t border-ink-700 mobile-bottom-nav z-40">
             <div className="flex justify-around py-2">
               {navItems.map(item => (
                 <button
@@ -2440,14 +2432,14 @@
                     }
                     setShowRecipesHub(false);
                   }}
-                  className={`relative flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+                  className={`relative flex flex-col items-center gap-1 px-4 py-2  transition-colors ${
                     (view === item.id || (item.id === 'search' && view === 'browse')) ? 'text-copper' : 'text-ink-500'
                   }`}
                 >
                   <Icon name={item.icon} className="w-5 h-5" />
                   <span className="text-2xs">{item.label}</span>
                   {item.count > 0 && view !== item.id && !showRecipesHub && (
-                    <span className="absolute -top-1 right-1 w-1.5 h-1.5 bg-copper rounded-full" />
+                    <span className="absolute -top-1 right-1 w-1.5 h-1.5 bg-copper " />
                   )}
                 </button>
               ))}
@@ -2456,23 +2448,22 @@
           
           {/* Update Available Banner */}
           {updateAvailable && (
-            <div className="fixed bottom-16 sm:bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 bg-copper text-ink-950 px-4 py-3 flex items-center justify-between rounded-lg shadow-xl animate-slide-up">
+            <div className="fixed bottom-16 sm:bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 bg-ink-900 border border-ink-700 px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Icon name="RefreshCw" className="w-5 h-5" />
-                <span className="text-sm font-medium">Update available</span>
+                <span className="text-sm">Update available</span>
               </div>
-              <div className="flex items-center gap-2 ml-4">
+              <div className="flex items-center gap-4 ml-4">
                 <button
                   onClick={reloadForUpdate}
-                  className="px-4 py-2 bg-ink-950 text-cream rounded-lg text-sm font-medium hover:bg-ink-900 transition-colors"
+                  className="text-sm text-ink-500 hover:text-ink-300"
                 >
-                  Refresh
+                  refresh
                 </button>
                 <button
                   onClick={() => setUpdateAvailable(false)}
-                  className="p-2 hover:bg-ink-950/20 rounded-lg transition-colors"
+                  className="text-ink-500 hover:text-ink-300"
                 >
-                  <Icon name="X" className="w-4 h-4" />
+                  ×
                 </button>
               </div>
             </div>
@@ -2540,28 +2531,28 @@
           )}
           
           {showShoppingList && (
-            <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={() => setShowShoppingList(null)}>
-              <div className="max-w-xl w-full bg-ink-900 p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
+            <div className="fixed inset-0 z-50 bg-ink-950 flex items-center justify-center p-4" onClick={() => setShowShoppingList(null)}>
+              <div className="max-w-xl w-full bg-ink-900 p-6" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display text-xl text-cream font-light">Shopping List</h2>
-                  <button onClick={() => setShowShoppingList(null)} className="p-2 text-ink-500 hover:text-ink-300">
-                    <Icon name="X" className="w-5 h-5" />
+                  <h2 className="text-xl font-bold text-ink-100 uppercase">Shopping List</h2>
+                  <button onClick={() => setShowShoppingList(null)} className="text-ink-500 hover:text-ink-300">
+                    ×
                   </button>
                 </div>
                 <textarea
                   value={showShoppingList}
                   readOnly
-                  className="w-full h-64 px-4 py-3 input-field rounded-lg text-sm text-cream font-light resize-none mb-4 font-mono"
+                  className="w-full h-64 px-4 py-3 input-field text-sm text-ink-100 resize-none mb-4 font-mono"
                 />
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(showShoppingList);
                       toast('Copied to clipboard', 'success');
                     }}
-                    className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium"
+                    className="text-sm btn-copper"
                   >
-                    Copy to Clipboard
+                    copy to clipboard
                   </button>
                   <button
                     onClick={() => {
@@ -2574,9 +2565,9 @@
                       URL.revokeObjectURL(url);
                       toast('Downloaded', 'success');
                     }}
-                    className="px-4 py-3 text-ink-500 hover:text-ink-300 border border-white/[0.06] rounded-lg"
+                    className="text-sm text-ink-500 hover:text-ink-300"
                   >
-                    <Icon name="Download" className="w-4 h-4" />
+                    download
                   </button>
                 </div>
               </div>
@@ -2616,40 +2607,35 @@
       // Empty state if bar is empty
       if (!activeBar?.inventory || activeBar.inventory.length === 0) {
         return (
-          <div className="animate-fade-in">
-            <div className="card rounded-xl p-8 text-center mb-6">
-              <Icon name="Wine" className="w-12 h-12 text-ink-600 mx-auto mb-4" />
-              <h2 className="font-display text-xl text-cream font-light mb-2">Build Your Bar</h2>
-              <p className="text-sm text-ink-500 mb-6">Add ingredients to your bar to see recipes you can make</p>
+          <div>
+            <div className="mb-8 text-center">
+              <h2 className="text-xl font-bold text-ink-100 uppercase mb-2">Build Your Bar</h2>
+              <p className="text-sm text-ink-500 mb-4">Add ingredients to your bar to see recipes you can make</p>
               <button
                 onClick={() => onNavigate('inventory')}
-                className="px-6 py-3 btn-copper rounded-lg text-sm font-medium"
+                className="text-sm btn-copper"
               >
-                Go to Your Bar
+                go to your bar
               </button>
             </div>
-            <h2 className="font-display text-2xl text-cream font-light mb-6">Browse Recipes</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <h2 className="text-xl font-bold text-ink-100 uppercase mb-4">Browse Recipes</h2>
+            <hr className="border-ink-700 mb-4" />
+            <div className="space-y-4">
               {recipeItems.map(item => (
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+                  className="w-full text-left py-3 border-b border-ink-700 last:border-0"
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-white/[0.03] group-hover:bg-copper/10 transition-colors">
-                        <Icon name={item.icon} className="w-5 h-5 text-copper" />
-                      </div>
-                      <div>
-                        <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
-                          {item.label}
-                        </h3>
-                        <p className="text-2xs text-ink-500 mt-0.5">{item.description}</p>
-                      </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-ink-100 uppercase">
+                        {item.label}
+                      </h3>
+                      <p className="text-sm text-ink-500 mt-1">{item.description}</p>
                     </div>
                     {item.count > 0 && (
-                      <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
+                      <span className="text-sm text-ink-500 font-mono">
                         {item.count}
                       </span>
                     )}
@@ -2662,16 +2648,16 @@
       }
 
       return (
-        <div className="animate-fade-in space-y-8">
+        <div className=" space-y-8">
           {/* Quick Bar Switch (if multiple bars) */}
           {bars.length > 1 && (
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2 text-sm text-ink-500">
                 <Icon name="Wine" className="w-4 h-4" />
                 <span>Active bar:</span>
-                <span className="text-cream font-medium">{activeBar?.name || 'Bar'}</span>
+                <span className="text-ink-100 font-medium">{activeBar?.name || 'Bar'}</span>
                 {activeBar?.isMain && (
-                  <span className="text-2xs px-1.5 py-0.5 rounded-full bg-copper/10 text-copper border border-copper/20">
+                  <span className="text-2xs px-1.5 py-0.5  bg-copper/10 text-copper border border-copper/20">
                     Main
                   </span>
                 )}
@@ -2693,16 +2679,15 @@
           {canMakeRecipes.length > 0 ? (
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display text-xl text-cream font-light">You can make</h2>
+                <h2 className="text-xl font-bold text-ink-100 uppercase">You can make</h2>
                 <button
                   onClick={() => onNavigate('canMake')}
-                  className="text-sm text-copper hover:text-copper-light flex items-center gap-1"
+                  className="text-sm text-ink-500 hover:text-ink-300"
                 >
-                  See all
-                  <Icon name="ArrowRight" className="w-4 h-4" />
+                  see all →
                 </button>
               </div>
-              <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
+              <div>
                 {canMakeRecipes.map(drink => (
                       <RecipeRow
                         key={drink.id}
@@ -2721,11 +2706,11 @@
             </section>
           ) : (
             <section>
-              <h2 className="font-display text-xl text-cream font-light mb-4">You can make</h2>
-              <div className="card rounded-xl p-6 text-center">
-                <p className="text-sm text-ink-500 mb-2">No recipes you can make right now</p>
+              <h2 className="text-xl font-bold text-ink-100 uppercase mb-4">You can make</h2>
+              <div className="py-4">
+                <p className="text-sm text-ink-500">No recipes you can make right now</p>
                 {almostMakeRecipes.length > 0 && (
-                  <p className="text-xs text-ink-600">Check out "Almost make" below to see what you're close to making</p>
+                  <p className="text-xs text-ink-500 mt-2">Check out "Almost make" below to see what you're close to making</p>
                 )}
               </div>
             </section>
@@ -2735,27 +2720,25 @@
           {almostMakeRecipes.length > 0 && (
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display text-xl text-cream font-light">Almost make</h2>
-                <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold text-ink-100 uppercase">Almost make</h2>
+                <div className="flex items-center gap-4">
                   <button
                     onClick={() => {
                       onCreateShoppingList(almostMakeRecipes);
                     }}
-                    className="text-sm text-amber-400 hover:text-amber-300 flex items-center gap-1"
+                    className="text-sm text-ink-500 hover:text-ink-300"
                   >
-                    <Icon name="ShoppingCart" className="w-4 h-4" />
-                    Create shopping list
+                    create shopping list
                   </button>
                   <button
                     onClick={() => onNavigate('almostMake')}
-                    className="text-sm text-copper hover:text-copper-light flex items-center gap-1"
+                    className="text-sm text-ink-500 hover:text-ink-300"
                   >
-                    See all
-                    <Icon name="ArrowRight" className="w-4 h-4" />
+                    see all →
                   </button>
                 </div>
               </div>
-              <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
+              <div>
                 {almostMakeRecipes.map(drink => {
                   const missing = getMissingCount(drink);
                   return (
@@ -2781,7 +2764,7 @@
           {featuredCollections.length > 0 && (
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display text-xl text-cream font-light">Featured collections</h2>
+                <h2 className="font-display text-xl text-ink-100 font-light">Featured collections</h2>
                 <button
                   onClick={() => onNavigate('collections')}
                   className="text-sm text-copper hover:text-copper-light flex items-center gap-1"
@@ -2799,16 +2782,16 @@
                       onClick={() => {
                         onNavigate(`collection-${collection.id}`);
                       }}
-                      className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+                      className="border border-ink-700 p-4 text-left  group"
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
+                            <h3 className="font-display text-lg text-ink-100 font-normal text-copper-light transition-colors">
                               {collection.name}
                             </h3>
                             {collection.collectionType === 'curated' && (
-                              <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/10 text-copper border border-copper/20">
+                              <span className="text-2xs px-2 py-0.5  bg-copper/10 text-copper border border-copper/20">
                                 Curated
                               </span>
                             )}
@@ -2817,7 +2800,7 @@
                             <p className="text-2xs text-ink-500 mt-0.5">{collection.description}</p>
                           )}
                         </div>
-                        <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
+                        <span className="text-2xs px-2 py-1  bg-copper/20 text-copper font-medium">
                           {recipes.length}
                         </span>
                       </div>
@@ -2830,28 +2813,28 @@
 
           {/* Navigation list */}
           <section>
-            <h2 className="font-display text-2xl text-cream font-light mb-6">Browse</h2>
+            <h2 className="font-display text-2xl text-ink-100 font-light mb-6">Browse</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {recipeItems.map(item => (
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className="card rounded-xl p-4 text-left hover:border-white/[0.08] transition-all group"
+                  className="border border-ink-700 p-4 text-left  group"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-white/[0.03] group-hover:bg-copper/10 transition-colors">
+                      <div className="p-2  bg-transparent group-copper/10 transition-colors">
                         <Icon name={item.icon} className="w-5 h-5 text-copper" />
                       </div>
                       <div>
-                        <h3 className="font-display text-lg text-cream font-normal group-hover:text-copper-light transition-colors">
+                        <h3 className="font-display text-lg text-ink-100 font-normal text-copper-light transition-colors">
                           {item.label}
                         </h3>
                         <p className="text-2xs text-ink-500 mt-0.5">{item.description}</p>
                       </div>
                     </div>
                     {item.count > 0 && (
-                      <span className="text-2xs px-2 py-1 rounded-full bg-copper/20 text-copper font-medium">
+                      <span className="text-2xs px-2 py-1  bg-copper/20 text-copper font-medium">
                         {item.count}
                       </span>
                     )}
@@ -2870,9 +2853,9 @@
       const recipeCollections = personalCollections.filter(c => c.recipeIds?.includes(recipeId));
       
       return (
-        <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-ink-800 z-50 animate-slide-down">
+        <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-ink-800 z-50 ">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm text-cream font-light">Add to Collection</h4>
+            <h4 className="text-sm text-ink-100 font-light">Add to Collection</h4>
             <button onClick={onClose} className="p-1 text-ink-500 hover:text-ink-300">
               <Icon name="X" className="w-4 h-4" />
             </button>
@@ -2887,8 +2870,8 @@
                   <button
                     key={coll.id}
                     onClick={() => onSelect(coll.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      isInCollection ? 'bg-copper/20 text-copper' : 'hover:bg-white/[0.05] text-ink-300'
+                    className={`w-full text-left px-3 py-2  transition-colors ${
+                      isInCollection ? 'bg-copper/20 text-copper' : 'transparent text-ink-300'
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -2928,17 +2911,17 @@
         };
         
         return (
-          <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onClose}>
-            <div className="max-w-xl w-full bg-ink-900 p-6 animate-scale-in" onClick={e => e.stopPropagation()}>
-              <h2 className="font-display text-xl text-cream font-light mb-4">Import Shared Recipe</h2>
+          <div className="fixed inset-0 z-50 bg-ink-950 flex items-center justify-center p-4" onClick={onClose}>
+            <div className="max-w-xl w-full bg-ink-900 p-6 " onClick={e => e.stopPropagation()}>
+              <h2 className="font-display text-xl text-ink-100 font-light mb-4">Import Shared Recipe</h2>
               <textarea
                 value={pasteValue}
                 onChange={(e) => setPasteValue(e.target.value)}
                 placeholder="Paste recipe JSON here..."
-                className="w-full h-48 px-4 py-3 input-field rounded-lg text-sm text-cream font-mono resize-none mb-4"
+                className="w-full h-48 px-4 py-3 input-field  text-sm text-ink-100 font-mono resize-none mb-4"
               />
               <div className="flex gap-3">
-                <button onClick={handlePaste} className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium">
+                <button onClick={handlePaste} className="flex-1 py-3 btn-copper text-sm font-medium">
                   Import Recipe
                 </button>
                 <button onClick={onClose} className="px-4 py-3 text-ink-500 hover:text-ink-300">
@@ -2954,15 +2937,15 @@
       const existing = existingRecipes.find(r => r.id === recipe.id);
       
       return (
-        <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
+        <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto" onClick={onClose}>
           <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
-            <div className="max-w-2xl mx-auto bg-ink-950 sm:card sm:rounded-2xl animate-slide-up">
+            <div className="max-w-2xl mx-auto bg-ink-950">
               <div className="p-6">
-                <h2 className="font-display text-xl text-cream font-light mb-6">Import Recipe</h2>
+                <h2 className="text-xl font-bold text-ink-100 uppercase mb-6">Import Recipe</h2>
                 
                 {/* Preview */}
-                <div className="card rounded-xl p-5 mb-6">
-                  <h3 className="font-display text-lg text-cream font-normal mb-2">{recipe.name}</h3>
+                <div className="mb-6 pb-6 border-b border-ink-700">
+                  <h3 className="text-lg font-bold text-ink-100 uppercase mb-2">{recipe.name}</h3>
                   {recipe.glass && <p className="text-sm text-ink-400 mb-4">{recipe.glass}</p>}
                   
                   <div className="mb-4">
@@ -2989,7 +2972,7 @@
                   <div className="mb-6">
                     <p className="text-sm text-ink-400 mb-3">This recipe already exists in your collection:</p>
                     <div className="space-y-2">
-                      <label className="flex items-center gap-3 p-3 card rounded-lg cursor-pointer">
+                      <label className="flex items-center gap-3 p-3 border border-ink-700 cursor-pointer">
                         <input
                           type="radio"
                           name="dedupe"
@@ -3000,7 +2983,7 @@
                         />
                         <span className="text-sm text-ink-300">Save as new recipe</span>
                       </label>
-                      <label className="flex items-center gap-3 p-3 card rounded-lg cursor-pointer">
+                      <label className="flex items-center gap-3 p-3 border border-ink-700 cursor-pointer">
                         <input
                           type="radio"
                           name="dedupe"
@@ -3018,7 +3001,7 @@
                 <div className="flex gap-3">
                   <button
                     onClick={() => onImport(sharedData, dedupeMode)}
-                    className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium"
+                    className="flex-1 py-3 btn-copper text-sm font-medium"
                   >
                     {existing ? (dedupeMode === 'replace' ? 'Replace Recipe' : 'Save as New') : 'Save to My Recipes'}
                   </button>
@@ -3083,9 +3066,9 @@
       const otherPersonalCollections = personalCollections.filter(c => c.id !== 'to_try');
       
       return (
-        <div className="animate-fade-in">
+        <div className="">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-2xl text-cream font-light">Collections</h2>
+            <h2 className="font-display text-2xl text-ink-100 font-light">Collections</h2>
             <button
               onClick={() => {
                 setEditingId(null);
@@ -3093,15 +3076,15 @@
                 setNewDescription('');
                 setShowAddCollection(true);
               }}
-              className="px-4 py-2 btn-copper rounded-lg text-sm font-medium"
+              className="px-4 py-2 btn-copper text-sm font-medium"
             >
               New Collection
             </button>
           </div>
           
           {showAddCollection && (
-            <div className="card rounded-xl p-5 mb-6 animate-slide-down">
-              <h3 className="font-display text-lg text-cream font-light mb-4">
+            <div className="mb-6 pb-6 border-b border-ink-700">
+              <h3 className="text-lg font-bold text-ink-100 uppercase mb-4">
                 {editingId ? 'Edit Collection' : 'New Collection'}
               </h3>
               <div className="space-y-4">
@@ -3112,7 +3095,7 @@
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     placeholder="Collection name"
-                    className="w-full px-4 py-3 input-field rounded-lg text-cream font-light"
+                    className="w-full px-4 py-3 input-field text-ink-100"
                     autoFocus
                   />
                 </div>
@@ -3123,11 +3106,11 @@
                     onChange={(e) => setNewDescription(e.target.value)}
                     placeholder="Optional description"
                     rows="2"
-                    className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none"
+                    className="w-full px-4 py-3 input-field  text-ink-100 font-light resize-none"
                   />
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={handleSave} className="flex-1 py-3 btn-copper rounded-lg text-sm font-medium">
+                  <button onClick={handleSave} className="flex-1 py-3 btn-copper text-sm font-medium">
                     Save
                   </button>
                   <button
@@ -3211,7 +3194,7 @@
             )}
             {personalCollections.length === 0 && curatedCollections.length === 0 ? (
               <div className="text-center py-16">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/[0.02] flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-4  bg-transparent flex items-center justify-center">
                   <Icon name="Folder" className="w-7 h-7 text-ink-700" />
                 </div>
                 <p className="text-ink-400 font-light">No collections yet</p>
@@ -3270,8 +3253,8 @@
     const CollectionDetailView = ({ collection, allDrinks, getCollectionRecipes, onNavigateBack, onNavigateToRecipe, onRemoveRecipe, canMakeDrink, getMissingCount, keepers, isInToTry, toggleKeeper, toggleToTry, ingredientsDb }) => {
       if (!collection) {
         return (
-          <div className="animate-fade-in">
-            <button onClick={onNavigateBack} className="mb-6 flex items-center gap-2 text-ink-400 hover:text-cream">
+          <div className="">
+            <button onClick={onNavigateBack} className="mb-6 flex items-center gap-2 text-ink-400 hover:text-ink-100">
               <Icon name="ArrowLeft" className="w-4 h-4" />
               <span>Back to Collections</span>
             </button>
@@ -3286,16 +3269,16 @@
         : allDrinks.filter(d => collection.recipeIds?.includes(d.id));
       
       return (
-        <div className="animate-fade-in">
+        <div className="">
           <div className="flex items-center gap-4 mb-6">
-            <button onClick={onNavigateBack} className="p-2 text-ink-400 hover:text-cream">
+            <button onClick={onNavigateBack} className="p-2 text-ink-400 hover:text-ink-100">
               <Icon name="ArrowLeft" className="w-5 h-5" />
             </button>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h2 className="font-display text-2xl text-cream font-light">{collection.name}</h2>
+                <h2 className="font-display text-2xl text-ink-100 font-light">{collection.name}</h2>
                 {collection.collectionType === 'curated' && (
-                  <span className="text-2xs px-2 py-0.5 rounded bg-copper/10 text-copper uppercase tracking-wider">Curated</span>
+                  <span className="text-2xs px-2 py-0.5 bg-copper/10 text-copper uppercase tracking-wider">Curated</span>
                 )}
               </div>
               {collection.description && (
@@ -3320,7 +3303,7 @@
               )}
             </div>
           ) : (
-            <div className="bg-transparent border border-white/[0.02] rounded overflow-hidden">
+            <div className="bg-transparent border border-ink-700 overflow-hidden">
               {recipes.map(drink => (
                 <div key={drink.id} className="relative group">
                   <RecipeRow
@@ -3340,7 +3323,7 @@
                         e.stopPropagation();
                         onRemoveRecipe(drink.id, collection.id);
                       }}
-                      className="absolute right-16 top-1/2 -translate-y-1/2 p-1.5 rounded text-ink-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute right-16 top-1/2 -translate-y-1/2 p-1.5 text-ink-500 hover:text-red-400 opacity-0 opacity-100 transition-opacity"
                     >
                       <Icon name="X" className="w-3.5 h-3.5" />
                     </button>
@@ -3359,9 +3342,9 @@
       const [importMode, setImportMode] = useState('replace');
 
       return (
-        <div className="animate-fade-in max-w-2xl">
+        <div className=" max-w-2xl">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-2xl text-cream font-light">Settings</h2>
+            <h2 className="font-display text-2xl text-ink-100 font-light">Settings</h2>
             <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300">
               <Icon name="X" className="w-5 h-5" />
             </button>
@@ -3369,17 +3352,17 @@
 
           <div className="space-y-4">
             {/* Preferences */}
-            <div className="card rounded-xl p-5">
-              <h3 className="font-display text-lg text-cream font-normal mb-4">Preferences</h3>
+            <div className="border border-ink-700 p-5">
+              <h3 className="font-display text-lg text-ink-100 font-normal mb-4">Preferences</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 border border-white/[0.06] rounded-lg">
+                <div className="flex items-center justify-between p-3 border border-ink-700 ">
                   <div>
-                    <p className="text-sm text-cream font-light">Measurement Units</p>
+                    <p className="text-sm text-ink-100 font-light">Measurement Units</p>
                     <p className="text-2xs text-ink-500 mt-0.5">Display measurements in ounces or milliliters</p>
                   </div>
                   <button
                     onClick={onToggleUnit}
-                    className="px-4 py-2 rounded-lg border border-copper/30 bg-copper/10 hover:bg-copper/20 text-copper font-medium text-sm transition-colors"
+                    className="px-4 py-2  border border-copper/30 bg-copper/10 copper/20 text-copper font-medium text-sm transition-colors"
                   >
                     {unitPreference === 'ml' ? 'ml' : 'oz'}
                   </button>
@@ -3388,34 +3371,34 @@
             </div>
 
             {/* Backup & Restore */}
-            <div className="card rounded-xl p-5">
-              <h3 className="font-display text-lg text-cream font-normal mb-4">Backup & Restore</h3>
+            <div className="border border-ink-700 p-5">
+              <h3 className="font-display text-lg text-ink-100 font-normal mb-4">Backup & Restore</h3>
               <div className="space-y-3">
-                <button onClick={onExport} className="w-full p-4 bg-ink-800 text-left hover:bg-ink-700 transition-colors group">
+                <button onClick={onExport} className="w-full p-4 bg-ink-800 text-left ink-700 transition-colors group">
                   <div className="flex items-center gap-3">
                     <Icon name="Download" className="w-5 h-5 text-copper" />
                     <div>
-                      <p className="text-cream font-light group-hover:text-copper-light transition-colors">Export Data</p>
+                      <p className="text-ink-100 font-light text-copper-light transition-colors">Export Data</p>
                       <p className="text-2xs text-ink-500 mt-0.5">Download your recipes and settings</p>
                     </div>
                   </div>
                 </button>
               <input type="file" ref={fileRef} onChange={(e) => onImport(e, importMode)} accept=".json" className="hidden" />
-              <button onClick={() => fileRef.current?.click()} className="w-full p-4 bg-ink-800 text-left hover:bg-ink-700 transition-colors group">
+              <button onClick={() => fileRef.current?.click()} className="w-full p-4 bg-ink-800 text-left ink-700 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
                   <div className="flex-1">
-                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Everything</p>
+                    <p className="text-ink-100 font-light text-copper-light transition-colors">Import Everything</p>
                     <p className="text-2xs text-ink-500 mt-0.5">Restore from a backup file</p>
                   </div>
                 </div>
               </button>
               
               {/* Import mode selection */}
-              <div className="mt-3 pt-3 border-t border-white/[0.03]">
+              <div className="mt-3 pt-3 border-t border-ink-700">
                 <p className="text-2xs text-ink-600 uppercase tracking-wider mb-2">Import Mode</p>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-3 p-2 card rounded-lg cursor-pointer">
+                  <label className="flex items-center gap-3 p-2 border border-ink-700 cursor-pointer">
                     <input
                       type="radio"
                       name="importMode"
@@ -3429,7 +3412,7 @@
                       <p className="text-2xs text-ink-600">Overwrite all existing data</p>
                     </div>
                   </label>
-                  <label className="flex items-center gap-3 p-2 card rounded-lg cursor-pointer">
+                  <label className="flex items-center gap-3 p-2 border border-ink-700 cursor-pointer">
                     <input
                       type="radio"
                       name="importMode"
@@ -3445,11 +3428,11 @@
                   </label>
                 </div>
               </div>
-              <button onClick={onImportShared} className="w-full p-4 bg-ink-800 text-left hover:bg-ink-700 transition-colors group">
+              <button onClick={onImportShared} className="w-full p-4 bg-ink-800 text-left ink-700 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Share2" className="w-5 h-5 text-copper" />
                   <div>
-                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Shared Recipe</p>
+                    <p className="text-ink-100 font-light text-copper-light transition-colors">Import Shared Recipe</p>
                     <p className="text-2xs text-ink-500 mt-0.5">Paste a shared recipe JSON</p>
                   </div>
                 </div>
@@ -3459,20 +3442,20 @@
 
             {/* Debug (hidden) */}
             {unmatchedIngredients.length > 0 && (
-              <div className="card rounded-xl p-5">
+              <div className="border border-ink-700 p-5">
                 <button
                   onClick={() => setShowDebug(!showDebug)}
                   className="w-full flex items-center justify-between text-left"
                 >
-                  <h3 className="font-display text-lg text-cream font-normal">Debug: Unmatched Ingredients</h3>
+                  <h3 className="font-display text-lg text-ink-100 font-normal">Debug: Unmatched Ingredients</h3>
                   <Icon name={showDebug ? 'ChevronUp' : 'ChevronDown'} className="w-5 h-5 text-ink-500" />
                 </button>
                 {showDebug && (
-                  <div className="mt-4 pt-4 border-t border-white/[0.03]">
+                  <div className="mt-4 pt-4 border-t border-ink-700">
                     <p className="text-sm text-ink-400 mb-3">Ingredients that couldn't be matched to canonical names:</p>
                     <div className="flex flex-wrap gap-2">
                       {unmatchedIngredients.map((ing, i) => (
-                        <span key={i} className="px-2 py-1 rounded bg-white/[0.02] text-xs text-ink-500 font-mono">
+                        <span key={i} className="px-2 py-1 bg-transparent text-xs text-ink-500 font-mono">
                           {ing}
                         </span>
                       ))}
@@ -3498,14 +3481,14 @@
       const c = config[view] || config.browse;
       
       return (
-        <div className="text-center py-16 animate-fade-in">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/[0.02] flex items-center justify-center">
+        <div className="text-center py-16 ">
+          <div className="w-16 h-16 mx-auto mb-4  bg-transparent flex items-center justify-center">
             <Icon name={c.icon} className="w-7 h-7 text-ink-700" />
           </div>
           <p className="text-ink-400 font-light">{c.title}</p>
           <p className="text-ink-600 text-sm mt-1">{c.subtitle}</p>
           {c.action && (
-            <button onClick={c.actionFn} className="mt-4 px-4 py-2 btn-copper rounded-lg text-sm font-medium">
+            <button onClick={c.actionFn} className="mt-4 px-4 py-2 btn-copper text-sm font-medium">
               {c.action}
             </button>
           )}
@@ -3514,10 +3497,10 @@
     };
 
     const RecipeCard = ({ drink, rating, isSaved, isFavorite, canMake, missingCount, onClick, onToggleSaved, onToggleFavorite, className }) => (
-      <div className={`card rounded-xl overflow-hidden group cursor-pointer transition-all hover:border-white/[0.06] ${className}`} onClick={onClick}>
+      <div className={`border border-ink-700 overflow-hidden group cursor-pointer  ${className}`} onClick={onClick}>
         <div className="relative h-36 sm:h-44 overflow-hidden bg-ink-900">
           {drink.image ? (
-            <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-75 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500" loading="lazy" />
+            <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-75 opacity-90 scale-105  duration-500" loading="lazy" />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-ink-850 to-ink-900">
               <span className="font-display text-4xl text-ink-700">{drink.name.charAt(0)}</span>
@@ -3528,29 +3511,29 @@
           {/* Status badges */}
           <div className="absolute top-2.5 left-2.5 flex gap-1.5">
             {canMake && (
-              <span className="text-2xs px-2 py-1 rounded bg-emerald-900/80 text-emerald-300 tracking-wide uppercase font-medium">Ready</span>
+              <span className="text-2xs px-2 py-1 bg-emerald-900/80 text-emerald-300 tracking-wide uppercase font-medium">Ready</span>
             )}
             {!canMake && missingCount > 0 && missingCount <= 2 && (
-              <span className="text-2xs px-2 py-1 rounded bg-amber-900/60 text-amber-300 tracking-wide uppercase font-medium">
+              <span className="text-2xs px-2 py-1 bg-amber-900/60 text-amber-300 tracking-wide uppercase font-medium">
                 {missingCount} away
               </span>
             )}
             {drink.source === 'custom' && (
-              <span className="text-2xs px-2 py-1 rounded bg-copper/20 text-copper tracking-wide uppercase font-medium">Custom</span>
+              <span className="text-2xs px-2 py-1 bg-copper/20 text-copper tracking-wide uppercase font-medium">Custom</span>
             )}
           </div>
           
           {/* Quick actions */}
-          <div className="absolute top-2.5 right-2.5 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2.5 right-2.5 flex gap-1 opacity-0 opacity-100 transition-opacity">
             <button
               onClick={(e) => { e.stopPropagation(); onToggleFavorite(); }}
-              className={`p-1.5 rounded-lg backdrop-blur-sm transition-colors ${isFavorite ? 'bg-copper/30 text-copper' : 'bg-ink-950/60 text-ink-400 hover:text-copper'}`}
+              className={`p-1.5  backdrop-blur-sm transition-colors ${isFavorite ? 'bg-copper/30 text-copper' : 'bg-ink-950/60 text-ink-400 hover:text-copper'}`}
             >
               <Icon name="Heart" className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); onToggleSaved(); }}
-              className={`p-1.5 rounded-lg backdrop-blur-sm transition-colors ${isSaved ? 'bg-copper/30 text-copper' : 'bg-ink-950/60 text-ink-400 hover:text-copper'}`}
+              className={`p-1.5  backdrop-blur-sm transition-colors ${isSaved ? 'bg-copper/30 text-copper' : 'bg-ink-950/60 text-ink-400 hover:text-copper'}`}
             >
               <Icon name="Bookmark" className="w-3.5 h-3.5" />
             </button>
@@ -3558,14 +3541,14 @@
           
           {/* Ingredient count */}
           <div className="absolute bottom-2.5 right-2.5">
-            <span className="text-2xs text-ink-500 bg-ink-950/60 backdrop-blur-sm px-2 py-1 rounded">
+            <span className="text-2xs text-ink-500 bg-ink-950/60 backdrop-blur-sm px-2 py-1">
               {drink.ingredients?.length || 0} ing.
             </span>
           </div>
         </div>
         
         <div className="p-3 sm:p-4">
-          <h3 className="font-display text-base sm:text-lg text-cream font-normal leading-tight group-hover:text-copper-light transition-colors line-clamp-1">
+          <h3 className="font-display text-base sm:text-lg text-ink-100 font-normal leading-tight text-copper-light transition-colors line-clamp-1">
             {drink.name}
           </h3>
           <div className="flex items-center justify-between mt-1.5">
@@ -3609,7 +3592,7 @@
       
       return (
         <div
-          className="py-4 border-b border-ink-700 cursor-pointer hover:bg-ink-900/20 transition-colors last:border-0"
+          className="py-4 border-b border-ink-700 cursor-pointer last:border-0"
           onClick={onClick}
         >
           <div className="flex items-start gap-4">
@@ -3660,12 +3643,12 @@
       }, []);
       
       return (
-        <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
+        <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto" onClick={onClose}>
           <div className="min-h-screen py-8 px-4" onClick={e => e.stopPropagation()}>
             <div className="max-w-2xl mx-auto">
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
-                <button onClick={onClose} className="text-ink-500 hover:text-ink-300 transition-colors">
+                <button onClick={onClose} className="text-ink-500 hover:text-ink-300">
                   ← Back
                 </button>
                 <div className="text-center">
@@ -3867,7 +3850,7 @@
       });
 
       return (
-        <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto">
           <div className="min-h-screen py-8 px-4">
             <div className="max-w-2xl mx-auto">
               {/* Header */}
@@ -4057,12 +4040,12 @@
       ];
 
       return (
-        <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in overflow-y-auto" onClick={onClose}>
+        <div className="fixed inset-0 z-50 bg-ink-950 overflow-y-auto" onClick={onClose}>
           <div className="min-h-screen sm:py-8 sm:px-4" onClick={e => e.stopPropagation()}>
-            <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl animate-slide-up">
+            <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl ">
               <div className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="font-display text-2xl text-cream font-light">Build Cocktail</h2>
+                  <h2 className="font-display text-2xl text-ink-100 font-light">Build Cocktail</h2>
                   <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300"><Icon name="X" className="w-5 h-5" /></button>
                 </div>
 
@@ -4070,14 +4053,14 @@
                   {/* Name */}
                   <div>
                     <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Name *</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Recipe name" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light" autoFocus />
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Recipe name" className="w-full px-4 py-3 input-field  text-ink-100 font-light" autoFocus />
                   </div>
 
                   {/* Category & Glass */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Category</label>
-                      <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 input-field rounded-lg text-cream font-light bg-transparent appearance-none cursor-pointer">
+                      <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 input-field  text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
                         {['Cocktail', 'Sour', 'Spirit Forward', 'Highball', 'Tiki', 'Spritz', 'Martini', 'Flip', 'Hot Drink', 'Other'].map(c => (
                           <option key={c} value={c} className="bg-ink-900">{c}</option>
                         ))}
@@ -4085,7 +4068,7 @@
                     </div>
                     <div>
                       <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Glass</label>
-                      <select value={glass} onChange={(e) => setGlass(e.target.value)} className="w-full px-4 py-3 input-field rounded-lg text-cream font-light bg-transparent appearance-none cursor-pointer">
+                      <select value={glass} onChange={(e) => setGlass(e.target.value)} className="w-full px-4 py-3 input-field  text-ink-100 font-light bg-transparent appearance-none cursor-pointer">
                         <option value="" className="bg-ink-900">Select glass...</option>
                         {glassware.map(g => (
                           <option key={g.id} value={g.name} className="bg-ink-900">{g.name}</option>
@@ -4109,17 +4092,17 @@
                           
                           return (
                             <div key={i} className="relative">
-                              <div className={`flex items-center gap-2 p-3 card rounded-lg ${isUnmatched ? 'border border-amber-900/50 bg-amber-950/10' : ''}`}>
+                              <div className={`flex items-center gap-2 p-3 border border-ink-700 ${isUnmatched ? 'border border-amber-900/50 bg-amber-950/10' : ''}`}>
                                 {/* Quick amount buttons */}
                                 <div className="flex gap-1">
                                   {['1/4', '1/2', '3/4', '1'].map(amt => (
                                     <button
                                       key={amt}
                                       onClick={() => quickAddAmount(i, amt)}
-                                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                                      className={`px-2 py-1 text-xs transition-colors ${
                                         ing.amount === amt 
                                           ? 'bg-copper/20 text-copper border border-copper/30' 
-                                          : 'bg-white/[0.02] text-ink-500 hover:bg-white/[0.05] border border-white/[0.06]'
+                                          : 'bg-transparent text-ink-500 transparent border border-ink-700'
                                       }`}
                                     >
                                       {amt}
@@ -4130,7 +4113,7 @@
                                 <select
                                   value={ing.amount}
                                   onChange={(e) => updateIngredient(i, 'amount', e.target.value)}
-                                  className="w-20 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
+                                  className="w-20 px-2 py-1.5 bg-transparent border border-ink-700 text-sm text-copper-light font-light appearance-none cursor-pointer"
                                 >
                                   <option value="" className="bg-ink-900">—</option>
                                   {amounts.map(a => (
@@ -4144,10 +4127,10 @@
                                     <button
                                       key={unit}
                                       onClick={() => updateIngredient(i, 'unit', unit)}
-                                      className={`px-2 py-1 text-xs rounded transition-colors ${
+                                      className={`px-2 py-1 text-xs transition-colors ${
                                         ing.unit === unit
                                           ? 'bg-copper/20 text-copper border border-copper/30'
-                                          : 'bg-white/[0.02] text-ink-500 hover:bg-white/[0.05] border border-white/[0.06]'
+                                          : 'bg-transparent text-ink-500 transparent border border-ink-700'
                                       }`}
                                     >
                                       {unit}
@@ -4158,7 +4141,7 @@
                                 <select
                                   value={ing.unit}
                                   onChange={(e) => updateIngredient(i, 'unit', e.target.value)}
-                                  className="w-24 px-2 py-1.5 bg-white/[0.02] border border-white/[0.06] rounded text-sm text-copper-light font-light appearance-none cursor-pointer"
+                                  className="w-24 px-2 py-1.5 bg-transparent border border-ink-700 text-sm text-copper-light font-light appearance-none cursor-pointer"
                                 >
                                   {measurements.map(m => (
                                     <option key={m.id} value={m.name} className="bg-ink-900">{m.name}</option>
@@ -4213,18 +4196,18 @@
                                       }, 200);
                                     }}
                                     placeholder="Ingredient name"
-                                    className={`w-full px-3 py-1.5 bg-white/[0.02] border rounded text-sm font-light ${
+                                    className={`w-full px-3 py-1.5 bg-transparent border text-sm font-light ${
                                       isUnmatched 
                                         ? 'border-amber-900/50 text-amber-300' 
                                         : canonicalName 
                                           ? 'border-emerald-900/30 text-ink-300' 
-                                          : 'border-white/[0.06] text-ink-300'
+                                          : 'border-ink-700 text-ink-300'
                                     }`}
                                   />
                                   
                                   {/* Autocomplete dropdown */}
                                   {showAutocomplete && editingIngredientIndex === i && autocompleteSuggestions.length > 0 && (
-                                    <div className="absolute top-full left-0 right-0 mt-1 bg-ink-900 border border-white/[0.06] rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
+                                    <div className="absolute top-full left-0 right-0 mt-1 bg-ink-900 border border-ink-700   z-50 max-h-48 overflow-y-auto">
                                       {autocompleteSuggestions.map((suggestion, idx) => (
                                         <button
                                           key={idx}
@@ -4236,7 +4219,7 @@
                                           className={`w-full text-left px-3 py-2 text-sm transition-colors ${
                                             selectedSuggestionIndex === idx
                                               ? 'bg-copper/20 text-copper'
-                                              : 'text-ink-300 hover:bg-white/[0.05] hover:text-cream'
+                                              : 'text-ink-300 transparent hover:text-ink-100'
                                           }`}
                                         >
                                           {suggestion}
@@ -4247,7 +4230,7 @@
                                   
                                   {/* Validation feedback */}
                                   {isUnmatched && ing.name.length >= 2 && (
-                                    <div className="absolute top-full left-0 right-0 mt-1 px-2 py-1 text-2xs text-amber-400 bg-amber-950/30 border border-amber-900/50 rounded z-40">
+                                    <div className="absolute top-full left-0 right-0 mt-1 px-2 py-1 text-2xs text-amber-400 bg-amber-950/30 border border-amber-900/50 z-40">
                                       Unmatched ingredient
                                     </div>
                                   )}
@@ -4267,13 +4250,13 @@
                     {!showIngredientPicker ? (
                       <button
                         onClick={() => setShowIngredientPicker(true)}
-                        className="w-full p-3 border border-dashed border-ink-700 hover:border-copper/50 rounded-lg text-ink-500 hover:text-copper text-sm font-light transition-colors flex items-center justify-center gap-2"
+                        className="w-full p-3 border border-dashed border-ink-700 copper/50  text-ink-500 hover:text-copper text-sm font-light transition-colors flex items-center justify-center gap-2"
                       >
                         <Icon name="Plus" className="w-4 h-4" />
                         Add Ingredient
                       </button>
                     ) : (
-                      <div className="card-elevated rounded-xl p-3 animate-slide-down">
+                      <div className="border border-ink-700 p-3 ">
                         {/* Search */}
                         <div className="relative mb-3">
                           <Icon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-600" />
@@ -4282,7 +4265,7 @@
                             value={ingredientSearch}
                             onChange={(e) => setIngredientSearch(e.target.value)}
                             placeholder="Search ingredients..."
-                            className="w-full pl-10 pr-4 py-2.5 input-field rounded-lg text-sm text-cream font-light"
+                            className="w-full pl-10 pr-4 py-2.5 input-field  text-sm text-ink-100 font-light"
                             autoFocus
                           />
                         </div>
@@ -4294,9 +4277,9 @@
                               <button
                                 key={i}
                                 onClick={() => addIngredient(ing.name)}
-                                className="w-full text-left px-3 py-2 rounded hover:bg-white/[0.05] transition-colors"
+                                className="w-full text-left px-3 py-2 transparent transition-colors"
                               >
-                                <span className="text-sm text-cream">{ing.name}</span>
+                                <span className="text-sm text-ink-100">{ing.name}</span>
                                 <span className="text-2xs text-ink-600 ml-2">{ing.subcategory}</span>
                               </button>
                             ))}
@@ -4318,13 +4301,13 @@
                               <div key={cat.id} className="mb-1">
                                 <button
                                   onClick={() => setExpandedCategory(expandedCategory === cat.id ? null : cat.id)}
-                                  className="w-full flex items-center justify-between px-3 py-2 hover:bg-white/[0.03] rounded transition-colors"
+                                  className="w-full flex items-center justify-between px-3 py-2 transparent transition-colors"
                                 >
                                   <span className="text-xs text-ink-400 uppercase tracking-wider">{cat.name}</span>
                                   <Icon name={expandedCategory === cat.id ? 'ChevronDown' : 'ChevronRight'} className="w-4 h-4 text-ink-600" />
                                 </button>
                                 {expandedCategory === cat.id && (
-                                  <div className="ml-2 border-l border-white/[0.03]">
+                                  <div className="ml-2 border-l border-ink-700">
                                     {cat.subcategories?.map(sub => (
                                       <div key={sub.id} className="ml-2">
                                         <p className="text-2xs text-ink-600 px-2 py-1 mt-1">{sub.name}</p>
@@ -4332,7 +4315,7 @@
                                           <button
                                             key={item.id}
                                             onClick={() => addIngredient(item.name)}
-                                            className="w-full text-left px-3 py-1.5 text-sm text-ink-300 hover:text-cream hover:bg-white/[0.03] rounded transition-colors"
+                                            className="w-full text-left px-3 py-1.5 text-sm text-ink-300 hover:text-ink-100 transparent transition-colors"
                                           >
                                             {item.name}
                                           </button>
@@ -4359,19 +4342,19 @@
                   {/* Method */}
                   <div>
                     <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Method</label>
-                    <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Shake, stir, build..." rows="3" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
+                    <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="Shake, stir, build..." rows="3" className="w-full px-4 py-3 input-field  text-ink-100 font-light resize-none" />
                   </div>
 
                   {/* Notes */}
                   <div>
                     <label className="text-2xs text-ink-500 uppercase tracking-widest mb-2 block">Notes</label>
-                    <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Where you had it, variations, etc..." rows="2" className="w-full px-4 py-3 input-field rounded-lg text-cream font-light resize-none" />
+                    <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Where you had it, variations, etc..." rows="2" className="w-full px-4 py-3 input-field  text-ink-100 font-light resize-none" />
                   </div>
 
                   <button
                     onClick={handleSubmit}
                     disabled={!name.trim() || ingredients.length === 0}
-                    className="w-full py-4 btn-copper rounded-lg text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-4 btn-copper text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Save Recipe
                   </button>
@@ -4692,17 +4675,17 @@
       }, [getAllDrinks, canMakeDrink, ingredientsDb, inventory, getActiveBarInventory, normalizeIngredient]);
 
       return (
-        <div className="max-w-2xl mx-auto animate-fade-in">
+        <div className="max-w-2xl mx-auto ">
           {/* Bar Selector */}
-          <div className="card rounded-xl p-4 mb-6">
+          <div className="border border-ink-700 p-4 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Icon name="Wine" className="w-5 h-5 text-copper" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-cream font-medium">{activeBar?.name || 'Bar'}</span>
+                    <span className="text-sm text-ink-100 font-medium">{activeBar?.name || 'Bar'}</span>
                     {activeBar?.isMain && (
-                      <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/20 text-copper border border-copper/30">
+                      <span className="text-2xs px-2 py-0.5  bg-copper/20 text-copper border border-copper/30">
                         Main
                       </span>
                     )}
@@ -4713,7 +4696,7 @@
               <div className="flex items-center gap-2">
                 <button
                   onClick={onManageBars}
-                  className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-colors"
+                  className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700  transition-colors"
                 >
                   <Icon name="Settings" className="w-3.5 h-3.5 inline mr-1.5" />
                   Manage
@@ -4724,7 +4707,7 @@
                       const nextBar = bars.find(b => b.id !== activeBar?.id) || bars[0];
                       onSwitchBar(nextBar.id);
                     }}
-                    className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30 rounded-lg hover:border-copper/50 transition-colors"
+                    className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30  copper/50 transition-colors"
                   >
                     <Icon name="RefreshCw" className="w-3.5 h-3.5 inline mr-1.5" />
                     Switch
@@ -4736,18 +4719,18 @@
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="font-display text-2xl text-cream font-light">Your Bar</h2>
+              <h2 className="font-display text-2xl text-ink-100 font-light">Your Bar</h2>
               <p className="text-ink-500 text-sm mt-0.5">{inventory.length} ingredients</p>
             </div>
             {!isAdding && (
-              <button onClick={() => setIsAdding(true)} className="px-4 py-2.5 btn-copper rounded-lg text-sm font-medium">
+              <button onClick={() => setIsAdding(true)} className="px-4 py-2.5 btn-copper text-sm font-medium">
                 Add Ingredient
               </button>
             )}
           </div>
 
           {isAdding && (
-            <div className="card-elevated rounded-xl p-4 mb-6 animate-slide-down">
+            <div className="border border-ink-700 p-4 mb-6 ">
               <div className="flex gap-2 mb-3">
                 <div className="flex-1 relative">
                   <input
@@ -4800,17 +4783,17 @@
                     }}
                     onFocus={() => setShowSuggestions(true)}
                     placeholder="Type to search ingredients..."
-                    className="w-full px-4 py-3 input-field rounded-lg text-cream font-light"
+                    className="w-full px-4 py-3 input-field text-ink-100"
                   />
                   
                   {/* Autocomplete dropdown */}
                   {showSuggestions && autocompleteSuggestions.length > 0 && (
                     <div 
                       ref={suggestionsRef}
-                      className="absolute top-full left-0 right-0 mt-2 bg-ink-900 border border-white/[0.06] rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto"
+                      className="absolute top-full left-0 right-0 mt-2 bg-ink-900 border border-ink-700   z-50 max-h-96 overflow-y-auto"
                     >
                       {Object.entries(groupedSuggestions).map(([category, items]) => (
-                        <div key={category} className="border-b border-white/[0.03] last:border-0">
+                        <div key={category} className="border-b border-ink-700 last:border-0">
                           <div className="px-3 py-2 bg-ink-950/50">
                             <p className="text-2xs text-ink-500 uppercase tracking-wider">{category}</p>
                           </div>
@@ -4825,7 +4808,7 @@
                                 className={`w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center justify-between ${
                                   selectedIndex === globalIdx
                                     ? 'bg-copper/20 text-copper'
-                                    : 'text-ink-300 hover:bg-white/[0.05] hover:text-cream'
+                                    : 'text-ink-300 transparent hover:text-ink-100'
                                 }`}
                               >
                                 <span>{ing.name}</span>
@@ -4855,14 +4838,14 @@
               
               {/* Quick add buttons (when input is empty) */}
               {!newItem.trim() && quickSuggestions.length > 0 && (
-                <div className="border-t border-white/[0.03] pt-3">
+                <div className="border-t border-ink-700 pt-3">
                   <p className="text-2xs text-ink-600 uppercase tracking-widest mb-2">Quick add</p>
                   <div className="flex flex-wrap gap-1.5">
                     {quickSuggestions.map(s => (
                       <button
                         key={s}
                         onClick={() => handleAdd(s)}
-                        className="px-2.5 py-1.5 text-xs text-ink-400 bg-white/[0.02] hover:bg-white/[0.05] hover:text-copper rounded-md transition-colors"
+                        className="px-2.5 py-1.5 text-xs text-ink-400 bg-transparent transparent hover:text-copper-md transition-colors"
                       >
                         {s}
                       </button>
@@ -4875,7 +4858,7 @@
 
           {inventory.length === 0 ? (
             <div className="text-center py-16">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/[0.02] flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-4  bg-transparent flex items-center justify-center">
                 <Icon name="Wine" className="w-7 h-7 text-ink-700" />
               </div>
               <p className="text-ink-400 font-light">Your bar is empty</p>
@@ -4890,9 +4873,9 @@
                     <h3 className="text-2xs text-ink-500 uppercase tracking-widest mb-3">{cat}</h3>
                     <div className="flex flex-wrap gap-2">
                       {items.map(item => (
-                        <div key={item.id} className="group flex items-center gap-2 px-3 py-2 card rounded-lg hover:border-white/[0.06] transition-colors">
+                        <div key={item.id} className="group flex items-center gap-2 px-3 py-2 border border-ink-700 transition-colors">
                           <span className="text-sm text-ink-300 capitalize font-light">{item.name}</span>
-                          <button onClick={() => onRemove(item.id)} className="text-ink-700 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
+                          <button onClick={() => onRemove(item.id)} className="text-ink-700 hover:text-red-400 opacity-0 opacity-100 ">
                             <Icon name="X" className="w-3 h-3" />
                           </button>
                         </div>
@@ -4908,22 +4891,22 @@
           {gatewayBottles.length > 0 && (
             <div className="mt-8">
               <div className="mb-4">
-                <h2 className="font-display text-xl text-cream font-light mb-1">Gateway Bottles</h2>
+                <h2 className="font-display text-xl text-ink-100 font-light mb-1">Gateway Bottles</h2>
                 <p className="text-ink-500 text-sm">Adding one of these would unlock new recipes</p>
               </div>
-              <div className="card rounded-xl overflow-hidden">
+              <div className="border border-ink-700 overflow-hidden">
                 {gatewayBottles.map((item) => (
                   <div
                     key={item.name}
-                    className="py-3 px-4 border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors last:border-0 group"
+                    className="py-3 px-4 border-b border-ink-700 transparent transition-colors last:border-0 group"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-display text-base text-cream font-medium group-hover:text-copper-light transition-colors">
+                          <h3 className="font-display text-base text-ink-100 font-medium text-copper-light transition-colors">
                             {item.name}
                           </h3>
-                          <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/20 text-copper border border-copper/30 font-medium">
+                          <span className="text-2xs px-2 py-0.5  bg-copper/20 text-copper border border-copper/30 font-medium">
                             {item.count} {item.count === 1 ? 'recipe' : 'recipes'}
                           </span>
                         </div>
@@ -4934,7 +4917,7 @@
                       </div>
                       <button
                         onClick={() => onAdd(item.name)}
-                        className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30 hover:border-copper/50 rounded-lg transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
+                        className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30 copper/50  transition-colors flex-shrink-0 opacity-0 opacity-100"
                         title="Add to bar"
                       >
                         Add
@@ -4952,25 +4935,25 @@
     const BackupModal = ({ onClose, onExport, onImport }) => {
       const fileRef = useRef(null);
       return (
-        <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onClose}>
-          <div className="max-w-sm w-full bg-ink-900 p-5 animate-scale-in" onClick={e => e.stopPropagation()}>
-            <h2 className="font-display text-xl text-cream font-light mb-5">Backup & Restore</h2>
+        <div className="fixed inset-0 z-50 bg-ink-950 flex items-center justify-center p-4" onClick={onClose}>
+          <div className="max-w-sm w-full bg-ink-900 p-5 " onClick={e => e.stopPropagation()}>
+            <h2 className="font-display text-xl text-ink-100 font-light mb-5">Backup & Restore</h2>
             <div className="space-y-3">
-              <button onClick={onExport} className="w-full p-4 card-elevated rounded-xl text-left hover:border-white/[0.08] transition-colors group">
+              <button onClick={onExport} className="w-full p-4 border border-ink-700 text-left transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Download" className="w-5 h-5 text-copper" />
                   <div>
-                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Export Data</p>
+                    <p className="text-ink-100 font-light text-copper-light transition-colors">Export Data</p>
                     <p className="text-2xs text-ink-500 mt-0.5">Download your recipes and settings</p>
                   </div>
                 </div>
               </button>
               <input type="file" ref={fileRef} onChange={onImport} accept=".json" className="hidden" />
-              <button onClick={() => fileRef.current?.click()} className="w-full p-4 card-elevated rounded-xl text-left hover:border-white/[0.08] transition-colors group">
+              <button onClick={() => fileRef.current?.click()} className="w-full p-4 border border-ink-700 text-left transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
                   <div>
-                    <p className="text-cream font-light group-hover:text-copper-light transition-colors">Import Data</p>
+                    <p className="text-ink-100 font-light text-copper-light transition-colors">Import Data</p>
                     <p className="text-2xs text-ink-500 mt-0.5">Restore from a backup file</p>
                   </div>
                 </div>
@@ -5016,15 +4999,15 @@
       };
 
       return (
-        <div className="max-w-3xl mx-auto animate-fade-in">
+        <div className="max-w-3xl mx-auto ">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="font-display text-2xl text-cream font-light">Manage Bars</h2>
+              <h2 className="font-display text-2xl text-ink-100 font-light">Manage Bars</h2>
               <p className="text-ink-500 text-sm mt-0.5">Create and organize multiple bar inventories</p>
             </div>
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg hover:border-white/[0.1] transition-colors"
+              className="px-4 py-2 text-sm text-ink-400 hover:text-ink-100 border border-ink-700  transition-colors"
             >
               <Icon name="X" className="w-4 h-4 inline mr-2" />
               Close
@@ -5033,7 +5016,7 @@
 
           {/* Create New Bar */}
           {showCreate ? (
-            <div className="card rounded-xl p-4 mb-4">
+            <div className="border border-ink-700 p-4 mb-4">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -5047,13 +5030,13 @@
                     }
                   }}
                   placeholder="Bar name (e.g., Home, Cabin)"
-                  className="flex-1 px-4 py-2 input-field rounded-lg text-cream"
+                  className="flex-1 px-4 py-2 input-field  text-ink-100"
                   autoFocus
                 />
                 <button
                   onClick={handleCreate}
                   disabled={!newBarName.trim()}
-                  className="px-4 py-2 btn-copper rounded-lg text-sm font-medium disabled:opacity-50"
+                  className="px-4 py-2 btn-copper text-sm font-medium disabled:opacity-50"
                 >
                   Create
                 </button>
@@ -5062,7 +5045,7 @@
                     setShowCreate(false);
                     setNewBarName('');
                   }}
-                  className="px-4 py-2 text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                  className="px-4 py-2 text-ink-400 hover:text-ink-100 border border-ink-700 "
                 >
                   Cancel
                 </button>
@@ -5071,7 +5054,7 @@
           ) : (
             <button
               onClick={() => setShowCreate(true)}
-              className="mb-4 px-4 py-2.5 btn-copper rounded-lg text-sm font-medium w-full"
+              className="mb-4 px-4 py-2.5 btn-copper text-sm font-medium w-full"
             >
               <Icon name="Plus" className="w-4 h-4 inline mr-2" />
               Create New Bar
@@ -5083,7 +5066,7 @@
             {bars.map(bar => (
               <div
                 key={bar.id}
-                className={`card rounded-xl p-4 ${bar.id === activeBarId ? 'border-copper/30 bg-copper/5' : ''}`}
+                className={`border border-ink-700 p-4 ${bar.id === activeBarId ? 'border-copper/30 bg-copper/5' : ''}`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -5100,7 +5083,7 @@
                               setEditName('');
                             }
                           }}
-                          className="flex-1 px-3 py-1.5 input-field rounded-lg text-cream text-sm"
+                          className="flex-1 px-3 py-1.5 input-field  text-ink-100 text-sm"
                           autoFocus
                         />
                         <button
@@ -5122,14 +5105,14 @@
                     ) : (
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-cream font-medium">{bar.name}</span>
+                          <span className="text-ink-100 font-medium">{bar.name}</span>
                           {bar.isMain && (
-                            <span className="text-2xs px-2 py-0.5 rounded-full bg-copper/20 text-copper border border-copper/30">
+                            <span className="text-2xs px-2 py-0.5  bg-copper/20 text-copper border border-copper/30">
                               Main
                             </span>
                           )}
                           {bar.id === activeBarId && (
-                            <span className="text-2xs px-2 py-0.5 rounded-full bg-emerald-900/30 text-emerald-300 border border-emerald-900/50">
+                            <span className="text-2xs px-2 py-0.5  bg-emerald-900/30 text-emerald-300 border border-emerald-900/50">
                               Active
                             </span>
                           )}
@@ -5147,7 +5130,7 @@
                       {bar.id !== activeBarId && (
                         <button
                           onClick={() => onSwitchBar(bar.id)}
-                          className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30 rounded-lg hover:border-copper/50"
+                          className="px-3 py-1.5 text-xs text-copper hover:text-copper-light border border-copper/30  copper/50"
                         >
                           Switch
                         </button>
@@ -5155,7 +5138,7 @@
                       {!bar.isMain && (
                         <button
                           onClick={() => onSetMainBar(bar.id)}
-                          className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                          className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 "
                           title="Set as main bar"
                         >
                           <Icon name="Star" className="w-3.5 h-3.5" />
@@ -5163,14 +5146,14 @@
                       )}
                       <button
                         onClick={() => onDuplicateBar(bar.id)}
-                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 "
                         title="Duplicate bar"
                       >
                         <Icon name="Copy" className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleStartEdit(bar)}
-                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-cream border border-white/[0.06] rounded-lg"
+                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 "
                         title="Rename"
                       >
                         <Icon name="Edit" className="w-3.5 h-3.5" />
@@ -5178,7 +5161,7 @@
                       {bars.length > 1 && (
                         <button
                           onClick={() => setDeletingId(bar.id)}
-                          className="px-3 py-1.5 text-xs text-red-400 hover:text-red-300 border border-red-900/30 rounded-lg"
+                          className="px-3 py-1.5 text-xs text-red-400 hover:text-red-300 border border-red-900/30 "
                           title="Delete"
                         >
                           <Icon name="Trash2" className="w-3.5 h-3.5" />
@@ -5193,25 +5176,25 @@
 
           {/* Delete Confirmation */}
           {deletingId && (
-            <div className="fixed inset-0 z-50 bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4">
-              <div className="max-w-xs w-full bg-ink-900 p-5 animate-scale-in text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
+            <div className="fixed inset-0 z-50 bg-ink-950 flex items-center justify-center p-4">
+              <div className="max-w-xs w-full bg-ink-900 p-5  text-center">
+                <div className="w-12 h-12 mx-auto mb-4  bg-red-900/20 flex items-center justify-center">
                   <Icon name="Trash2" className="w-5 h-5 text-red-400" />
                 </div>
-                <h3 className="font-display text-lg text-cream mb-2">Delete Bar</h3>
+                <h3 className="font-display text-lg text-ink-100 mb-2">Delete Bar</h3>
                 <p className="text-sm text-ink-400 font-light mb-5">
                   Are you sure you want to delete "{bars.find(b => b.id === deletingId)?.name}"? This cannot be undone.
                 </p>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setDeletingId(null)}
-                    className="flex-1 py-3 text-sm text-ink-400 hover:text-ink-200 card rounded-lg"
+                    className="flex-1 py-3 text-sm text-ink-400 hover:text-ink-200 border border-ink-700"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => handleDelete(deletingId)}
-                    className="flex-1 py-3 text-sm bg-red-900/30 text-red-400 hover:bg-red-900/40 rounded-lg"
+                    className="flex-1 py-3 text-sm bg-red-900/30 text-red-400 red-900/40 "
                   >
                     Delete
                   </button>
@@ -5224,16 +5207,16 @@
     };
 
     const ConfirmDialog = ({ title, message, onConfirm, onCancel }) => (
-      <div className="fixed inset-0 z-[60] bg-ink-950/95 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4" onClick={onCancel}>
-        <div className="max-w-xs w-full card rounded-2xl p-5 animate-scale-in text-center" onClick={e => e.stopPropagation()}>
-          <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
+      <div className="fixed inset-0 z-[60] bg-ink-950 flex items-center justify-center p-4" onClick={onCancel}>
+        <div className="max-w-xs w-full border border-ink-700 p-5  text-center" onClick={e => e.stopPropagation()}>
+          <div className="w-12 h-12 mx-auto mb-4  bg-red-900/20 flex items-center justify-center">
             <Icon name="Trash2" className="w-5 h-5 text-red-400" />
           </div>
-          <h3 className="font-display text-lg text-cream mb-2">{title}</h3>
+          <h3 className="font-display text-lg text-ink-100 mb-2">{title}</h3>
           <p className="text-sm text-ink-400 font-light mb-5">{message}</p>
           <div className="flex gap-3">
-            <button onClick={onCancel} className="flex-1 py-3 text-sm text-ink-400 hover:text-ink-200 card rounded-lg">Cancel</button>
-            <button onClick={onConfirm} className="flex-1 py-3 text-sm bg-red-900/50 text-red-300 hover:bg-red-900/70 rounded-lg transition-colors">Delete</button>
+            <button onClick={onCancel} className="flex-1 py-3 text-sm text-ink-400 hover:text-ink-200 border border-ink-700">Cancel</button>
+            <button onClick={onConfirm} className="flex-1 py-3 text-sm bg-red-900/50 text-red-300 red-900/70  transition-colors">Delete</button>
           </div>
         </div>
       </div>
