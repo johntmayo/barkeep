@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -34,8 +34,8 @@
               500: 'var(--text-secondary)',
               400: 'var(--text-secondary)',
               300: 'var(--text-primary)',
-              200: '#f3f4f6',
-              100: '#f9fafb',
+              200: 'var(--text-primary)',
+              100: 'var(--text-primary)',
             },
             copper: {
               DEFAULT: '#d4a574',
@@ -192,6 +192,18 @@
       .mobile-bottom-nav { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
     }
   </style>
+  <script>
+    // Set initial theme immediately to avoid flash
+    (function() {
+      try {
+        const saved = localStorage.getItem('theme-preference');
+        const theme = saved || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
 </head>
 <body class="min-h-screen paper-texture">
   <div id="root"></div>
@@ -618,8 +630,8 @@
       const [theme, setTheme] = useState(() => {
         const saved = storage.get('theme-preference');
         if (saved?.value) return saved.value;
-        // Default to system preference
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        // Default to light mode
+        return 'light';
       });
       const mainRef = useRef(null);
       const toast = useToast();
