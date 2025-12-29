@@ -3715,16 +3715,16 @@
                     {isToTry ? '— try' : '+ try'}
                   </button>
                   <button
-                    onClick={() => onShare?.(drink)}
-                    className="text-ink-500 hover:text-ink-100 transition-colors"
-                  >
-                    share
-                  </button>
-                  <button
                     onClick={() => setShowCollectionPicker(true)}
                     className="text-ink-500 hover:text-ink-100 transition-colors"
                   >
                     + collection
+                  </button>
+                  <button
+                    onClick={() => onShare?.(drink)}
+                    className="text-ink-500 hover:text-ink-100 transition-colors"
+                  >
+                    share
                   </button>
                   {drink.source === 'custom' && onEdit && (
                     <button
@@ -3769,8 +3769,9 @@
                       const hasIt = invCanonical.has(ingCanonical);
                       const displayMeasure = convertMeasure(ing.measure, unitPreference);
                       return (
-                        <div key={i} className="text-ink-100">
-                          {displayMeasure} {ing.name}
+                        <div key={i} className="text-ink-100 flex items-center gap-2">
+                          <span className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-ink-300' : 'border border-ink-600'}`}></span>
+                          <span>{displayMeasure} {ing.name}</span>
                         </div>
                       );
                     })}
