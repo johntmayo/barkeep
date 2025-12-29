@@ -1,10 +1,11 @@
-const CACHE_NAME = 'barkeep-cache-v5';
+const CACHE_NAME = 'barkeep-cache-v6';
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
   './cocktails.json',
   './ingredients.json',
+  './logo.png',
 ];
 
 self.addEventListener('install', event => {
