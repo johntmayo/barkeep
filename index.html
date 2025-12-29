@@ -3333,7 +3333,7 @@
             <div className="border border-ink-700 p-5">
               <h3 className="font-display text-lg text-ink-100 font-normal mb-4">Backup & Restore</h3>
               <div className="space-y-3">
-                <button onClick={onExport} className="w-full p-4 bg-ink-800 text-left ink-700 transition-colors group">
+                <button onClick={onExport} className="w-full p-4 bg-transparent border border-ink-700 text-left hover:bg-ink-800 hover:border-ink-600 transition-colors group">
                   <div className="flex items-center gap-3">
                     <Icon name="Download" className="w-5 h-5 text-copper" />
                     <div>
@@ -3343,7 +3343,7 @@
                   </div>
                 </button>
               <input type="file" ref={fileRef} onChange={(e) => onImport(e, importMode)} accept=".json" className="hidden" />
-              <button onClick={() => fileRef.current?.click()} className="w-full p-4 bg-ink-800 text-left ink-700 transition-colors group">
+              <button onClick={() => fileRef.current?.click()} className="w-full p-4 bg-transparent border border-ink-700 text-left hover:bg-ink-800 hover:border-ink-600 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Upload" className="w-5 h-5 text-copper" />
                   <div className="flex-1">
@@ -3387,7 +3387,7 @@
                   </label>
                 </div>
               </div>
-              <button onClick={onImportShared} className="w-full p-4 bg-ink-800 text-left ink-700 transition-colors group">
+              <button onClick={onImportShared} className="w-full p-4 bg-transparent border border-ink-700 text-left hover:bg-ink-800 hover:border-ink-600 transition-colors group">
                 <div className="flex items-center gap-3">
                   <Icon name="Share2" className="w-5 h-5 text-copper" />
                   <div>
