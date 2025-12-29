@@ -608,6 +608,7 @@
       const [selectedDrink, setSelectedDrink] = useState(null);
       const [selectedIngredient, setSelectedIngredient] = useState(null);
       const [showAddDrink, setShowAddDrink] = useState(false);
+      const [editingDrink, setEditingDrink] = useState(null);
       const [showImportExport, setShowImportExport] = useState(false);
       const [filters, setFilters] = useState({
         spirits: [],
@@ -799,7 +800,7 @@
           // Create to_try system collection
           migratedCollections.push({
             id: 'to_try',
-            name: 'To Try',
+            name: 'Try',
             description: 'Recipes you want to try',
             collectionType: 'personal',
             recipeIds: Array.from(toTryRecipeIds)
@@ -1062,7 +1063,7 @@
                   if (!toTryColl) {
                     toTryColl = {
                       id: 'to_try',
-                      name: 'To Try',
+                      name: 'Try',
                       description: 'Recipes you want to try',
                       collectionType: 'personal',
                       recipeIds: []
@@ -1140,7 +1141,7 @@
                   if (!toTryColl) {
                     toTryColl = {
                       id: 'to_try',
-                      name: 'To Try',
+                      name: 'Try',
                       description: 'Recipes you want to try',
                       collectionType: 'personal',
                       recipeIds: Array.from(toTryIds)
@@ -1243,7 +1244,7 @@
         if (!toTry) {
           toTry = {
             id: 'to_try',
-            name: 'To Try',
+            name: 'Try',
             description: 'Recipes you want to try',
             collectionType: 'personal',
             recipeIds: []
@@ -1265,7 +1266,7 @@
         if (!toTry) {
           toTry = {
             id: 'to_try',
-            name: 'To Try',
+            name: 'Try',
             description: 'Recipes you want to try',
             collectionType: 'personal',
             recipeIds: []
@@ -1290,7 +1291,7 @@
         
         setCollections(updatedCollections);
         saveData('collections', updatedCollections);
-        toast(wasAdded ? 'Added to To Try' : 'Removed from To Try', 'success');
+        toast(wasAdded ? 'Added to Try' : 'Removed from Try', 'success');
       };
 
       // Check if recipe is in to_try collection
@@ -1306,7 +1307,21 @@
         setCustomDrinks(updated);
         saveData('custom-drinks', updated);
         setShowAddDrink(false);
+        setEditingDrink(null);
         toast('Recipe saved', 'success');
+      };
+
+      const updateCustomDrink = (id, drink) => {
+        const updated = customDrinks.map(d => 
+          d.id === id 
+            ? { ...d, ...drink, dateAdded: d.dateAdded || new Date().toISOString() }
+            : d
+        );
+        setCustomDrinks(updated);
+        saveData('custom-drinks', updated);
+        setShowAddDrink(false);
+        setEditingDrink(null);
+        toast('Recipe updated', 'success');
       };
 
       const deleteCustomDrink = (id) => {
@@ -1350,7 +1365,7 @@
           }
         };
         
-        const shareText = `${drink.name}\n\nIngredients:\n${drink.ingredients?.map(i => `• ${i.measure} ${i.name}`).join('\n')}\n\n${drink.instructions || ''}\n\n---\nShared from Barkeep\n\n${JSON.stringify(sharePayload, null, 2)}`;
+        const shareText = `${drink.name}\n\nIngredients:\n${drink.ingredients?.map(i => `• ${i.measure} ${i.name}`).join('\n')}\n\n${drink.instructions || ''}\n\n---\nShared from Barkeep`;
         
         // Try Web Share API first
         if (navigator.share) {
@@ -2319,7 +2334,7 @@
                                       : 'text-ink-500 hover:text-ink-300'
                                   }`}
                                 >
-                                  To Try
+                                  Try
                                 </button>
                               </>
                             )}
@@ -2519,10 +2534,15 @@
                 setSelectedDrink(null);
                 setSelectedIngredient(ingredient);
               }}
+              onEdit={selectedDrink.source === 'custom' ? (drink) => {
+                setEditingDrink(drink);
+                setSelectedDrink(null);
+                setShowAddDrink(true);
+              } : null}
             />
           )}
 
-          {showAddDrink && <AddRecipeModal onClose={() => setShowAddDrink(false)} onAdd={addCustomDrink} ingredientsDb={ingredientsDb} />}
+          {showAddDrink && <AddRecipeModal onClose={() => { setShowAddDrink(false); setEditingDrink(null); }} onAdd={addCustomDrink} onUpdate={updateCustomDrink} editingDrink={editingDrink} ingredientsDb={ingredientsDb} />}
           
           {showImportShared && (
             <ImportSharedRecipeModal
@@ -2615,7 +2635,7 @@
       const recipeItems = [
         { id: 'browse', label: 'All Recipes', icon: 'LayoutGrid', count: allCount, description: 'Browse all cocktails' },
         { id: 'keepers', label: 'Keepers', icon: 'Star', count: favoritesCount, description: 'Recipes that stood out' },
-        { id: 'toTry', label: 'To Try', icon: 'Bookmark', count: wantToTryCount, description: 'Your queue' },
+        { id: 'toTry', label: 'Try', icon: 'Bookmark', count: wantToTryCount, description: 'Your queue' },
         { id: 'custom', label: 'My Recipes', icon: 'FlaskConical', count: customCount, description: 'Your custom recipes' },
         { id: 'collections', label: 'Collections', icon: 'Folder', count: collectionsCount, description: 'Organize recipes' },
       ];
@@ -3489,7 +3509,7 @@
       const config = {
         browse: { icon: 'Search', title: 'No recipes found', subtitle: 'Try a different search', action: null },
         keepers: { icon: 'Star', title: 'No keepers yet', subtitle: 'Mark recipes that stand out', action: null },
-        toTry: { icon: 'Bookmark', title: 'To Try list is empty', subtitle: 'Add recipes to your queue', action: null },
+        toTry: { icon: 'Bookmark', title: 'Try list is empty', subtitle: 'Add recipes to your queue', action: null },
         canMake: { icon: 'Wine', title: 'Add ingredients to your bar', subtitle: 'See what cocktails you can make', action: 'Stock Your Bar', actionFn: onAction },
         almostMake: { icon: 'Clock', title: 'No almost-ready recipes', subtitle: 'Add more ingredients to unlock', action: null },
         custom: { icon: 'FlaskConical', title: 'No custom recipes', subtitle: 'Create your own cocktail specs', action: 'Create Recipe', actionFn: onAction },
@@ -3644,7 +3664,7 @@
       );
     };
 
-    const RecipeDetail = ({ drink, onClose, isKeeper, isToTry, canMake, inventory, ingredientsDb, collections, onToggleKeeper, onToggleToTry, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit, onNavigateToIngredient }) => {
+    const RecipeDetail = ({ drink, onClose, isKeeper, isToTry, canMake, inventory, ingredientsDb, collections, onToggleKeeper, onToggleToTry, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit, onNavigateToIngredient, onEdit }) => {
       const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
       const [showCollectionPicker, setShowCollectionPicker] = useState(false);
 
@@ -3692,7 +3712,7 @@
                     onClick={onToggleToTry}
                     className={`hover:text-ink-100 transition-colors ${isToTry ? 'text-ink-100' : 'text-ink-500'}`}
                   >
-                    {isToTry ? '— to try' : '+ to try'}
+                    {isToTry ? '— try' : '+ try'}
                   </button>
                   <button
                     onClick={() => onShare?.(drink)}
@@ -3706,6 +3726,14 @@
                   >
                     + collection
                   </button>
+                  {drink.source === 'custom' && onEdit && (
+                    <button
+                      onClick={() => onEdit(drink)}
+                      className="text-ink-500 hover:text-ink-100 transition-colors"
+                    >
+                      edit
+                    </button>
+                  )}
                 </div>
 
                 {showCollectionPicker && (
@@ -3925,13 +3953,39 @@
       );
     };
 
-    const AddRecipeModal = ({ onClose, onAdd, ingredientsDb }) => {
-      const [name, setName] = useState('');
-      const [category, setCategory] = useState('Cocktail');
-      const [glass, setGlass] = useState('');
-      const [instructions, setInstructions] = useState('');
-      const [notes, setNotes] = useState('');
-      const [ingredients, setIngredients] = useState([]);
+    const AddRecipeModal = ({ onClose, onAdd, onUpdate, editingDrink, ingredientsDb }) => {
+      const [name, setName] = useState(editingDrink?.name || '');
+      const [category, setCategory] = useState(editingDrink?.category || 'Cocktail');
+      const [glass, setGlass] = useState(editingDrink?.glass || '');
+      const [instructions, setInstructions] = useState(editingDrink?.instructions || '');
+      const [notes, setNotes] = useState(editingDrink?.notes || '');
+      const [ingredients, setIngredients] = useState(() => {
+        if (!editingDrink?.ingredients) return [];
+        return editingDrink.ingredients.map(ing => {
+          // Parse measure like "2 oz" or "1/2 oz" or just "oz"
+          const measure = ing.measure || '';
+          const parts = measure.trim().split(/\s+/);
+          if (parts.length >= 2) {
+            return {
+              name: ing.name,
+              amount: parts.slice(0, -1).join(' '),
+              unit: parts[parts.length - 1]
+            };
+          } else if (parts.length === 1 && parts[0]) {
+            // Just a unit, no amount
+            return {
+              name: ing.name,
+              amount: '',
+              unit: parts[0]
+            };
+          }
+          return {
+            name: ing.name,
+            amount: '',
+            unit: 'oz'
+          };
+        });
+      });
       const [showIngredientPicker, setShowIngredientPicker] = useState(false);
       const [ingredientSearch, setIngredientSearch] = useState('');
       const [expandedCategory, setExpandedCategory] = useState(null);
@@ -4063,14 +4117,20 @@
         
         if (formattedIngredients.length === 0) return;
         
-        onAdd({ 
+        const recipeData = { 
           name: name.trim(), 
           category, 
           glass: glass.trim(), 
           instructions: instructions.trim(), 
           notes: notes.trim(), 
           ingredients: formattedIngredients 
-        });
+        };
+        
+        if (editingDrink && onUpdate) {
+          onUpdate(editingDrink.id, recipeData);
+        } else {
+          onAdd(recipeData);
+        }
       };
 
       const measurements = ingredientsDb?.measurements || [
@@ -4093,7 +4153,7 @@
             <div className="max-w-xl mx-auto bg-ink-950 sm:card sm:rounded-2xl ">
               <div className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="font-display text-2xl text-ink-100 font-light">Build Cocktail</h2>
+                  <h2 className="font-display text-2xl text-ink-100 font-light">{editingDrink ? 'Edit Recipe' : 'Build Cocktail'}</h2>
                   <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300"><Icon name="X" className="w-5 h-5" /></button>
                 </div>
 
@@ -4140,64 +4200,67 @@
                           
                           return (
                             <div key={i} className="relative">
-                              <div className={`flex items-center gap-2 p-3 border border-ink-700 ${isUnmatched ? 'border border-amber-900/50 bg-amber-950/10' : ''}`}>
-                                {/* Quick amount buttons */}
-                                <div className="flex gap-1">
-                                  {['1/4', '1/2', '3/4', '1'].map(amt => (
-                                    <button
-                                      key={amt}
-                                      onClick={() => quickAddAmount(i, amt)}
-                                      className={`px-2 py-1 text-xs transition-colors ${
-                                        ing.amount === amt 
-                                          ? 'bg-copper/20 text-copper border border-copper/30' 
-                                          : 'bg-transparent text-ink-500 transparent border border-ink-700'
-                                      }`}
-                                    >
-                                      {amt}
-                                    </button>
-                                  ))}
+                              <div className={`flex flex-col sm:flex-row sm:items-center gap-2 p-3 border border-ink-700 ${isUnmatched ? 'border border-amber-900/50 bg-amber-950/10' : ''}`}>
+                                {/* Top row: Amount and Unit controls */}
+                                <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+                                  {/* Quick amount buttons */}
+                                  <div className="flex gap-1">
+                                    {['1/4', '1/2', '3/4', '1'].map(amt => (
+                                      <button
+                                        key={amt}
+                                        onClick={() => quickAddAmount(i, amt)}
+                                        className={`px-2 py-1 text-xs transition-colors ${
+                                          ing.amount === amt 
+                                            ? 'bg-copper/20 text-copper border border-copper/30' 
+                                            : 'bg-transparent text-ink-500 transparent border border-ink-700'
+                                        }`}
+                                      >
+                                        {amt}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  
+                                  <select
+                                    value={ing.amount}
+                                    onChange={(e) => updateIngredient(i, 'amount', e.target.value)}
+                                    className="w-20 px-2 py-1.5 bg-transparent border border-ink-700 text-sm text-copper font-light appearance-none cursor-pointer flex-shrink-0"
+                                  >
+                                    <option value="" className="bg-ink-900">—</option>
+                                    {amounts.map(a => (
+                                      <option key={a} value={a} className="bg-ink-900">{a}</option>
+                                    ))}
+                                  </select>
+                                  
+                                  {/* Unit helpers */}
+                                  <div className="flex gap-1">
+                                    {['oz', 'dash', 'tsp', 'barspoon'].map(unit => (
+                                      <button
+                                        key={unit}
+                                        onClick={() => updateIngredient(i, 'unit', unit)}
+                                        className={`px-2 py-1 text-xs transition-colors ${
+                                          ing.unit === unit
+                                            ? 'bg-copper/20 text-copper border border-copper/30'
+                                            : 'bg-transparent text-ink-500 transparent border border-ink-700'
+                                        }`}
+                                      >
+                                        {unit}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  
+                                  <select
+                                    value={ing.unit}
+                                    onChange={(e) => updateIngredient(i, 'unit', e.target.value)}
+                                    className="w-24 px-2 py-1.5 bg-transparent border border-ink-700 text-sm text-copper font-light appearance-none cursor-pointer flex-shrink-0"
+                                  >
+                                    {measurements.map(m => (
+                                      <option key={m.id} value={m.name} className="bg-ink-900">{m.name}</option>
+                                    ))}
+                                  </select>
                                 </div>
                                 
-                                <select
-                                  value={ing.amount}
-                                  onChange={(e) => updateIngredient(i, 'amount', e.target.value)}
-                                  className="w-20 px-2 py-1.5 bg-transparent border border-ink-700 text-sm text-copper font-light appearance-none cursor-pointer"
-                                >
-                                  <option value="" className="bg-ink-900">—</option>
-                                  {amounts.map(a => (
-                                    <option key={a} value={a} className="bg-ink-900">{a}</option>
-                                  ))}
-                                </select>
-                                
-                                {/* Unit helpers */}
-                                <div className="flex gap-1">
-                                  {['oz', 'dash', 'tsp', 'barspoon'].map(unit => (
-                                    <button
-                                      key={unit}
-                                      onClick={() => updateIngredient(i, 'unit', unit)}
-                                      className={`px-2 py-1 text-xs transition-colors ${
-                                        ing.unit === unit
-                                          ? 'bg-copper/20 text-copper border border-copper/30'
-                                          : 'bg-transparent text-ink-500 transparent border border-ink-700'
-                                      }`}
-                                    >
-                                      {unit}
-                                    </button>
-                                  ))}
-                                </div>
-                                
-                                <select
-                                  value={ing.unit}
-                                  onChange={(e) => updateIngredient(i, 'unit', e.target.value)}
-                                  className="w-24 px-2 py-1.5 bg-transparent border border-ink-700 text-sm text-copper font-light appearance-none cursor-pointer"
-                                >
-                                  {measurements.map(m => (
-                                    <option key={m.id} value={m.name} className="bg-ink-900">{m.name}</option>
-                                  ))}
-                                </select>
-                                
-                                {/* Ingredient name input with autocomplete */}
-                                <div className="flex-1 relative">
+                                {/* Bottom row: Ingredient name input with autocomplete */}
+                                <div className="flex-1 relative min-w-0">
                                   <input
                                     type="text"
                                     value={ing.name}
@@ -4243,7 +4306,7 @@
                                         setSelectedSuggestionIndex(-1);
                                       }, 200);
                                     }}
-                                    placeholder="Ingredient name"
+                                    placeholder="Ingredient name (type to search or enter custom)"
                                     className={`w-full px-3 py-1.5 bg-transparent border text-sm font-light ${
                                       isUnmatched 
                                         ? 'border-amber-900/50 text-amber-300' 
@@ -4276,15 +4339,15 @@
                                     </div>
                                   )}
                                   
-                                  {/* Validation feedback */}
+                                  {/* Validation feedback - now shows it's OK to use custom */}
                                   {isUnmatched && ing.name.length >= 2 && (
                                     <div className="absolute top-full left-0 right-0 mt-1 px-2 py-1 text-2xs text-amber-400 bg-amber-950/30 border border-amber-900/50 z-40">
-                                      Unmatched ingredient
+                                      Custom ingredient (not in database)
                                     </div>
                                   )}
                                 </div>
                                 
-                                <button onClick={() => removeIngredient(i)} className="p-1.5 text-ink-600 hover:text-red-400">
+                                <button onClick={() => removeIngredient(i)} className="p-1.5 text-ink-600 hover:text-red-400 flex-shrink-0 self-start sm:self-center">
                                   <Icon name="X" className="w-4 h-4" />
                                 </button>
                               </div>
@@ -4404,7 +4467,7 @@
                     disabled={!name.trim() || ingredients.length === 0 || ingredients.some(ing => !ing.name || !ing.name.trim())}
                     className="w-full py-4 btn-copper text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Save Recipe
+                    {editingDrink ? 'Update Recipe' : 'Save Recipe'}
                   </button>
                 </div>
               </div>
@@ -5174,11 +5237,11 @@
                   </div>
 
                   {editingId !== bar.id && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       {bar.id !== activeBarId && (
                         <button
                           onClick={() => onSwitchBar(bar.id)}
-                          className="px-3 py-1.5 text-xs text-copper hover:text-copper border border-copper/30  copper/50"
+                          className="px-3 py-1.5 text-xs text-copper hover:text-copper border border-copper/30  copper/50 flex items-center"
                         >
                           Switch
                         </button>
@@ -5186,7 +5249,7 @@
                       {!bar.isMain && (
                         <button
                           onClick={() => onSetMainBar(bar.id)}
-                          className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 "
+                          className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 flex items-center justify-center"
                           title="Set as main bar"
                         >
                           <Icon name="Star" className="w-3.5 h-3.5" />
@@ -5194,14 +5257,14 @@
                       )}
                       <button
                         onClick={() => onDuplicateBar(bar.id)}
-                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 "
+                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 flex items-center justify-center"
                         title="Duplicate bar"
                       >
                         <Icon name="Copy" className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleStartEdit(bar)}
-                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 "
+                        className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 flex items-center justify-center"
                         title="Rename"
                       >
                         <Icon name="Edit" className="w-3.5 h-3.5" />
@@ -5209,7 +5272,7 @@
                       {bars.length > 1 && (
                         <button
                           onClick={() => setDeletingId(bar.id)}
-                          className="px-3 py-1.5 text-xs text-red-400 hover:text-red-300 border border-red-900/30 "
+                          className="px-3 py-1.5 text-xs text-red-400 hover:text-red-300 border border-red-900/30 flex items-center justify-center"
                           title="Delete"
                         >
                           <Icon name="Trash2" className="w-3.5 h-3.5" />
