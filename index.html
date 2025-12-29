@@ -622,7 +622,6 @@
       const [madeCounts, setMadeCounts] = useState({}); // Track how many times each recipe was made
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
       const [ingredientsDb, setIngredientsDb] = useState(null);
-      const [showRecipesHub, setShowRecipesHub] = useState(false);
       const [showSettings, setShowSettings] = useState(false);
       const [showImportShared, setShowImportShared] = useState(false);
       const [sharedRecipeData, setSharedRecipeData] = useState(null);
@@ -1919,7 +1918,7 @@
       const navItems = [
         { id: 'recipesHub', label: 'Recipes', icon: 'LayoutGrid' },
         { id: 'inventory', label: 'Bar', icon: 'Wine', count: getActiveBarInventory().length },
-        { id: 'search', label: 'Search', icon: 'Search' },
+        { id: 'browse', label: 'Browse', icon: 'Search' },
         { id: 'settings', label: 'Settings', icon: 'Settings' },
       ];
 
@@ -1939,29 +1938,26 @@
                   >
                     <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
                   </button>
-                  {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom') && (
+                  {view === 'browse' && (
                     <button onClick={() => setShowAddDrink(true)} className="p-2 text-ink-500 hover:text-ink-300" title="New Recipe">
                       <Icon name="Plus" className="w-4 h-4" />
                     </button>
                   )}
                 </div>
               </div>
-              {(view !== 'recipesHub' && view !== 'settings') && (
+              {(view !== 'recipesHub' && view !== 'settings' && view !== 'inventory' && view !== 'manageBars' && view !== 'browse') && (
                 <nav className="flex gap-1 pb-3">
                   {navItems.map(item => (
                     <button
                       key={item.id}
                       onClick={() => {
-                        if (item.id === 'search') {
-                          setView('browse');
+                        setView(item.id);
+                        if (item.id === 'browse') {
                           setSearchTerm('');
-                        } else {
-                          setView(item.id);
                         }
-                        setShowRecipesHub(false);
                       }}
                       className={`flex items-center gap-2 px-3 py-2 text-sm ${
-                        (view === item.id || (item.id === 'search' && view === 'browse')) ? 'text-ink-100 font-bold' : 'text-ink-500 hover:text-ink-300'
+                        view === item.id ? 'text-ink-100 font-bold' : 'text-ink-500 hover:text-ink-300'
                       }`}
                     >
                       <Icon name={item.icon} className="w-4 h-4" />
@@ -1981,13 +1977,18 @@
           {/* Mobile Header */}
           <header className="sm:hidden sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="flex items-center justify-between px-4 h-14">
-              {(view === 'recipesHub' || view === 'settings' || view === 'inventory' || view === 'manageBars') ? (
+              {(view === 'recipesHub' || view === 'settings' || view === 'inventory' || view === 'manageBars' || view === 'browse') ? (
                 <h1 className="text-xl font-bold text-ink-100 uppercase">Barkeep</h1>
               ) : (
                 <button onClick={() => {
-                  setView('recipesHub');
+                  // Go back to Recipes Hub for personalized views, Browse for exploratory
+                  if (view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view?.startsWith('collection-')) {
+                    setView('recipesHub');
+                  } else {
+                    setView('browse');
+                  }
                 }} className="flex items-center gap-2 text-ink-100">
-                  ← <span className="text-xl font-bold uppercase">Recipes</span>
+                  ← <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view?.startsWith('collection-') ? 'Recipes' : 'Browse'}</span>
                 </button>
               )}
               <div className="flex items-center gap-1">
@@ -1999,7 +2000,7 @@
                 >
                   <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
                 </button>
-                {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom') && (
+                {view === 'browse' && (
                   <button onClick={() => setShowAddDrink(true)} className="p-2 text-copper">
                     <Icon name="Plus" className="w-5 h-5" />
                   </button>
@@ -2106,7 +2107,7 @@
               />
             ) : view === 'settings' ? (
               <SettingsView
-                onClose={() => setView('browse')}
+                onClose={() => setView('recipesHub')}
                 onExport={exportEverything}
                 onImport={importEverything}
                 unmatchedIngredients={Array.from(unmatchedIngredients)}
@@ -2431,7 +2432,17 @@
                     ))}
                   </div>
                 ) : displayDrinks.length === 0 ? (
-                  <EmptyState view={view} onAction={() => view === 'canMake' ? setView('inventory') : setShowAddDrink(true)} />
+                  <EmptyState view={view} onAction={() => {
+                    if (view === 'canMake') {
+                      setView('inventory');
+                    } else if (view === 'browse') {
+                      setShowAddDrink(true);
+                    } else if (view === 'custom') {
+                      setView('browse');
+                    } else {
+                      setView('browse');
+                    }
+                  }} />
                 ) : (
                   <div className="bg-transparent border border-ink-700 overflow-hidden">
                     {displayDrinks.map((drink, i) => (
@@ -2461,21 +2472,19 @@
                 <button
                   key={item.id}
                   onClick={() => {
-                    if (item.id === 'search') {
-                      setView('browse');
+                    setView(item.id);
+                    if (item.id === 'browse') {
                       setSearchTerm('');
-                    } else {
-                      setView(item.id);
                     }
                     setShowRecipesHub(false);
                   }}
                   className={`relative flex flex-col items-center gap-1 px-4 py-2  transition-colors ${
-                    (view === item.id || (item.id === 'search' && view === 'browse')) ? 'text-copper' : 'text-ink-500'
+                    view === item.id ? 'text-copper' : 'text-ink-500'
                   }`}
                 >
                   <Icon name={item.icon} className="w-5 h-5" />
                   <span className="text-2xs">{item.label}</span>
-                  {item.count > 0 && view !== item.id && !showRecipesHub && (
+                  {item.count > 0 && view !== item.id && (
                     <span className="absolute -top-1 right-1 w-1.5 h-1.5 bg-copper " />
                   )}
                 </button>
@@ -2639,11 +2648,12 @@
       const almostMakeRecipes = getAlmostMakeableDrinks().slice(0, 5);
       
       const recipeItems = [
-        { id: 'browse', label: 'All Recipes', icon: 'LayoutGrid', count: allCount, description: 'Browse all cocktails' },
+        { id: 'canMake', label: 'Can Make', icon: 'CheckCircle', count: canMakeCount, description: 'Ready to make now' },
+        { id: 'almostMake', label: 'Almost Make', icon: 'AlertCircle', count: almostMakeCount, description: '1-2 ingredients away' },
         { id: 'keepers', label: 'Keepers', icon: 'Star', count: favoritesCount, description: 'Recipes that stood out' },
         { id: 'toTry', label: 'Try', icon: 'Bookmark', count: wantToTryCount, description: 'Your queue' },
-        { id: 'custom', label: 'My Recipes', icon: 'FlaskConical', count: customCount, description: 'Your custom recipes' },
         { id: 'collections', label: 'Collections', icon: 'Folder', count: collectionsCount, description: 'Organize recipes' },
+        { id: 'custom', label: 'Custom', icon: 'FlaskConical', count: customCount, description: 'Your custom recipes' },
       ];
 
       // Empty state if bar is empty
@@ -2660,7 +2670,7 @@
                 go to your bar
               </button>
             </div>
-            <h2 className="text-xl font-bold text-ink-100 uppercase mb-4">Browse Recipes</h2>
+            <h2 className="text-xl font-bold text-ink-100 uppercase mb-4">Your Recipes</h2>
             <hr className="border-ink-700 mb-4" />
             <div className="space-y-4">
               {recipeItems.map(item => (
@@ -3513,12 +3523,12 @@
 
     const EmptyState = ({ view, onAction }) => {
       const config = {
-        browse: { icon: 'Search', title: 'No recipes found', subtitle: 'Try a different search', action: null },
+        browse: { icon: 'Search', title: 'No recipes found', subtitle: 'Try a different search or create a new recipe', action: 'Create Recipe', actionFn: onAction },
         keepers: { icon: 'Star', title: 'No keepers yet', subtitle: 'Mark recipes that stand out', action: null },
         toTry: { icon: 'Bookmark', title: 'Try list is empty', subtitle: 'Add recipes to your queue', action: null },
         canMake: { icon: 'Wine', title: 'Add ingredients to your bar', subtitle: 'See what cocktails you can make', action: 'Stock Your Bar', actionFn: onAction },
         almostMake: { icon: 'Clock', title: 'No almost-ready recipes', subtitle: 'Add more ingredients to unlock', action: null },
-        custom: { icon: 'FlaskConical', title: 'No custom recipes', subtitle: 'Create your own cocktail specs', action: 'Create Recipe', actionFn: onAction },
+        custom: { icon: 'FlaskConical', title: 'No custom recipes', subtitle: 'Go to Browse to create recipes', action: 'Go to Browse', actionFn: onAction },
       };
       const c = config[view] || config.browse;
       
