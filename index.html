@@ -2640,13 +2640,7 @@
       onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb, 
       bars = [], activeBar, onSwitchBar, onCreateShoppingList, toggleKeeper, toggleToTry, isInToTry
     }) => {
-      // Featured collections: prefer curated, rotate by day if needed
-      // Simple selection: first 2-3 curated collections (or all if less than 3)
       const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
-      const curatedCollections = allCollections.filter(c => c.collectionType === 'curated');
-      const featuredCollections = curatedCollections.length > 0 
-        ? curatedCollections.slice(0, 3)
-        : allCollections.slice(0, 3);
       
       const canMakeRecipes = (Array.isArray(getMakeableDrinks?.()) ? getMakeableDrinks() : []).slice(0, 8);
       const almostMakeRecipes = (Array.isArray(getAlmostMakeableDrinks?.()) ? getAlmostMakeableDrinks() : []).slice(0, 5);
@@ -2689,24 +2683,6 @@
                 <Icon name="RefreshCw" className="w-3.5 h-3.5" />
                 Switch
               </button>
-            </div>
-          )}
-
-          {/* Subtle prompt if bar is empty */}
-          {!hasInventory && (
-            <div className="border border-ink-700 p-4 bg-ink-900/50">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <p className="text-sm text-ink-400 mb-1">Add ingredients to your bar to see personalized recommendations</p>
-                  <p className="text-xs text-ink-600">You can still browse all recipes below</p>
-                </div>
-                <button
-                  onClick={() => onNavigate('inventory')}
-                  className="text-xs text-copper hover:text-ink-300 whitespace-nowrap"
-                >
-                  Go to Bar →
-                </button>
-              </div>
             </div>
           )}
 
@@ -2795,60 +2771,8 @@
             </section>
           )}
 
-          {/* Featured collections section */}
-          {featuredCollections.length > 0 && (
-            <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-display text-xl text-ink-100 font-light">Featured collections</h2>
-                <button
-                  onClick={() => onNavigate('collections')}
-                  className="text-sm text-copper hover:text-copper flex items-center gap-1"
-                >
-                  Browse collections
-                  <Icon name="ArrowRight" className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {featuredCollections.map(collection => {
-                  const recipes = getCollectionRecipes?.(collection) || [];
-                  return (
-                    <button
-                      key={collection.id}
-                      onClick={() => {
-                        onNavigate(`collection-${collection.id}`);
-                      }}
-                      className="border border-ink-700 p-4 text-left  group"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-display text-lg text-ink-100 font-normal text-copper transition-colors">
-                              {collection.name}
-                            </h3>
-                            {collection.collectionType === 'curated' && (
-                              <span className="text-2xs px-2 py-0.5  bg-copper/10 text-copper border border-copper/20">
-                                Curated
-                              </span>
-                            )}
-                          </div>
-                          {collection.description && (
-                            <p className="text-2xs text-ink-500 mt-0.5">{collection.description}</p>
-                          )}
-                        </div>
-                        <span className="text-2xs px-2 py-1  bg-copper/20 text-copper font-medium">
-                          {Array.isArray(recipes) ? recipes.length : 0}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-
           {/* Navigation list */}
           <section>
-            <h2 className="font-display text-2xl text-ink-100 font-light mb-6">Browse</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {recipeItems.map(item => (
                 <button
@@ -3166,7 +3090,7 @@
           
           {/* System Collections (Keepers view + To Try) */}
           <div className="mb-8">
-            <h3 className="text-base font-bold text-ink-100 uppercase mb-4">System</h3>
+            <h3 className="text-sm text-ink-500 uppercase tracking-widest mb-4">System</h3>
             <hr className="border-ink-700 mb-4" />
             <div className="space-y-4">
               {/* Keepers View */}
@@ -3198,7 +3122,7 @@
           {/* Curated Collections */}
           {curatedCollections.length > 0 && (
             <div className="mb-8">
-              <h3 className="text-base font-bold text-ink-100 uppercase mb-4">Curated</h3>
+              <h3 className="text-sm text-ink-500 uppercase tracking-widest mb-4">Curated</h3>
               <hr className="border-ink-700 mb-4" />
               <div className="space-y-4">
                 {curatedCollections.map(coll => {
@@ -3219,11 +3143,11 @@
             </div>
           )}
           
-          {/* Personal Collections */}
+          {/* Custom Collections */}
           <div>
-            {curatedCollections.length > 0 && (
+            {otherPersonalCollections.length > 0 && (
               <>
-                <h3 className="text-base font-bold text-ink-100 uppercase mb-4">Yours</h3>
+                <h3 className="text-sm text-ink-500 uppercase tracking-widest mb-4">Custom</h3>
                 <hr className="border-ink-700 mb-4" />
               </>
             )}
