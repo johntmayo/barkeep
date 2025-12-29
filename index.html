@@ -1800,7 +1800,7 @@
         const toTryIds = new Set(toTryCollection?.recipeIds || []);
         
         if (view === 'keepers') {
-          drinks = drinks.filter(d => keepers && keepers.has(d.id));
+          drinks = drinks.filter(d => keepers && keepers.has ? keepers.has(d.id) : false);
         } else if (view === 'toTry') {
           drinks = drinks.filter(d => toTryIds.has(d.id));
         }
@@ -1849,7 +1849,7 @@
           });
         }
         if (filters.tags.includes('keepers')) {
-          drinks = drinks.filter(d => keepers && keepers.has(d.id));
+          drinks = drinks.filter(d => keepers && keepers.has ? keepers.has(d.id) : false);
         }
         if (filters.tags.includes('toTry')) {
           drinks = drinks.filter(d => toTryIds.has(d.id));
@@ -2453,7 +2453,7 @@
                       <RecipeRow
                         key={drink.id}
                         drink={drink}
-                        isKeeper={keepers && keepers.has(drink.id)}
+                        isKeeper={keepers && keepers.has ? keepers.has(drink.id) : false}
                         isToTry={isInToTry(drink.id)}
                         canMake={canMakeDrink(drink)}
                         missingCount={getMissingCount(drink)}
@@ -2536,7 +2536,7 @@
             <RecipeDetail
               drink={selectedDrink}
               onClose={() => setSelectedDrink(null)}
-              isKeeper={keepers && keepers.has(selectedDrink.id)}
+              isKeeper={keepers && keepers.has ? keepers.has(selectedDrink.id) : false}
               isToTry={isInToTry(selectedDrink.id)}
               canMake={canMakeDrink(selectedDrink)}
               inventory={getActiveBarInventory()}
@@ -2638,7 +2638,7 @@
       savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
       onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
       onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb, 
-      bars, activeBar, onSwitchBar, onCreateShoppingList, toggleKeeper, toggleToTry, isInToTry
+      bars = [], activeBar, onSwitchBar, onCreateShoppingList, toggleKeeper, toggleToTry, isInToTry
     }) => {
       // Featured collections: prefer curated, rotate by day if needed
       // Simple selection: first 2-3 curated collections (or all if less than 3)
@@ -2666,7 +2666,7 @@
       return (
         <div className=" space-y-8">
           {/* Quick Bar Switch (if multiple bars) */}
-          {bars.length > 1 && (
+          {Array.isArray(bars) && bars.length > 1 && (
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2 text-sm text-ink-500">
                 <Icon name="Wine" className="w-4 h-4" />
@@ -2680,8 +2680,9 @@
               </div>
               <button
                 onClick={() => {
+                  if (!Array.isArray(bars) || bars.length === 0) return;
                   const nextBar = bars.find(b => b.id !== activeBar?.id) || bars[0];
-                  onSwitchBar(nextBar.id);
+                  if (nextBar) onSwitchBar(nextBar.id);
                 }}
                 className="text-xs text-copper hover:text-copper flex items-center gap-1"
               >
@@ -2726,7 +2727,7 @@
                       <RecipeRow
                         key={drink.id}
                         drink={drink}
-                        isKeeper={keepers && keepers.has(drink.id)}
+                        isKeeper={keepers && keepers.has ? keepers.has(drink.id) : false}
                         isToTry={isInToTry(drink.id)}
                         canMake={true}
                         missingCount={0}
@@ -2779,7 +2780,7 @@
                     <RecipeRow
                       key={drink.id}
                       drink={drink}
-                      isKeeper={keepers.has(drink.id)}
+                      isKeeper={keepers && keepers.has ? keepers.has(drink.id) : false}
                       isToTry={isInToTry(drink.id)}
                       canMake={false}
                       missingCount={missing}
@@ -2809,7 +2810,7 @@
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {featuredCollections.map(collection => {
-                  const recipes = getCollectionRecipes(collection);
+                  const recipes = getCollectionRecipes?.(collection) || [];
                   return (
                     <button
                       key={collection.id}
@@ -2835,7 +2836,7 @@
                           )}
                         </div>
                         <span className="text-2xs px-2 py-1  bg-copper/20 text-copper font-medium">
-                          {recipes.length}
+                          {Array.isArray(recipes) ? recipes.length : 0}
                         </span>
                       </div>
                     </button>
@@ -3081,7 +3082,7 @@
       };
       
       // Get keepers count for display
-      const keepersCount = allDrinks.filter(d => keepers.has(d.id)).length;
+      const keepersCount = allDrinks.filter(d => keepers && keepers.has ? keepers.has(d.id) : false).length;
       
       const curatedCollections = collections.filter(c => c.collectionType === 'curated');
       const personalCollections = collections.filter(c => !c.collectionType || c.collectionType === 'personal');
@@ -3342,7 +3343,7 @@
                 <div key={drink.id} className="relative group">
                   <RecipeRow
                     drink={drink}
-                    isKeeper={keepers.has(drink.id)}
+                    isKeeper={keepers && keepers.has ? keepers.has(drink.id) : false}
                     isToTry={isInToTry(drink.id)}
                     canMake={canMakeDrink(drink)}
                     missingCount={getMissingCount(drink)}
