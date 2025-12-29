@@ -1591,8 +1591,11 @@
 
       // Get all collections (curated + personal, including system collections)
       const getAllCollections = useMemo(() => {
+        if (!collections || !Array.isArray(collections)) {
+          return CURATED_COLLECTIONS || [];
+        }
         const personal = collections.filter(c => !c.collectionType || c.collectionType === 'personal');
-        return [...CURATED_COLLECTIONS, ...personal];
+        return [...(CURATED_COLLECTIONS || []), ...personal];
       }, [collections]);
 
       // Get system collections (to_try is a personal collection, keepers is a view)
@@ -2021,7 +2024,7 @@
                 wantToTryCount={(collections.find(c => c.id === 'to_try')?.recipeIds || []).length}
                 customCount={customDrinks.length}
                 allCount={getAllDrinks().length}
-                collectionsCount={getAllCollections.length}
+                collectionsCount={Array.isArray(getAllCollections) ? getAllCollections.length : 0}
                 onNavigate={(viewId) => {
                   setView(viewId);
                   setShowRecipesHub(false);
@@ -2137,7 +2140,7 @@
               />
             ) : view?.startsWith('collection-') ? (
               <CollectionDetailView
-                collection={getAllCollections.find(c => c.id === view.replace('collection-', ''))}
+                collection={Array.isArray(getAllCollections) ? getAllCollections.find(c => c.id === view.replace('collection-', '')) : null}
                 allDrinks={getAllDrinks()}
                 getCollectionRecipes={getCollectionRecipes}
                 onNavigateBack={() => setView('collections')}
@@ -2639,14 +2642,14 @@
     }) => {
       // Featured collections: prefer curated, rotate by day if needed
       // Simple selection: first 2-3 curated collections (or all if less than 3)
-      const allCollections = getAllCollections;
+      const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
       const curatedCollections = allCollections.filter(c => c.collectionType === 'curated');
       const featuredCollections = curatedCollections.length > 0 
         ? curatedCollections.slice(0, 3)
         : allCollections.slice(0, 3);
       
-      const canMakeRecipes = getMakeableDrinks().slice(0, 8);
-      const almostMakeRecipes = getAlmostMakeableDrinks().slice(0, 5);
+      const canMakeRecipes = (Array.isArray(getMakeableDrinks?.()) ? getMakeableDrinks() : []).slice(0, 8);
+      const almostMakeRecipes = (Array.isArray(getAlmostMakeableDrinks?.()) ? getAlmostMakeableDrinks() : []).slice(0, 5);
       
       const recipeItems = [
         { id: 'canMake', label: 'Can Make', icon: 'CheckCircle', count: canMakeCount, description: 'Ready to make now' },
