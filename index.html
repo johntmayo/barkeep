@@ -2656,48 +2656,8 @@
         { id: 'custom', label: 'Custom', icon: 'FlaskConical', count: customCount, description: 'Your custom recipes' },
       ];
 
-      // Empty state if bar is empty
-      if (!activeBar?.inventory || activeBar.inventory.length === 0) {
-        return (
-          <div>
-            <div className="mb-8 text-center">
-              <h2 className="text-xl font-bold text-ink-100 uppercase mb-2">Build Your Bar</h2>
-              <p className="text-sm text-ink-500 mb-4">Add ingredients to your bar to see recipes you can make</p>
-              <button
-                onClick={() => onNavigate('inventory')}
-                className="text-sm btn-copper"
-              >
-                go to your bar
-              </button>
-            </div>
-            <h2 className="text-xl font-bold text-ink-100 uppercase mb-4">Your Recipes</h2>
-            <hr className="border-ink-700 mb-4" />
-            <div className="space-y-4">
-              {recipeItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => onNavigate(item.id)}
-                  className="w-full text-left py-3 border-b border-ink-700 last:border-0"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-bold text-ink-100 uppercase">
-                        {item.label}
-                      </h3>
-                      <p className="text-sm text-ink-500 mt-1">{item.description}</p>
-                    </div>
-                    {item.count > 0 && (
-                      <span className="text-sm text-ink-500 font-mono">
-                        {item.count}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-      }
+      // Show recipe items even if bar is empty, but with a subtle prompt
+      const hasInventory = activeBar?.inventory && activeBar.inventory.length > 0;
 
       return (
         <div className=" space-y-8">
@@ -2727,8 +2687,26 @@
             </div>
           )}
 
-          {/* You can make section */}
-          {canMakeRecipes.length > 0 ? (
+          {/* Subtle prompt if bar is empty */}
+          {!hasInventory && (
+            <div className="border border-ink-700 p-4 bg-ink-900/50">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <p className="text-sm text-ink-400 mb-1">Add ingredients to your bar to see personalized recommendations</p>
+                  <p className="text-xs text-ink-600">You can still browse all recipes below</p>
+                </div>
+                <button
+                  onClick={() => onNavigate('inventory')}
+                  className="text-xs text-copper hover:text-ink-300 whitespace-nowrap"
+                >
+                  Go to Bar →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* You can make section - only show if has inventory */}
+          {hasInventory && canMakeRecipes.length > 0 ? (
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-ink-100 uppercase">You can make</h2>
@@ -2756,7 +2734,7 @@
                 ))}
               </div>
             </section>
-          ) : (
+          ) : hasInventory ? (
             <section>
               <h2 className="text-xl font-bold text-ink-100 uppercase mb-4">You can make</h2>
               <div className="py-4">
@@ -2766,10 +2744,10 @@
                 )}
               </div>
             </section>
-          )}
+          ) : null}
 
-          {/* Almost make section */}
-          {almostMakeRecipes.length > 0 && (
+          {/* Almost make section - only show if has inventory */}
+          {hasInventory && almostMakeRecipes.length > 0 && (
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-ink-100 uppercase">Almost make</h2>
