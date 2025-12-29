@@ -5330,30 +5330,63 @@
 
     // ============ RENDER ============
     
-    try {
-      const rootElement = document.getElementById('root');
-      if (!rootElement) {
-        throw new Error('Root element not found');
+    function renderApp() {
+      try {
+        // Ensure React and ReactDOM are loaded
+        if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
+          // Retry after a short delay if React isn't loaded yet
+          setTimeout(renderApp, 100);
+          return;
+        }
+        
+        const rootElement = document.getElementById('root');
+        if (!rootElement) {
+          throw new Error('Root element not found');
+        }
+        
+        // Use React 18 createRoot if available, otherwise fall back to React 17 render
+        if (ReactDOM.createRoot) {
+          const root = ReactDOM.createRoot(rootElement);
+          root.render(
+            <ToastProvider>
+              <App />
+            </ToastProvider>
+          );
+        } else if (ReactDOM.render) {
+          // Fallback for React 17
+          ReactDOM.render(
+            <ToastProvider>
+              <App />
+            </ToastProvider>,
+            rootElement
+          );
+        } else {
+          throw new Error('ReactDOM.createRoot and ReactDOM.render are not available');
+        }
+      } catch (error) {
+        console.error('Failed to render app:', error);
+        const rootElement = document.getElementById('root');
+        if (rootElement) {
+          rootElement.innerHTML = `
+            <div style="padding: 2rem; text-align: center; color: #d6d3d1; font-family: 'JetBrains Mono', monospace;">
+              <h1 style="color: #d4a574; margin-bottom: 1rem;">Barkeep</h1>
+              <p style="color: #a8a29e; margin-bottom: 1rem;">Failed to load application</p>
+              <p style="color: #78716c; font-size: 0.875rem;">${error.message}</p>
+              <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #a16207; color: white; border: none; cursor: pointer;">
+                Reload
+              </button>
+            </div>
+          `;
+        }
       }
-      
-      const root = ReactDOM.createRoot(rootElement);
-      root.render(
-        <ToastProvider>
-          <App />
-        </ToastProvider>
-      );
-    } catch (error) {
-      console.error('Failed to render app:', error);
-      document.body.innerHTML = `
-        <div style="padding: 2rem; text-align: center; color: #d6d3d1; font-family: 'JetBrains Mono', monospace;">
-          <h1 style="color: #d4a574; margin-bottom: 1rem;">Barkeep</h1>
-          <p style="color: #a8a29e; margin-bottom: 1rem;">Failed to load application</p>
-          <p style="color: #78716c; font-size: 0.875rem;">${error.message}</p>
-          <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #a16207; color: white; border: none; cursor: pointer;">
-            Reload
-          </button>
-        </div>
-      `;
+    }
+    
+    // Wait for all resources to be loaded
+    if (document.readyState === 'loading') {
+      window.addEventListener('load', renderApp);
+    } else {
+      // DOM is already ready, try to render immediately
+      renderApp();
     }
   </script>
 </body>
