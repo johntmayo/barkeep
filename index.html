@@ -1918,14 +1918,6 @@
                   >
                     <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
                   </button>
-                  {/* Unit Toggle */}
-                  <button
-                    onClick={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
-                    className="px-2 py-1 text-xs text-ink-500 hover:text-ink-300 font-mono"
-                    title={`Switch to ${unitPreference === 'oz' ? 'ml' : 'oz'}`}
-                  >
-                    {unitPreference.toUpperCase()}
-                  </button>
                   {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom') && (
                     <button onClick={() => setShowAddDrink(true)} className="p-2 text-ink-500 hover:text-ink-300" title="New Recipe">
                       <Icon name="Plus" className="w-4 h-4" />
@@ -1985,14 +1977,6 @@
                   title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
                 >
                   <Icon name={theme === 'dark' ? 'Sun' : 'Moon'} className="w-4 h-4" />
-                </button>
-                {/* Unit Toggle */}
-                <button
-                  onClick={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
-                  className="px-2 py-1 text-xs text-ink-500 hover:text-ink-300 font-mono"
-                  title={`Switch to ${unitPreference === 'oz' ? 'ml' : 'oz'}`}
-                >
-                  {unitPreference.toUpperCase()}
                 </button>
                 {(view === 'browse' || view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom') && (
                   <button onClick={() => setShowAddDrink(true)} className="p-2 text-copper">
@@ -3628,11 +3612,6 @@
           onClick={onClick}
         >
           <div className="flex items-start gap-4">
-            {/* Status indicator */}
-            <div className="flex-shrink-0 mt-1">
-              {getStatusIndicator()}
-            </div>
-
             <div className="flex-1 min-w-0">
               {/* Recipe name */}
               <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">
@@ -3655,6 +3634,10 @@
                    method].filter(Boolean).join(' / ')}
                 </div>
               )}
+            </div>
+            {/* Status indicator - moved to right */}
+            <div className="flex-shrink-0 mt-1">
+              {getStatusIndicator()}
             </div>
           </div>
         </div>
@@ -3741,6 +3724,17 @@
 
                 {/* Ingredients */}
                 <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm text-ink-500 uppercase tracking-widest">Ingredients</h3>
+                    {/* Unit Toggle */}
+                    <button
+                      onClick={onToggleUnit}
+                      className="px-2 py-1 text-xs text-ink-500 hover:text-ink-300 font-mono border border-ink-700"
+                      title={`Switch to ${unitPreference === 'oz' ? 'ml' : 'oz'}`}
+                    >
+                      {unitPreference.toUpperCase()}
+                    </button>
+                  </div>
                   <div className="space-y-1">
                     {drink.ingredients?.map((ing, i) => {
                       const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
@@ -4050,11 +4044,33 @@
 
       const handleSubmit = () => {
         if (!name.trim() || ingredients.length === 0) return;
-        const formattedIngredients = ingredients.map(ing => ({
-          name: ing.name,
-          measure: ing.amount ? `${ing.amount} ${ing.unit}` : ing.unit
-        }));
-        onAdd({ name, category, glass, instructions, notes, ingredients: formattedIngredients });
+        
+        // Validate that all ingredients have names
+        const invalidIngredients = ingredients.filter(ing => !ing.name || !ing.name.trim());
+        if (invalidIngredients.length > 0) {
+          // Could show a toast here, but for now just return
+          return;
+        }
+        
+        const formattedIngredients = ingredients
+          .filter(ing => ing.name && ing.name.trim()) // Filter out any empty names
+          .map(ing => ({
+            name: ing.name.trim(),
+            measure: ing.amount && ing.amount.trim() 
+              ? `${ing.amount.trim()} ${ing.unit}` 
+              : ing.unit || '1'
+          }));
+        
+        if (formattedIngredients.length === 0) return;
+        
+        onAdd({ 
+          name: name.trim(), 
+          category, 
+          glass: glass.trim(), 
+          instructions: instructions.trim(), 
+          notes: notes.trim(), 
+          ingredients: formattedIngredients 
+        });
       };
 
       const measurements = ingredientsDb?.measurements || [
@@ -4385,7 +4401,7 @@
 
                   <button
                     onClick={handleSubmit}
-                    disabled={!name.trim() || ingredients.length === 0}
+                    disabled={!name.trim() || ingredients.length === 0 || ingredients.some(ing => !ing.name || !ing.name.trim())}
                     className="w-full py-4 btn-copper text-sm font-medium tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Save Recipe
