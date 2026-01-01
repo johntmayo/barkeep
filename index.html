@@ -620,6 +620,7 @@
       });
       const [filtersExpanded, setFiltersExpanded] = useState(false);
       const [sortBy, setSortBy] = useState('name');
+      const [browseMode, setBrowseMode] = useState('recipes'); // 'recipes' or 'ingredients'
       const [madeCounts, setMadeCounts] = useState({}); // Track how many times each recipe was made
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
       const [ingredientsDb, setIngredientsDb] = useState(null);
@@ -1637,6 +1638,7 @@
         setCollections(updated);
         saveData('collections', updated);
         toast('Collection created', 'success');
+        return newCollection.id;
       };
 
       const updateCollection = (id, updates) => {
@@ -2158,6 +2160,31 @@
               <>
                 {/* Search & Filters - Sticky Container */}
                 <div className="sticky top-0 z-30 bg-ink-950 pb-3 -mx-4 px-4 pt-2 mb-5 border-b border-ink-700">
+                  {/* Browse Mode Toggle - only show in browse view */}
+                  {view === 'browse' && (
+                    <div className="flex gap-2 mb-3 pb-3 border-b border-ink-700">
+                      <button
+                        onClick={() => setBrowseMode('recipes')}
+                        className={`flex-1 py-2 px-4 text-sm font-medium transition-colors ${
+                          browseMode === 'recipes'
+                            ? 'bg-copper text-ink-950'
+                            : 'bg-ink-800 text-ink-400 hover:text-ink-200'
+                        }`}
+                      >
+                        Recipes
+                      </button>
+                      <button
+                        onClick={() => setBrowseMode('ingredients')}
+                        className={`flex-1 py-2 px-4 text-sm font-medium transition-colors ${
+                          browseMode === 'ingredients'
+                            ? 'bg-copper text-ink-950'
+                            : 'bg-ink-800 text-ink-400 hover:text-ink-200'
+                        }`}
+                      >
+                        Ingredients
+                      </button>
+                    </div>
+                  )}
                   <div className="flex flex-col gap-3">
                     <div className="flex gap-2">
                       <div className="flex-1 relative">
@@ -2175,13 +2202,15 @@
                           </button>
                         )}
                       </div>
-                      <button
-                        onClick={pickRandom}
-                        className="px-3 py-3 input-field  text-ink-500 hover:text-ink-300 transition-colors"
-                        title="Random cocktail"
-                      >
-                        <Icon name="Shuffle" className="w-4 h-4" />
-                      </button>
+                      {!(view === 'browse' && browseMode === 'ingredients') && (
+                        <button
+                          onClick={pickRandom}
+                          className="px-3 py-3 input-field  text-ink-500 hover:text-ink-300 transition-colors"
+                          title="Random cocktail"
+                        >
+                          <Icon name="Shuffle" className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                     
                     {/* Filter Toggle Button */}
@@ -2369,6 +2398,17 @@
                   </div>
                 </div>
 
+                {/* Conditional render: Ingredients Browse or Recipe List */}
+                {view === 'browse' && browseMode === 'ingredients' ? (
+                  <IngredientsBrowseView
+                    ingredientsDb={ingredientsDb}
+                    allDrinks={getAllDrinks()}
+                    normalizeIngredient={normalizeIngredient}
+                    searchTerm={searchTerm}
+                    onSelectIngredient={(ingredient) => setSelectedIngredient(ingredient)}
+                  />
+                ) : (
+                  <>
                 {/* Results info */}
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-xs text-ink-600 tracking-wide">
@@ -2465,6 +2505,8 @@
                     ))}
                   </div>
                 )}
+                  </>
+                )}
               </>
             )}
           </main>
@@ -2547,6 +2589,7 @@
               onDelete={selectedDrink.source === 'custom' ? () => setShowConfirmDelete(selectedDrink.id) : null}
               onShare={shareRecipe}
               onAddToCollection={addRecipeToCollection}
+              onCreateCollection={addCollection}
               unitPreference={unitPreference}
               onToggleUnit={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
               onNavigateToIngredient={(ingredient) => {
@@ -2806,10 +2849,23 @@
       );
     };
 
-    const CollectionPicker = ({ collections, recipeId, onSelect, onClose }) => {
+    const CollectionPicker = ({ collections, recipeId, onSelect, onClose, onCreateCollection }) => {
+      const [showCreateForm, setShowCreateForm] = useState(false);
+      const [newCollectionName, setNewCollectionName] = useState('');
+      const [newCollectionDescription, setNewCollectionDescription] = useState('');
+      
       // Only show personal collections (curated are auto-updating)
       const personalCollections = collections.filter(c => !c.collectionType || c.collectionType === 'personal');
-      const recipeCollections = personalCollections.filter(c => c.recipeIds?.includes(recipeId));
+      
+      const handleCreateCollection = () => {
+        if (!newCollectionName.trim()) return;
+        if (onCreateCollection) {
+          onCreateCollection(newCollectionName.trim(), newCollectionDescription.trim());
+          setNewCollectionName('');
+          setNewCollectionDescription('');
+          setShowCreateForm(false);
+        }
+      };
       
       return (
         <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-ink-800 z-50 ">
@@ -2819,30 +2875,106 @@
               <Icon name="X" className="w-4 h-4" />
             </button>
           </div>
-          <div className="space-y-1 max-h-48 overflow-y-auto">
-            {personalCollections.length === 0 ? (
-              <p className="text-xs text-ink-500 text-center py-4">No personal collections yet</p>
-            ) : (
-              personalCollections.map(coll => {
-                const isInCollection = coll.recipeIds?.includes(recipeId);
-                return (
+          <div className="space-y-1 max-h-96 overflow-y-auto">
+            {!showCreateForm ? (
+              <>
+                {personalCollections.length > 0 && (
+                  <>
+                    {personalCollections.map(coll => {
+                      const isInCollection = coll.recipeIds?.includes(recipeId);
+                      return (
+                        <button
+                          key={coll.id}
+                          onClick={() => onSelect(coll.id)}
+                          className={`w-full text-left px-3 py-2  transition-colors ${
+                            isInCollection ? 'bg-copper/20 text-copper' : 'transparent text-ink-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">{coll.name}</span>
+                            {isInCollection && <Icon name="Check" className="w-4 h-4" />}
+                          </div>
+                          {coll.description && (
+                            <p className="text-2xs text-ink-500 mt-0.5">{coll.description}</p>
+                          )}
+                        </button>
+                      );
+                    })}
+                    <hr className="border-ink-700 my-2" />
+                  </>
+                )}
+                {onCreateCollection && (
                   <button
-                    key={coll.id}
-                    onClick={() => onSelect(coll.id)}
-                    className={`w-full text-left px-3 py-2  transition-colors ${
-                      isInCollection ? 'bg-copper/20 text-copper' : 'transparent text-ink-300'
-                    }`}
+                    onClick={() => setShowCreateForm(true)}
+                    className="w-full text-left px-3 py-2 text-ink-300 hover:text-ink-100 transition-colors flex items-center gap-2"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">{coll.name}</span>
-                      {isInCollection && <Icon name="Check" className="w-4 h-4" />}
-                    </div>
-                    {coll.description && (
-                      <p className="text-2xs text-ink-500 mt-0.5">{coll.description}</p>
-                    )}
+                    <Icon name="Plus" className="w-4 h-4" />
+                    <span className="text-sm">Create new collection</span>
                   </button>
-                );
-              })
+                )}
+                {personalCollections.length === 0 && !onCreateCollection && (
+                  <p className="text-xs text-ink-500 text-center py-4">No personal collections yet</p>
+                )}
+              </>
+            ) : (
+              <div className="space-y-3 p-2 border border-ink-700">
+                <div>
+                  <label className="text-2xs text-ink-500 uppercase tracking-widest mb-1 block">Name *</label>
+                  <input
+                    type="text"
+                    value={newCollectionName}
+                    onChange={(e) => setNewCollectionName(e.target.value)}
+                    placeholder="Collection name"
+                    className="w-full px-3 py-2 input-field text-sm text-ink-100"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleCreateCollection();
+                      } else if (e.key === 'Escape') {
+                        setShowCreateForm(false);
+                        setNewCollectionName('');
+                        setNewCollectionDescription('');
+                      }
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="text-2xs text-ink-500 uppercase tracking-widest mb-1 block">Description</label>
+                  <textarea
+                    value={newCollectionDescription}
+                    onChange={(e) => setNewCollectionDescription(e.target.value)}
+                    placeholder="Optional description"
+                    rows="2"
+                    className="w-full px-3 py-2 input-field text-sm text-ink-100 font-light resize-none"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') {
+                        setShowCreateForm(false);
+                        setNewCollectionName('');
+                        setNewCollectionDescription('');
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleCreateCollection}
+                    className="flex-1 py-2 btn-copper text-xs font-medium"
+                    disabled={!newCollectionName.trim()}
+                  >
+                    Create & Add
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowCreateForm(false);
+                      setNewCollectionName('');
+                      setNewCollectionDescription('');
+                    }}
+                    className="px-3 py-2 text-ink-500 hover:text-ink-300 text-xs"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -3587,9 +3719,21 @@
       );
     };
 
-    const RecipeDetail = ({ drink, onClose, isKeeper, isToTry, canMake, inventory, ingredientsDb, collections, onToggleKeeper, onToggleToTry, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit, onNavigateToIngredient, onEdit }) => {
+    const RecipeDetail = ({ drink, onClose, isKeeper, isToTry, canMake, inventory, ingredientsDb, collections, onToggleKeeper, onToggleToTry, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit, onNavigateToIngredient, onEdit, onCreateCollection }) => {
       const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
       const [showCollectionPicker, setShowCollectionPicker] = useState(false);
+      
+      const handleCreateCollection = (name, description) => {
+        if (onCreateCollection && onAddToCollection) {
+          const newCollectionId = onCreateCollection(name, description);
+          if (newCollectionId) {
+            // Add the recipe to the newly created collection
+            onAddToCollection(drink.id, newCollectionId);
+            // Close the picker after creating and adding
+            setShowCollectionPicker(false);
+          }
+        }
+      };
 
       // Lock body scroll when modal is open
       useEffect(() => {
@@ -3637,12 +3781,26 @@
                   >
                     {isToTry ? '— try' : '+ try'}
                   </button>
-                  <button
-                    onClick={() => setShowCollectionPicker(true)}
-                    className="text-ink-500 hover:text-ink-100 transition-colors"
-                  >
-                    + collection
-                  </button>
+                  <div className="relative inline-block">
+                    <button
+                      onClick={() => setShowCollectionPicker(true)}
+                      className="text-ink-500 hover:text-ink-100 transition-colors"
+                    >
+                      + collection
+                    </button>
+                    {showCollectionPicker && (
+                      <CollectionPicker
+                        collections={collections || []}
+                        recipeId={drink.id}
+                        onSelect={(collectionId) => {
+                          onAddToCollection?.(drink.id, collectionId);
+                          setShowCollectionPicker(false);
+                        }}
+                        onClose={() => setShowCollectionPicker(false)}
+                        onCreateCollection={handleCreateCollection}
+                      />
+                    )}
+                  </div>
                   <button
                     onClick={() => onShare?.(drink)}
                     className="text-ink-500 hover:text-ink-100 transition-colors"
@@ -3658,18 +3816,6 @@
                     </button>
                   )}
                 </div>
-
-                {showCollectionPicker && (
-                  <CollectionPicker
-                    collections={collections || []}
-                    recipeId={drink.id}
-                    onSelect={(collectionId) => {
-                      onAddToCollection?.(drink.id, collectionId);
-                      setShowCollectionPicker(false);
-                    }}
-                    onClose={() => setShowCollectionPicker(false)}
-                  />
-                )}
 
                 <hr className="border-ink-700" />
 
@@ -3694,7 +3840,12 @@
                       return (
                         <div key={i} className="text-ink-100 flex items-center gap-2">
                           <span className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-ink-500' : 'border border-ink-600 bg-transparent'}`}></span>
-                          <span>{displayMeasure} {ing.name}</span>
+                          <button
+                            onClick={() => onNavigateToIngredient?.(ingCanonical)}
+                            className="hover:text-copper transition-colors text-left"
+                          >
+                            <span>{displayMeasure} {ing.name}</span>
+                          </button>
                         </div>
                       );
                     })}
@@ -3790,6 +3941,114 @@
               </div>
             </div>
           </div>
+        </div>
+      );
+    };
+
+    const IngredientsBrowseView = ({ ingredientsDb, allDrinks, normalizeIngredient, searchTerm, onSelectIngredient }) => {
+      // Flatten all ingredients from the database
+      const allIngredients = useMemo(() => {
+        if (!ingredientsDb?.categories) return [];
+        const flat = [];
+        ingredientsDb.categories.forEach(cat => {
+          cat.subcategories?.forEach(sub => {
+            sub.items?.forEach(item => {
+              flat.push({
+                ...item,
+                category: cat.name,
+                subcategory: sub.name,
+                canonicalName: normalizeIngredient(item.name, ingredientsDb)
+              });
+            });
+          });
+        });
+        return flat;
+      }, [ingredientsDb, normalizeIngredient]);
+
+      // Filter ingredients by search term
+      const filteredIngredients = useMemo(() => {
+        if (!searchTerm.trim()) return allIngredients;
+        const term = searchTerm.toLowerCase().trim();
+        return allIngredients.filter(ing => {
+          const nameMatch = ing.name.toLowerCase().includes(term);
+          const aliasMatch = ing.aliases?.some(a => a.toLowerCase().includes(term));
+          const categoryMatch = ing.category?.toLowerCase().includes(term);
+          const subcategoryMatch = ing.subcategory?.toLowerCase().includes(term);
+          return nameMatch || aliasMatch || categoryMatch || subcategoryMatch;
+        });
+      }, [allIngredients, searchTerm]);
+
+      // Count recipes for each ingredient
+      const ingredientsWithCounts = useMemo(() => {
+        return filteredIngredients.map(ing => {
+          const count = allDrinks.filter(drink => {
+            return drink.ingredients?.some(drinkIng => {
+              const drinkIngCanonical = normalizeIngredient(drinkIng.name, ingredientsDb);
+              return drinkIngCanonical === ing.canonicalName;
+            });
+          }).length;
+          return { ...ing, recipeCount: count };
+        });
+      }, [filteredIngredients, allDrinks, ingredientsDb, normalizeIngredient]);
+
+      // Sort by name
+      const sortedIngredients = useMemo(() => {
+        return [...ingredientsWithCounts].sort((a, b) => a.name.localeCompare(b.name));
+      }, [ingredientsWithCounts]);
+
+      if (!ingredientsDb) {
+        return (
+          <div className="py-8 text-center text-ink-500">
+            Loading ingredients...
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          {/* Results count */}
+          <div className="mb-4">
+            <p className="text-xs text-ink-600 tracking-wide">
+              {sortedIngredients.length} {sortedIngredients.length === 1 ? 'ingredient' : 'ingredients'}
+            </p>
+          </div>
+
+          {/* Ingredients List */}
+          {sortedIngredients.length === 0 ? (
+            <div className="py-8 text-center text-ink-500">
+              No ingredients found
+            </div>
+          ) : (
+            <div className="bg-transparent border border-ink-700 overflow-hidden">
+              {sortedIngredients.map((ingredient, i) => (
+                <button
+                  key={ingredient.id || `${ingredient.category}-${ingredient.subcategory}-${i}`}
+                  onClick={() => onSelectIngredient(ingredient.canonicalName)}
+                  className="w-full text-left py-4 px-4 border-b border-ink-700 last:border-0 hover:bg-ink-800 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-base font-bold text-ink-100 uppercase mb-1">
+                        {ingredient.name}
+                      </div>
+                      <div className="text-xs text-ink-500">
+                        {ingredient.category}
+                        {ingredient.subcategory && ` · ${ingredient.subcategory}`}
+                      </div>
+                    </div>
+                    <div className="ml-4 text-right">
+                      <div className="text-sm font-medium text-ink-300">
+                        {ingredient.recipeCount}
+                      </div>
+                      <div className="text-xs text-ink-600">
+                        {ingredient.recipeCount === 1 ? 'recipe' : 'recipes'}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       );
     };
