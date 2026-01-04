@@ -298,6 +298,95 @@
       return normalized;
     };
     
+    // Find ingredient details in ingredientsDb (category, subcategory, item)
+    const findIngredientInDb = (canonicalName, ingredientsDb) => {
+      if (!ingredientsDb || !canonicalName) return null;
+      
+      for (const category of ingredientsDb.categories || []) {
+        for (const subcategory of category.subcategories || []) {
+          for (const item of subcategory.items || []) {
+            const itemCanonical = normalizeIngredient(item.name, ingredientsDb);
+            if (itemCanonical === canonicalName || 
+                item.aliases?.some(alias => normalizeIngredient(alias, ingredientsDb) === canonicalName)) {
+              return { category, subcategory, item };
+            }
+          }
+        }
+      }
+      return null;
+    };
+    
+    // Get substitution group for a base spirit ingredient
+    // Returns null if not eligible for substitution
+    // 
+    // Substitution rules (conservative):
+    // - Only applies to "Spirits" category
+    // - Approved groups: Whiskey, Gin, Rum, Vodka, Brandy, Tequila (not Mezcal)
+    // - Does NOT substitute across groups (e.g., Gin ↔ Vodka)
+    // - Does NOT substitute non-spirits (liqueurs, amari, vermouth, etc.)
+    //
+    // Test cases (expected behavior):
+    // - Recipe: Dark Rum, Inventory: White Rum → CAN MAKE (substitution)
+    // - Recipe: Rye Whiskey, Inventory: Bourbon → CAN MAKE (substitution)
+    // - Recipe: Tequila Blanco, Inventory: Mezcal → NOT CAN MAKE (different groups)
+    // - Recipe: Absinthe, Inventory: Aquavit → NOT CAN MAKE (other spirits, no substitution)
+    const getSubstitutionGroup = (canonicalName, ingredientsDb) => {
+      const info = findIngredientInDb(canonicalName, ingredientsDb);
+      if (!info) return null;
+      
+      // Only allow substitutions for "Spirits" category
+      if (info.category.name !== 'Spirits') return null;
+      
+      const subcatName = info.subcategory.name.toLowerCase();
+      const subcatId = info.subcategory.id.toLowerCase();
+      
+      // Approved substitution groups
+      if (subcatId === 'whiskey' || subcatName.includes('whiskey') || subcatName.includes('whisky')) {
+        return 'whiskey';
+      }
+      if (subcatId === 'gin' || subcatName.includes('gin')) {
+        return 'gin';
+      }
+      if (subcatId === 'rum' || subcatName.includes('rum')) {
+        return 'rum';
+      }
+      if (subcatId === 'vodka' || subcatName.includes('vodka')) {
+        return 'vodka';
+      }
+      if (subcatId === 'brandy' || subcatName.includes('brandy')) {
+        return 'brandy';
+      }
+      
+      // Tequila & Mezcal: only allow substitution within tequila variants (not mezcal)
+      if (subcatId === 'agave' || subcatName.includes('tequila') || subcatName.includes('mezcal')) {
+        const itemName = info.item.name.toLowerCase();
+        const itemId = info.item.id.toLowerCase();
+        // Check if it's a tequila (not mezcal, sotol, raicilla, etc.)
+        if (itemId.includes('tequila') || (itemName.includes('tequila') && !itemName.includes('mezcal'))) {
+          return 'tequila';
+        }
+      }
+      
+      return null; // No substitution allowed for other spirits
+    };
+    
+    // Find an acceptable substitute for an ingredient from inventory
+    const findSubstitute = (requiredCanonical, inventory, ingredientsDb) => {
+      const group = getSubstitutionGroup(requiredCanonical, ingredientsDb);
+      if (!group) return null;
+      
+      // Find first matching ingredient from same substitution group in inventory
+      for (const invItem of inventory) {
+        const invItemCanonical = normalizeIngredient(invItem.name, ingredientsDb);
+        const invGroup = getSubstitutionGroup(invItemCanonical, ingredientsDb);
+        if (invGroup === group) {
+          return { substitute: invItem.name, substituteCanonical: invItemCanonical };
+        }
+      }
+      
+      return null;
+    };
+    
     const Icon = ({ name, className = "w-5 h-5" }) => {
       const ref = useRef(null);
       useEffect(() => {
@@ -1207,14 +1296,37 @@
         saveBars(updatedBars);
       };
 
-      const canMakeDrink = (drink) => {
-        if (!drink.ingredients?.length) return false;
+      // Get substitution information for a drink
+      // Returns: { canMake: boolean, substitutions: Map<ingredientName, substituteName> }
+      const getDrinkSubstitutions = (drink) => {
+        if (!drink.ingredients?.length) return { canMake: false, substitutions: new Map() };
         const barInventory = getActiveBarInventory();
         const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
-        return drink.ingredients.every(ing => {
+        const substitutions = new Map();
+        
+        const canMake = drink.ingredients.every(ing => {
           const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
-          return invCanonical.has(ingCanonical);
+          
+          // Exact match - no substitution needed
+          if (invCanonical.has(ingCanonical)) {
+            return true;
+          }
+          
+          // Try to find a substitute
+          const substitute = findSubstitute(ingCanonical, barInventory, ingredientsDb);
+          if (substitute) {
+            substitutions.set(ing.name, substitute.substitute);
+            return true;
+          }
+          
+          return false;
         });
+        
+        return { canMake, substitutions };
+      };
+
+      const canMakeDrink = (drink) => {
+        return getDrinkSubstitutions(drink).canMake;
       };
 
       const getMissingCount = (drink) => {
@@ -1223,7 +1335,15 @@
         const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
         return drink.ingredients.filter(ing => {
           const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
-          return !invCanonical.has(ingCanonical);
+          
+          // Exact match
+          if (invCanonical.has(ingCanonical)) {
+            return false;
+          }
+          
+          // Check if substitution is available
+          const substitute = findSubstitute(ingCanonical, barInventory, ingredientsDb);
+          return !substitute;
         }).length;
       };
 
@@ -3723,6 +3843,29 @@
       const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
       const [showCollectionPicker, setShowCollectionPicker] = useState(false);
       
+      // Calculate substitutions for this drink
+      const substitutions = useMemo(() => {
+        if (!drink.ingredients?.length) return new Map();
+        const subs = new Map();
+        
+        drink.ingredients.forEach(ing => {
+          const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
+          
+          // Skip if user has exact ingredient
+          if (invCanonical.has(ingCanonical)) {
+            return;
+          }
+          
+          // Try to find a substitute
+          const substitute = findSubstitute(ingCanonical, inventory, ingredientsDb);
+          if (substitute) {
+            subs.set(ing.name, substitute.substitute);
+          }
+        });
+        
+        return subs;
+      }, [drink, inventory, ingredientsDb]);
+      
       const handleCreateCollection = (name, description) => {
         if (onCreateCollection && onAddToCollection) {
           const newCollectionId = onCreateCollection(name, description);
@@ -3836,20 +3979,31 @@
                     {drink.ingredients?.map((ing, i) => {
                       const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
                       const hasIt = invCanonical.has(ingCanonical);
+                      const isSubstituted = substitutions.has(ing.name);
                       const displayMeasure = convertMeasure(ing.measure, unitPreference);
                       return (
                         <div key={i} className="text-ink-100 flex items-center gap-2">
-                          <span className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt ? 'bg-ink-500' : 'border border-ink-600 bg-transparent'}`}></span>
+                          <span className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ${hasIt || isSubstituted ? 'bg-ink-500' : 'border border-ink-600 bg-transparent'}`}></span>
                           <button
                             onClick={() => onNavigateToIngredient?.(ingCanonical)}
-                            className="hover:text-copper transition-colors text-left"
+                            className="hover:text-copper transition-colors text-left flex items-center gap-1"
                           >
                             <span>{displayMeasure} {ing.name}</span>
+                            {isSubstituted && (
+                              <span className="text-ink-600 text-xs font-medium" title={`Substituted with ${substitutions.get(ing.name)}`}>S</span>
+                            )}
                           </button>
                         </div>
                       );
                     })}
                   </div>
+                  {substitutions.size > 0 && (
+                    <div className="mt-3 pt-3 border-t border-ink-700">
+                      <p className="text-xs text-ink-500">
+                        <span className="text-ink-600 font-medium">*</span> You can substitute with: {Array.from(substitutions.values()).join(', ')}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <hr className="border-ink-700" />
