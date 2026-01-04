@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Specl">
+  <meta name="apple-mobile-web-app-title" content="Barkeep">
   <meta name="theme-color" content="#0c0a09">
-    <title>Specl</title>
+    <title>Barkeep</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="./logo.png" sizes="180x180">
   <link rel="icon" href="./logo.png" type="image/png" sizes="192x192">
@@ -1492,7 +1492,7 @@
           }
         };
         
-        const shareText = `${drink.name}\n\nIngredients:\n${convertedIngredients.map(i => `• ${i.measure} ${i.name}`).join('\n')}\n\n${drink.instructions || ''}\n\n---\nShared from Specl`;
+        const shareText = `${drink.name}\n\nIngredients:\n${convertedIngredients.map(i => `• ${i.measure} ${i.name}`).join('\n')}\n\n${drink.instructions || ''}\n\n---\nShared from Barkeep`;
         
         // Try Web Share API first
         if (navigator.share) {
@@ -2054,7 +2054,7 @@
           <header className="hidden sm:block sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="max-w-6xl mx-auto px-6">
               <div className="flex items-center justify-between h-16">
-                <h1 className="text-2xl font-bold text-ink-100 uppercase">Specl</h1>
+                <h1 className="text-2xl font-bold text-ink-100">Barkeep</h1>
                 <div className="flex items-center gap-1">
                   {/* Theme Toggle */}
                   <button
@@ -2104,7 +2104,7 @@
           <header className="sm:hidden sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="flex items-center justify-between px-4 h-14">
               {(view === 'recipesHub' || view === 'settings' || view === 'inventory' || view === 'manageBars' || view === 'browse') ? (
-                <h1 className="text-xl font-bold text-ink-100 uppercase">Specl</h1>
+                <h1 className="text-xl font-bold text-ink-100">Barkeep</h1>
               ) : (
                 <button onClick={() => {
                   // Go back to Recipes Hub for personalized views, Browse for exploratory
@@ -5711,7 +5711,7 @@
         if (rootElement) {
           rootElement.innerHTML = `
             <div style="padding: 2rem; text-align: center; color: #d6d3d1; font-family: 'JetBrains Mono', monospace;">
-              <h1 style="color: #d4a574; margin-bottom: 1rem;">Specl</h1>
+              <h1 style="color: #d4a574; margin-bottom: 1rem;">Barkeep</h1>
               <p style="color: #a8a29e; margin-bottom: 1rem;">Failed to load application</p>
               <p style="color: #78716c; font-size: 0.875rem;">${error.message}</p>
               <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #a16207; color: white; border: none; cursor: pointer;">

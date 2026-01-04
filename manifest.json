@@ -1,6 +1,6 @@
 {
-  "name": "Specl",
-  "short_name": "Specl",
+  "name": "Barkeep",
+  "short_name": "Barkeep",
   "description": "A refined bartending companion for cocktail recipes, specs, and inventory",
   "start_url": "./",
   "display": "standalone",
