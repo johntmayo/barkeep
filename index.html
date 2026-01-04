@@ -5126,25 +5126,25 @@
         <div className="max-w-2xl mx-auto ">
           {/* Bar Selector */}
           <div className="border border-ink-700 p-4 mb-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Icon name="Wine" className="w-5 h-5 text-copper" />
-                <div>
-                  <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <Icon name="Wine" className="w-5 h-5 text-copper flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm text-ink-100 font-medium">{activeBar?.name || 'Bar'}</span>
                     {activeBar?.isMain && (
-                      <span className="text-2xs px-2 py-0.5  bg-copper/20 text-copper border border-copper/30">
+                      <span className="text-2xs px-2 py-0.5 bg-copper/20 text-copper border border-copper/30 whitespace-nowrap">
                         Main
                       </span>
                     )}
                   </div>
-                  <p className="text-2xs text-ink-500 mt-0.5">{inventory.length} ingredients</p>
+                  <p className="text-2xs text-ink-500 mt-0.5">{inventory.length} {inventory.length === 1 ? 'ingredient' : 'ingredients'}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={onManageBars}
-                  className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700  transition-colors"
+                  className="px-3 py-1.5 text-xs text-ink-400 hover:text-ink-100 border border-ink-700 transition-colors whitespace-nowrap"
                 >
                   <Icon name="Settings" className="w-3.5 h-3.5 inline mr-1.5" />
                   Manage
@@ -5155,7 +5155,7 @@
                       const nextBar = bars.find(b => b.id !== activeBar?.id) || bars[0];
                       onSwitchBar(nextBar.id);
                     }}
-                    className="px-3 py-1.5 text-xs text-copper hover:text-copper border border-copper/30  copper/50 transition-colors"
+                    className="px-3 py-1.5 text-xs text-copper hover:text-copper border border-copper/30 transition-colors whitespace-nowrap"
                   >
                     <Icon name="RefreshCw" className="w-3.5 h-3.5 inline mr-1.5" />
                     Switch
