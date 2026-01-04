@@ -711,6 +711,7 @@
       const [sortBy, setSortBy] = useState('name');
       const [browseMode, setBrowseMode] = useState('recipes'); // 'recipes' or 'ingredients'
       const [madeCounts, setMadeCounts] = useState({}); // Track how many times each recipe was made
+      const [userRecipeNotes, setUserRecipeNotes] = useState({}); // User notes per recipe: { recipeId: "note text" }
       const [showConfirmDelete, setShowConfirmDelete] = useState(null);
       const [ingredientsDb, setIngredientsDb] = useState(null);
       const [showSettings, setShowSettings] = useState(false);
@@ -931,6 +932,14 @@
             setCollections(loaded.filter(c => !c.collectionType || c.collectionType === 'personal'));
           }
           if (made?.value) setMadeCounts(JSON.parse(made.value));
+          const recipeNotes = storage.get('user-recipe-notes');
+          if (recipeNotes?.value) {
+            try {
+              setUserRecipeNotes(JSON.parse(recipeNotes.value));
+            } catch {
+              setUserRecipeNotes({});
+            }
+          }
         } catch (err) {
           console.error('Load error:', err);
         }
@@ -968,6 +977,23 @@
       }, [selectedDrink, showAddDrink, showImportExport, showConfirmDelete, showImportShared]);
 
       const saveData = (key, data) => storage.set(key, JSON.stringify(data));
+      
+      // Save user recipe notes
+      const saveUserRecipeNotes = (notes) => {
+        setUserRecipeNotes(notes);
+        saveData('user-recipe-notes', notes);
+      };
+      
+      // Update note for a specific recipe
+      const updateUserRecipeNote = (recipeId, note) => {
+        const updated = { ...userRecipeNotes };
+        if (note && note.trim()) {
+          updated[recipeId] = note.trim();
+        } else {
+          delete updated[recipeId];
+        }
+        saveUserRecipeNotes(updated);
+      };
 
       // Migration: Convert old single inventory to bars system
       const migrateToBars = () => {
@@ -1076,7 +1102,8 @@
             activeBarId,
             keepers: Array.from(keepers),
             collections,
-            madeCounts
+            madeCounts,
+            userRecipeNotes
           }
         };
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1182,6 +1209,11 @@
                 setMadeCounts(merged);
                 saveData('made-counts', merged);
               }
+              if (data.userRecipeNotes) {
+                const merged = { ...userRecipeNotes, ...data.userRecipeNotes };
+                setUserRecipeNotes(merged);
+                saveData('user-recipe-notes', merged);
+              }
               toast('Data merged successfully', 'success');
             } else {
               // Replace mode: overwrite existing data
@@ -1250,6 +1282,7 @@
                 saveData('collections', updatedCollections);
               }
               if (data.madeCounts) { setMadeCounts(data.madeCounts); saveData('made-counts', data.madeCounts); }
+              if (data.userRecipeNotes) { setUserRecipeNotes(data.userRecipeNotes); saveData('user-recipe-notes', data.userRecipeNotes); }
               toast('Data replaced successfully', 'success');
             }
             
@@ -2710,6 +2743,8 @@
               onShare={shareRecipe}
               onAddToCollection={addRecipeToCollection}
               onCreateCollection={addCollection}
+              userNote={userRecipeNotes[selectedDrink.id]}
+              onUpdateUserNote={updateUserRecipeNote}
               unitPreference={unitPreference}
               onToggleUnit={() => setUnitPreference(prev => prev === 'oz' ? 'ml' : 'oz')}
               onNavigateToIngredient={(ingredient) => {
@@ -3839,9 +3874,18 @@
       );
     };
 
-    const RecipeDetail = ({ drink, onClose, isKeeper, isToTry, canMake, inventory, ingredientsDb, collections, onToggleKeeper, onToggleToTry, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit, onNavigateToIngredient, onEdit, onCreateCollection }) => {
+    const RecipeDetail = ({ drink, onClose, isKeeper, isToTry, canMake, inventory, ingredientsDb, collections, onToggleKeeper, onToggleToTry, onDelete, onShare, onAddToCollection, unitPreference, onToggleUnit, onNavigateToIngredient, onEdit, onCreateCollection, userNote, onUpdateUserNote }) => {
       const invCanonical = new Set(inventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
       const [showCollectionPicker, setShowCollectionPicker] = useState(false);
+      const [isEditingNote, setIsEditingNote] = useState(false);
+      const [editingNoteText, setEditingNoteText] = useState(userNote || '');
+      
+      // Sync editingNoteText when userNote changes
+      useEffect(() => {
+        if (!isEditingNote) {
+          setEditingNoteText(userNote || '');
+        }
+      }, [userNote, isEditingNote]);
       
       // Calculate substitutions for this drink
       const substitutions = useMemo(() => {
@@ -4032,6 +4076,73 @@
                     </div>
                   </>
                 )}
+
+                {/* User Notes Section */}
+                <hr className="border-ink-700" />
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold text-ink-200">My Notes</h2>
+                    {!isEditingNote && (
+                      <button
+                        onClick={() => {
+                          setEditingNoteText(userNote || '');
+                          setIsEditingNote(true);
+                        }}
+                        className="text-sm text-ink-500 hover:text-ink-300 transition-colors"
+                      >
+                        {userNote ? 'Edit' : 'Add note'}
+                      </button>
+                    )}
+                  </div>
+                  {isEditingNote ? (
+                    <div className="space-y-3">
+                      <textarea
+                        value={editingNoteText}
+                        onChange={(e) => setEditingNoteText(e.target.value)}
+                        placeholder="Add your notes about this recipe..."
+                        rows="4"
+                        className="w-full px-4 py-3 input-field text-ink-100 font-light resize-none"
+                        autoFocus
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            onUpdateUserNote?.(drink.id, editingNoteText);
+                            setIsEditingNote(false);
+                          }}
+                          className="px-4 py-2 btn-copper text-sm font-medium"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingNoteText(userNote || '');
+                            setIsEditingNote(false);
+                          }}
+                          className="px-4 py-2 text-ink-500 hover:text-ink-300 text-sm"
+                        >
+                          Cancel
+                        </button>
+                        {userNote && (
+                          <button
+                            onClick={() => {
+                              onUpdateUserNote?.(drink.id, '');
+                              setEditingNoteText('');
+                              setIsEditingNote(false);
+                            }}
+                            className="px-4 py-2 text-ink-600 hover:text-red-400 text-sm"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ) : userNote ? (
+                    <p className="text-ink-400 leading-relaxed whitespace-pre-wrap">{userNote}</p>
+                  ) : (
+                    <p className="text-ink-600 text-sm italic">No notes yet. Click "Add note" to add your thoughts.</p>
+                  )}
+                </div>
 
                 {/* Origin section - only shows if origin data exists */}
                 {(drink.originTitle || drink.originAuthor || drink.originSourceType || drink.originUrl || drink.originYear || drink.originNotes) && (
