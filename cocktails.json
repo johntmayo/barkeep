@@ -4158,6 +4158,42 @@
     "id": "tropical-itch",
     "name": "Tropical Itch",
     "category": "Cocktail",
+    "glass": "Hurricane glass",
+    "ingredients": [
+      {
+        "name": "bonded rye",
+        "measure": "30 ml"
+      },
+      {
+        "name": "Jamaican rum",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "pineapple juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "151 Demerara rum",
+        "measure": "15 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "passion fruit purée",
+        "measure": "15 ml"
+      },
+      {
+        "name": "rich Demerara syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "allspice dram",
+        "measure": "7.5 ml"
+      }
+    ],
+    "instructions": "Add all ingredients to a shaker with crushed ice. Shake and dump into a Hurricane glass. Position a banana leaf in the glass and top with crushed ice. Garnish with a straw, pineapple wedge and a back scratcher.",
     "source": "https://punchdrink.com/recipes/tropical-itch/",
     "style": "tropical"
   },
@@ -4165,6 +4201,30 @@
     "id": "star-daisy",
     "name": "Star Daisy",
     "category": "Cocktail",
+    "glass": "Cocktail glass",
+    "ingredients": [
+      {
+        "name": "high-proof London dry gin",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "apple brandy",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "dry Curaçao",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "10 ml"
+      }
+    ],
+    "instructions": "Add all ingredients to a shaker and shake hard with ice until very cold. Strain into a chilled cocktail glass.",
     "source": "https://punchdrink.com/recipes/star-daisy/",
     "style": "floral"
   },
@@ -4172,6 +4232,34 @@
     "id": "gin-fizz-tropical",
     "name": "Gin Fizz Tropical",
     "category": "Cocktail",
+    "glass": "Fizz glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "orgeat",
+        "measure": "15 ml"
+      },
+      {
+        "name": "pineapple gum syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "egg white",
+        "measure": "15 ml"
+      },
+      {
+        "name": "soda water",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Add gin, lime juice, orgeat, pineapple gum syrup and egg white to a cocktail shaker. Add ice and shake until chilled. Double strain into a fizz glass or a small rocks glass. Top with soda water. Garnish with lime wheel and mint.",
     "source": "https://punchdrink.com/recipes/gin-fizz-tropical/",
     "style": "fizz"
   },
@@ -4179,6 +4267,34 @@
     "id": "wibble",
     "name": "Wibble",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "30 ml"
+      },
+      {
+        "name": "sloe gin",
+        "measure": "30 ml"
+      },
+      {
+        "name": "grapefruit juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "3.75 ml"
+      },
+      {
+        "name": "rich simple syrup",
+        "measure": "3.75 ml"
+      },
+      {
+        "name": "crème de mûre",
+        "measure": "3.75 ml"
+      }
+    ],
+    "instructions": "Combine all ingredients in a cocktail shaker with ice and shake until chilled. Strain into a chilled coupe. Garnish with a lemon twist.",
     "source": "https://punchdrink.com/recipes/wibble/",
     "style": "experimental"
   },
@@ -4186,6 +4302,26 @@
     "id": "puritan",
     "name": "Puritan",
     "category": "Cocktail",
+    "glass": "Martini glass",
+    "ingredients": [
+      {
+        "name": "London dry gin",
+        "measure": "60 ml"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "15 ml"
+      },
+      {
+        "name": "yellow Chartreuse",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass. Add ice and stir until well-chilled. Strain into a Martini glass and garnish with a lemon twist.",
     "source": "https://punchdrink.com/recipes/puritan/",
     "style": "spirit-forward"
   },
@@ -4193,20 +4329,49 @@
     "id": "alaska",
     "name": "Alaska",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "Old Tom gin",
+        "measure": "60 ml"
+      },
+      {
+        "name": "yellow Chartreuse",
+        "measure": "30 ml"
+      },
+      {
+        "name": "orange bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Combine all the ingredients in a cocktail shaker filled with ice and shake until chilled, about 15 seconds. Strain into a chilled coupe.",
     "source": "https://punchdrink.com/recipes/alaska/",
     "style": "classic"
-  },
-  {
-    "id": "martinez",
-    "name": "Martinez",
-    "category": "Cocktail",
-    "source": "https://punchdrink.com/recipes/martinez/",
-    "style": "spirit-forward"
   },
   {
     "id": "yellow",
     "name": "Yellow",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "London dry gin",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Suze",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "yellow Chartreuse",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "22.5 ml"
+      }
+    ],
+    "instructions": "Combine the ingredients in a cocktail shaker with ice and shake until chilled. Double-strain into a chilled coupe or cocktail glass. Express the lemon twists over the surface of the drink and discard.",
     "source": "https://punchdrink.com/recipes/yellow/",
     "style": "experimental"
   },
@@ -4214,6 +4379,31 @@
     "id": "yolanda",
     "name": "Yolanda",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "blanc vermouth",
+        "measure": "45 ml"
+      },
+      {
+        "name": "coconut gin",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "pisco",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "rose- and apple-infused Pineaus de Charentes",
+        "measure": "1 barspoon"
+      },
+      {
+        "name": "absinthe",
+        "measure": "1 drop"
+      }
+    ],
+    "instructions": "Combine all ingredients in a mixing glass, add ice, and stir until chilled. Strain into a chilled coupe or Nick and Nora glass. Garnish with a lemon twist.",
+    "notes": "Rose- and Apple-Infused Pineau de Charentes: For every 8 ounces of Pineau de Charentes, add six small dried rose buds and 3.5 grams of dried apple. Allow it to macerate for 48 hours then double-strain using a tea strainer.",
     "source": "https://punchdrink.com/recipes/yolanda/",
     "style": "classic"
   },
@@ -4221,6 +4411,31 @@
     "id": "two-dylans",
     "name": "Two Dylans",
     "category": "Cocktail",
+    "glass": "Double rocks glass",
+    "ingredients": [
+      {
+        "name": "pot still Irish whiskey",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "macadamia nut orgeat",
+        "measure": "17.5 ml"
+      },
+      {
+        "name": "curry leaves",
+        "measure": "6"
+      },
+      {
+        "name": "cherry tomatoes",
+        "measure": "2"
+      }
+    ],
+    "instructions": "Combine all ingredients in a shaker tin and muddle. Fill tin with cubed ice and hard-shake for 8 to 10 seconds. Double-strain over cubed ice (or one large cube) into a chilled double rocks glass. Garnish with a curry leaf.",
+    "notes": "Macadamia Nut Orgeat: 500 grams coconut water, 150 grams raw macadamia nuts, 4 grams kosher salt, white granulated sugar. Combine coconut water, raw macadamia nuts and salt into a blender, pulse three times. Strain, add sugar equal to weight of liquid. Refrigerate up to 2 weeks.",
     "source": "https://punchdrink.com/recipes/two-dylans/",
     "style": "experimental"
   },
@@ -4235,6 +4450,35 @@
     "id": "ward-eight",
     "name": "Ward Eight",
     "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "rye whiskey",
+        "measure": "45 ml"
+      },
+      {
+        "name": "acid-adjusted orange juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "beet shrub grenadine",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Acid Spirits Smoked Orange",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "Acid Spirits Horseradish",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "aperitivo liqueur",
+        "measure": "7.5 ml"
+      }
+    ],
+    "instructions": "Combine all ingredients in a cocktail shaker. Add ice and shake until well-chilled. Strain into a chilled coupe.",
+    "notes": "Acid-Adjusted Orange Juice: 500 grams orange juice, 16 grams citric acid, 10 grams malic acid. Beet Shrub Grenadine: Combine two parts beet shrub with one part grenadine.",
     "source": "https://punchdrink.com/recipes/ward-eight/",
     "style": "classic"
   },
@@ -4300,13 +4544,6 @@
     "category": "Cocktail",
     "source": "https://punchdrink.com/recipes/hawaiian-cocktail/",
     "style": "tropical"
-  },
-  {
-    "id": "zac-overmans-picon-punch",
-    "name": "Zac Overman's Picon Punch",
-    "category": "Cocktail",
-    "source": "https://punchdrink.com/recipes/zac-overmans-picon-punch/",
-    "style": "classic"
   },
   {
     "id": "pancho-villa",
@@ -4380,6 +4617,23 @@
     "id": "kingston-negroni",
     "name": "Kingston Negroni",
     "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "Jamaican rum",
+        "measure": "30 ml"
+      },
+      {
+        "name": "Campari",
+        "measure": "30 ml"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass. Add ice and stir until chilled. Strain over ice into a rocks glass. Garnish with a long, trimmed orange peel.",
+    "source": "https://punchdrink.com/recipes/kingston-negroni/",
     "style": "tropical"
   },
   {

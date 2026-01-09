@@ -93,15 +93,21 @@
               "aliases": [
                 "gin",
                 "dry gin"
-              ]
+              ],
+              "description": "Crisp, juniper-forward classic gin style with no added sweeteners after distillation.",
+              "usage": "Its dry, botanical profile makes it the versatile base for staples like the Martini and Gin & Tonic."
             },
             {
               "id": "old-tom-gin",
-              "name": "Old Tom Gin"
+              "name": "Old Tom Gin",
+              "description": "A lightly sweetened 18th-century gin style, softer and less juniper-intense than London Dry.",
+              "usage": "Bridging malty genever and dry gin, it's ideal for historic cocktails like the Tom Collins that benefit from its subtle sweetness."
             },
             {
               "id": "plymouth-gin",
-              "name": "Plymouth Gin"
+              "name": "Plymouth Gin",
+              "description": "A historic style from Plymouth, England, known for a balanced, earthy botanical mix and a slightly softer juniper profile.",
+              "usage": "Smoother and more citrus-forward than a London Dry, it works well in martinis and adds a rounded character to any gin cocktail."
             },
             {
               "id": "genever",
