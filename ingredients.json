@@ -13,14 +13,16 @@
               "name": "Bourbon",
               "aliases": [
                 "bourbon whiskey"
-              ]
+              ],
+              "description": "An American whiskey made primarily from corn (at least 51%) and aged in new charred oak barrels. It delivers rich caramel, vanilla, and charred oak flavors with a smooth sweetness, forming the backbone of classics like the Old Fashioned and Mint Julep."
             },
             {
               "id": "rye-whiskey",
               "name": "Rye Whiskey",
               "aliases": [
                 "rye"
-              ]
+              ],
+              "description": "Whiskey with a majority of rye grain, known for a drier, spicier character of pepper and baking spice. Its bold, spicy bite cuts through the sweetness and bitters in cocktails like the Manhattan or Sazerac, keeping these classics crisp and balanced."
             },
             {
               "id": "blended-scotch",
@@ -28,7 +30,8 @@
               "aliases": [
                 "scotch",
                 "blended scotch whisky"
-              ]
+              ],
+              "description": "A mix of malt and grain whiskies from Scotland combined for a smooth, consistent profile (often with just a whisper of smoke). Lighter-bodied than most single malts, it's versatile for sipping neat or mixing into highballs and other Scotch-based drinks."
             },
             {
               "id": "islay-scotch",
@@ -36,43 +39,53 @@
               "aliases": [
                 "peated scotch",
                 "smoky scotch"
-              ]
+              ],
+              "description": "Single malt whisky from Scotland's Islay region, famous for intense peat smoke, sea-spray brine, and medicinal notes. Bold and smoky, it's cherished by peat lovers as a sipper and used sparingly in cocktails like the Penicillin to add a dramatic smoky depth."
             },
             {
               "id": "single-malt-scotch",
-              "name": "Single Malt Scotch"
+              "name": "Single Malt Scotch",
+              "description": "Whisky made at one Scottish distillery from 100% malted barley, often showcasing that distillery's unique character. Typically complex and smooth (ranging from fruity and floral to heavily peated), it's prized for sipping or for adding refined depth to spirit-forward cocktails like a Rob Roy."
             },
             {
               "id": "irish-whiskey",
-              "name": "Irish Whiskey"
+              "name": "Irish Whiskey",
+              "description": "Easy-drinking whiskey from Ireland, usually triple-distilled for smoothness and often a blend of malt and grain. Light, mellow, and gently fruity with hints of honey and oak, it's approachable neat or on ice and adds a soft touch to drinks like the Irish Coffee."
             },
             {
               "id": "canadian-whisky",
-              "name": "Canadian Whisky"
+              "name": "Canadian Whisky",
+              "description": "Blended whisky from Canada, often made with corn and a touch of rye, famed for its ultra-smooth, light character. With subtle sweetness and gentle spice, it's an all-purpose mixer for highballs and cocktails, and an easygoing sip on its own."
             },
             {
               "id": "japanese-whisky",
-              "name": "Japanese Whisky"
+              "name": "Japanese Whisky",
+              "description": "Refined whisky crafted in Japan, inspired by Scotch tradition but perfected with Japanese precision. Typically silky and balanced with delicate smoke or sherry-cask notes, it's highly sippable neat and elevates simple cocktails like the Whisky Highball with its elegance."
             },
             {
               "id": "tennessee-whiskey",
-              "name": "Tennessee Whiskey"
+              "name": "Tennessee Whiskey",
+              "description": "A bourbon-style whiskey from Tennessee that undergoes charcoal mellowing (Lincoln County Process) before barreling. It shares bourbon's corn-rich sweetness and vanilla oak smoothness, with a touch of charcoal depth (as exemplified by Jack Daniel's), making it great in classic American whiskey cocktails."
             },
             {
               "id": "american-single-malt",
-              "name": "American Single Malt"
+              "name": "American Single Malt",
+              "description": "A growing category of U.S. whiskey made from 100% malted barley at one distillery (much like a Scotch single malt). It marries rich malty depth with American innovation, yielding flavors from chocolate and caramel to smoky oak, enjoyed neat or in upscale whiskey cocktails."
             },
             {
               "id": "blended-malt-scotch",
-              "name": "Blended Malt Scotch"
+              "name": "Blended Malt Scotch",
+              "description": "A Scotch whisky composed only of single malts from multiple distilleries (no grain whisky), also called a 'vatted malt.' It offers a harmonized all-malt flavor—complex yet rounded—and is often enjoyed like a single malt or used to add depth in a cocktail without introducing grain spirits."
             },
             {
               "id": "highland-scotch",
-              "name": "Highland Single Malt Scotch"
+              "name": "Highland Single Malt Scotch",
+              "description": "Single malt whisky from Scotland's Highland region, generally robust and malty with notes of heather, spice, and fruit. This broad category ranges from delicate to full-bodied, but typically delivers a warm, rounded profile that's versatile for sipping or mixing into spirit-forward cocktails."
             },
             {
               "id": "speyside-scotch",
-              "name": "Speyside Single Malt Scotch"
+              "name": "Speyside Single Malt Scotch",
+              "description": "Single malts from Speyside, Scotland's most prolific whisky region, known for smooth and elegant profiles. Often honeyed and fruity with hints of vanilla or sherry sweetness and minimal smoke, they are crowd-pleasing sippers that also lend gentle complexity to spirit-forward cocktails."
             },
             {
               "id": "fireball-cinnamon-whiskey",
@@ -151,18 +164,21 @@
               "aliases": [
                 "silver rum",
                 "light rum"
-              ]
+              ],
+              "description": "Clear, light-bodied rum that is typically unaged (or briefly aged and filtered) for a clean taste. With a subtle cane sweetness and a hint of vanilla, it's the backbone of tropical cocktails like the Daiquiri and Mojito, providing alcohol without heavy flavor."
             },
             {
               "id": "gold-rum",
               "name": "Gold Rum",
               "aliases": [
                 "amber rum"
-              ]
+              ],
+              "description": "Light amber rum that's usually aged a short time (or has a hint of caramel added) to develop a mild golden color and flavor. Smoother and more flavorful than white rum, it brings gentle notes of vanilla and caramel, making it a go-to for mixed drinks like a Mai Tai or Rum Punch where extra depth is desired."
             },
             {
               "id": "dark-rum",
-              "name": "Dark Rum"
+              "name": "Dark Rum",
+              "description": "Deep-colored rum often aged longer or with added molasses/caramel for color and intensity, yielding rich notes of molasses, toffee, and spice. Full-bodied and robust, it's used in bold drinks like the Dark 'n Stormy or floated on tropical cocktails to add weighty sweetness and complexity."
             },
             {
               "id": "aged-rum",
@@ -244,11 +260,13 @@
                 "tequila",
                 "silver tequila",
                 "white tequila"
-              ]
+              ],
+              "description": "Unaged tequila (often bottled right after distillation) for a vibrant, peppery agave character. Pure agave flavor; the go-to base for Margaritas, Palomas, and other tequila cocktails."
             },
             {
               "id": "tequila-reposado",
-              "name": "Tequila Reposado"
+              "name": "Tequila Reposado",
+              "description": "'Rested' tequila aged 2-12 months in oak, gaining a light golden hue with mellow vanilla and caramel notes. Balances fresh agave brightness with oak smoothness; adds a soft complexity to Margaritas and other cocktails."
             },
             {
               "id": "tequila-anejo",
@@ -290,7 +308,8 @@
           "items": [
             {
               "id": "vodka",
-              "name": "Vodka"
+              "name": "Vodka",
+              "description": "Neutral grain spirit; clean and crisp. Classic base for Martinis and highballs."
             },
             {
               "id": "vodka-citron",
@@ -432,7 +451,8 @@
           "items": [
             {
               "id": "cointreau",
-              "name": "Cointreau"
+              "name": "Cointreau",
+              "description": "Clear triple sec-style orange liqueur. Bright, balanced; essential in Margaritas and Cosmos."
             },
             {
               "id": "grand-marnier",
@@ -440,7 +460,8 @@
             },
             {
               "id": "triple-sec",
-              "name": "Triple Sec"
+              "name": "Triple Sec",
+              "description": "Sweet, neutral orange liqueur. Affordable option for citrus-forward cocktails."
             },
             {
               "id": "orange-curacao",
@@ -531,11 +552,13 @@
           "items": [
             {
               "id": "campari",
-              "name": "Campari"
+              "name": "Campari",
+              "description": "Bright red Italian bitter with herbal and citrus notes. Defines Negronis and Americanos."
             },
             {
               "id": "aperol",
-              "name": "Aperol"
+              "name": "Aperol",
+              "description": "Low-proof Italian aperitivo; orange and rhubarb. Lighter and sweeter than Campari; key in Spritzes."
             },
             {
               "id": "fernet-branca",
@@ -989,7 +1012,8 @@
               "aliases": [
                 "red vermouth",
                 "rosso vermouth"
-              ]
+              ],
+              "description": "Red vermouth with herbal, spiced sweetness. Core of Manhattans and Negronis."
             },
             {
               "id": "dry-vermouth",
@@ -997,7 +1021,8 @@
               "aliases": [
                 "white vermouth",
                 "french vermouth"
-              ]
+              ],
+              "description": "Pale, dry fortified wine with herbal notes. Essential in Martinis and lighter stirred drinks."
             },
             {
               "id": "blanc-vermouth",

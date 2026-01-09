@@ -4422,6 +4422,20 @@
                   </>
                 )}
 
+                {(ingredientDetails?.description || ingredientDetails?.usage) && (
+                  <>
+                    <div>
+                      {ingredientDetails.description && (
+                        <p className="text-ink-300 leading-relaxed mb-2">{ingredientDetails.description}</p>
+                      )}
+                      {ingredientDetails.usage && (
+                        <p className="text-ink-400 text-sm italic">{ingredientDetails.usage}</p>
+                      )}
+                    </div>
+                    <hr className="border-ink-700" />
+                  </>
+                )}
+
                 <div>
                   <div className="space-y-2">
                     {cocktailsUsingIngredient.map(drink => (
