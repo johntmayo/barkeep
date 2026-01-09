@@ -3796,5 +3796,602 @@
     "instructions": "Stir all ingredients with ice. Strain over fresh ice in a rocks glass.",
     "notes": "Bergamot liqueur (Italicus).",
     "style": "spirit-forward"
+  },
+  {
+    "id": "bay-leaf-daiquiri",
+    "name": "Bay Leaf Daiquiri",
+    "category": "Cocktail",
+    "glass": "Nick & Nora glass",
+    "ingredients": [
+      {
+        "name": "lightly aged blended rum",
+        "measure": "60 ml"
+      },
+      {
+        "name": "lime juice blend (1:3 key lime : Persian lime)",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "bay leaf syrup",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "fresh bay leaves",
+        "measure": "8 g"
+      },
+      {
+        "name": "saline solution",
+        "measure": "4 drops"
+      }
+    ],
+    "instructions": "Add bay leaves to a shaker. Pour a small amount of liquid nitrogen into the shaker and muddle the herbs. Add remaining ingredients and shake. Fine-strain into a chilled Nick & Nora glass.",
+    "source": "https://punchdrink.com/recipes/bay-leaf-daiquiri/",
+    "style": "sour"
+  },
+  {
+    "id": "rosie-martini",
+    "name": "Rosie Martini",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "60 ml"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "30 ml"
+      },
+      {
+        "name": "gentian amaro",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "cocktail onion brine",
+        "measure": "7.5 ml"
+      }
+    ],
+    "instructions": "Add gin, dry vermouth, and gentian amaro to a mixing glass with ice and stir to chill and dilute. Strain into a glass, then add onion brine and gently stir to incorporate. Express a lemon twist over the glass and discard it, then garnish with a cocktail onion.",
+    "notes": "Cocktail Onions: Simmer peeled pearl onions with water, vinegar, salt, sugar, and chile powder, then chill and store in the fridge.",
+    "source": "https://punchdrink.com/recipes/rosie-martini/",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "margarita-cream",
+    "name": "Margarita & Cream",
+    "category": "Cocktail",
+    "glass": "Small glass",
+    "ingredients": [
+      {
+        "name": "strawberry-rhubarb ice cream",
+        "measure": "130 g"
+      },
+      {
+        "name": "blanco tequila",
+        "measure": "30 ml"
+      },
+      {
+        "name": "lime juice",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Add ice cream, tequila, and lime juice to a blender and blend until smooth. Pour into a small glass and top with salted whipped cream. Serve with a spoon.",
+    "notes": "Strawberry-Rhubarb Ice Cream: Cook strawberry puree and sugar with frozen rhubarb sous vide at 70°C for 2 hr, blend, freeze in trays overnight. Salted Whipped Cream: Beat heavy cream with salt until firm peaks form.",
+    "source": "https://punchdrink.com/recipes/margarita-cream/",
+    "style": "dessert"
+  },
+  {
+    "id": "tomate-o-tomate",
+    "name": "Tomate o Tomaté",
+    "category": "Cocktail",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "tomato-infused mezcal",
+        "measure": "60 ml"
+      },
+      {
+        "name": "bell pepper cordial",
+        "measure": "15 ml"
+      },
+      {
+        "name": "nectarine liqueur",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "blanc vermouth",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "fino sherry",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "absinthe",
+        "measure": "Barspoon"
+      },
+      {
+        "name": "saline solution",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "soda water",
+        "measure": "To top"
+      }
+    ],
+    "instructions": "Rim a highball glass with za'atar salt. Add all ingredients except the soda to a shaker with ice and shake. Strain into the prepared glass over ice and top with soda water.",
+    "notes": "Tomato-Infused Mezcal: Blend four plum tomatoes with a 750 ml bottle of mezcal. Bell Pepper Cordial: Mix 8 oz bell pepper juice with ¼ cup sugar and 1 tsp citric acid; chill. Za'atar Salt: Combine equal parts za'atar and salt.",
+    "style": "highball"
+  },
+  {
+    "id": "real-charmers-daiquiri",
+    "name": "Real Charmer's Daiquiri",
+    "category": "Cocktail",
+    "glass": "Nick & Nora glass",
+    "ingredients": [
+      {
+        "name": "light rum",
+        "measure": "30 ml"
+      },
+      {
+        "name": "fresh lime juice",
+        "measure": "30 ml"
+      },
+      {
+        "name": "green Chartreuse",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "coconut syrup",
+        "measure": "22.5 ml"
+      }
+    ],
+    "instructions": "Add all ingredients to a shaker with ice and hard shake. Double-strain into a chilled Nick & Nora glass.",
+    "notes": "Coconut Syrup: Blend equal parts coconut cream and simple syrup with an immersion blender; refrigerate.",
+    "source": "https://punchdrink.com/recipes/real-charmers-daiquiri/",
+    "style": "sour"
+  },
+  {
+    "id": "salad-bar-martini",
+    "name": "Salad Bar Martini",
+    "category": "Cocktail",
+    "glass": "Coupe",
+    "ingredients": [
+      {
+        "name": "vodka",
+        "measure": "45 ml"
+      },
+      {
+        "name": "pomodoro gin",
+        "measure": "15 ml"
+      },
+      {
+        "name": "dry vermouth",
+        "measure": "15 ml"
+      },
+      {
+        "name": "Castelvetrano olive brine",
+        "measure": "15 ml"
+      },
+      {
+        "name": "tomato water",
+        "measure": "15 ml"
+      },
+      {
+        "name": "manzanilla sherry",
+        "measure": "7.5 ml"
+      }
+    ],
+    "instructions": "Add all ingredients to a mixing glass with ice and stir to chill. Strain into a coupe glass. Garnish with a cherry tomato.",
+    "notes": "Tomato Water: Quarter tomatoes, weigh them, and add salt at about 1% of the tomato weight. Blend until smooth, then strain repeatedly through a fine mesh until the liquid runs clear.",
+    "source": "https://punchdrink.com/recipes/salad-bar-martini/",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "archie",
+    "name": "Archie",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "beet-rested mezcal",
+        "measure": "90 ml"
+      },
+      {
+        "name": "fresh lemon juice",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "simple syrup",
+        "measure": "15 ml"
+      }
+    ],
+    "instructions": "Add all ingredients to a shaker with ice and shake well. Strain over ice into a glass. Garnish with a lemon twist.",
+    "notes": "Beet Mezcal: Cook one small red beet in ~½ inch of water at 375°F (190°C) for ~30 minutes; cool, blend with 750 ml mezcal, strain, and add ~375 ml grapefruit juice (oro blanco or similar). Store chilled.",
+    "source": "https://punchdrink.com/recipes/archie/",
+    "style": "sour"
+  },
+  {
+    "id": "nashi-highball",
+    "name": "Nashi Highball",
+    "category": "Cocktail",
+    "glass": "Highball glass",
+    "ingredients": [
+      {
+        "name": "Japanese whisky",
+        "measure": "37.5 ml"
+      },
+      {
+        "name": "Spiced Pear Liqueur",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "manzanilla sherry",
+        "measure": "15 ml"
+      },
+      {
+        "name": "verjus blanc",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "pickled ginger syrup",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "cane syrup",
+        "measure": "5 ml"
+      },
+      {
+        "name": "soda water",
+        "measure": "90 ml"
+      }
+    ],
+    "instructions": "Add all ingredients except soda water to a glass and stir to combine. Top with soda water. Garnish with a fresh bay leaf.",
+    "notes": "Pickled Ginger Syrup: Blend sugar, water, and pickled sushi ginger; strain and refrigerate.",
+    "source": "https://punchdrink.com/recipes/nashi-highball/",
+    "style": "highball"
+  },
+  {
+    "id": "blanka",
+    "name": "Blanka",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "45 ml"
+      },
+      {
+        "name": "apple celery shrub",
+        "measure": "75 ml"
+      },
+      {
+        "name": "lemon juice",
+        "measure": "5 ml"
+      },
+      {
+        "name": "absinthe",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "saline solution",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "white balsamic vinegar",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Combine all ingredients in a shaker with ice. 'Throw' three times (shake with a bit of flair). Strain over a large ice cube in a rocks glass.",
+    "notes": "Apple Celery Shrub: 150 ml Granny Smith apple juice, 150 ml celery juice, 20 ml ginger juice, 25 ml vodka, 175 ml simple syrup (6:4 sugar:water), pinches of citric, ascorbic, and malic acids. Juice apples, celery, and ginger; mix with vodka, simple syrup, and acids. Chill 4-5 days.",
+    "source": "https://punchdrink.com/recipes/blanka/",
+    "style": "sour"
+  },
+  {
+    "id": "ni-de-aqui-ni-de-alla",
+    "name": "Ni De Aqui Ni De Alla",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "bourbon",
+        "measure": "30 ml"
+      },
+      {
+        "name": "mezcal",
+        "measure": "30 ml"
+      },
+      {
+        "name": "plantain syrup",
+        "measure": "30 ml"
+      },
+      {
+        "name": "Angostura bitters",
+        "measure": "2 dashes"
+      },
+      {
+        "name": "banana bitters",
+        "measure": "2 dashes"
+      }
+    ],
+    "instructions": "Line a rocks glass with a banana leaf. Add all ingredients to a mixing glass with ice and stir. Strain over a large ice cube into the prepared glass.",
+    "notes": "Plantain Syrup: 1 cup water, 1 cup light brown sugar, ½ cup sliced ripe plantains. Combine water and sugar; heat until sugar dissolves. At ~180°F, add plantains and simmer 7-10 minutes. Remove from heat, steep 10 minutes, strain, and chill. Keeps up to a week.",
+    "source": "https://punchdrink.com/recipes/ni-de-aqui-ni-de-alla/",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "frozen-mexican-martini",
+    "name": "Frozen Mexican Martini",
+    "category": "Cocktail",
+    "glass": "Stemmed glass",
+    "ingredients": [
+      {
+        "name": "blanco tequila",
+        "measure": "60 ml"
+      },
+      {
+        "name": "triple sec",
+        "measure": "22.5 ml"
+      },
+      {
+        "name": "Rose's Lime Juice",
+        "measure": "15 ml"
+      },
+      {
+        "name": "rich simple syrup",
+        "measure": "15 ml"
+      },
+      {
+        "name": "fresh lime juice",
+        "measure": "7.5 ml"
+      },
+      {
+        "name": "olive brine",
+        "measure": "30 ml"
+      }
+    ],
+    "instructions": "Prepare a stemmed glass with a half salt rim (optional). Combine all ingredients except olive brine in a blender with ice. Blend on low for ~5 seconds, then high for ~10 seconds. Pour into the prepared glass. Float olive brine on top. Garnish with a straw and olives.",
+    "source": "https://punchdrink.com/recipes/frozen-mexican-martini/",
+    "style": "frozen"
+  },
+  {
+    "id": "tropical-itch",
+    "name": "Tropical Itch",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/tropical-itch/",
+    "style": "tropical"
+  },
+  {
+    "id": "star-daisy",
+    "name": "Star Daisy",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/star-daisy/",
+    "style": "floral"
+  },
+  {
+    "id": "gin-fizz-tropical",
+    "name": "Gin Fizz Tropical",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/gin-fizz-tropical/",
+    "style": "fizz"
+  },
+  {
+    "id": "wibble",
+    "name": "Wibble",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/wibble/",
+    "style": "experimental"
+  },
+  {
+    "id": "puritan",
+    "name": "Puritan",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/puritan/",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "alaska",
+    "name": "Alaska",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/alaska/",
+    "style": "classic"
+  },
+  {
+    "id": "martinez",
+    "name": "Martinez",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/martinez/",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "yellow",
+    "name": "Yellow",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/yellow/",
+    "style": "experimental"
+  },
+  {
+    "id": "yolanda",
+    "name": "Yolanda",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/yolanda/",
+    "style": "classic"
+  },
+  {
+    "id": "two-dylans",
+    "name": "Two Dylans",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/two-dylans/",
+    "style": "experimental"
+  },
+  {
+    "id": "fairbanks-loan-2",
+    "name": "Fairbanks Loan 2",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/fairbanks-loan-2/",
+    "style": "classic"
+  },
+  {
+    "id": "ward-eight",
+    "name": "Ward Eight",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/ward-eight/",
+    "style": "classic"
+  },
+  {
+    "id": "rolls-royce",
+    "name": "Rolls Royce",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/rolls-royce/",
+    "style": "classic"
+  },
+  {
+    "id": "floradora",
+    "name": "Floradora",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/floradora/",
+    "style": "classic"
+  },
+  {
+    "id": "multiverse",
+    "name": "Multiverse",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/multiverse/",
+    "style": "experimental"
+  },
+  {
+    "id": "tunnel",
+    "name": "Tunnel",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/tunnel/",
+    "style": "experimental"
+  },
+  {
+    "id": "mauresque",
+    "name": "Mauresque",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/mauresque/",
+    "style": "classic"
+  },
+  {
+    "id": "rum-cow",
+    "name": "Rum Cow",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/rum-cow/",
+    "style": "tropical"
+  },
+  {
+    "id": "gibsons-pauline",
+    "name": "Gibson's Pauline",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/gibsons-pauline/",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "obituary",
+    "name": "Obituary",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/obituary/",
+    "style": "experimental"
+  },
+  {
+    "id": "hawaiian-cocktail",
+    "name": "Hawaiian Cocktail",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/hawaiian-cocktail/",
+    "style": "tropical"
+  },
+  {
+    "id": "zac-overmans-picon-punch",
+    "name": "Zac Overman's Picon Punch",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/zac-overmans-picon-punch/",
+    "style": "classic"
+  },
+  {
+    "id": "pancho-villa",
+    "name": "Pancho Villa",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/pancho-villa/",
+    "style": "classic"
+  },
+  {
+    "id": "dauphines-roffignac",
+    "name": "Dauphine's Roffignac",
+    "category": "Cocktail",
+    "source": "https://punchdrink.com/recipes/dauphines-roffignac/",
+    "style": "classic"
+  },
+  {
+    "id": "cardinale",
+    "name": "Cardinale",
+    "category": "Cocktail",
+    "style": "classic"
+  },
+  {
+    "id": "alpine-negroni-2",
+    "name": "Alpine Negroni",
+    "category": "Cocktail",
+    "glass": "Rocks glass",
+    "ingredients": [
+      {
+        "name": "gin",
+        "measure": "180 ml"
+      },
+      {
+        "name": "Campari",
+        "measure": "180 ml"
+      },
+      {
+        "name": "sweet vermouth",
+        "measure": "180 ml"
+      },
+      {
+        "name": "Amaro Braulio",
+        "measure": "180 ml"
+      },
+      {
+        "name": "Champagne acid",
+        "measure": "60 ml"
+      },
+      {
+        "name": "water",
+        "measure": "180 ml"
+      }
+    ],
+    "instructions": "Combine all ingredients in a liter bottle. Store in the freezer. When ready to serve, pour into a rocks glass over a large ice cube. Garnish with a lemon twist.",
+    "notes": "Champagne Acid: 3 grams lactic acid, 3 grams tartaric acid, 94 grams water. Add all ingredients into a resealable container and shake until dissolved.",
+    "source": "https://punchdrink.com/recipes/alpine-negroni-2/",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "alpine-negroni",
+    "name": "Alpine Negroni",
+    "category": "Cocktail",
+    "style": "spirit-forward"
+  },
+  {
+    "id": "eeyores-requiem",
+    "name": "Eeyore's Requiem",
+    "category": "Cocktail",
+    "style": "experimental"
+  },
+  {
+    "id": "kingston-negroni",
+    "name": "Kingston Negroni",
+    "category": "Cocktail",
+    "style": "tropical"
+  },
+  {
+    "id": "kula-negroni",
+    "name": "Kula Negroni",
+    "category": "Cocktail",
+    "style": "tropical"
+  },
+  {
+    "id": "polka-dot-negroni",
+    "name": "Polka Dot Negroni",
+    "category": "Cocktail",
+    "style": "experimental"
   }
 ]
