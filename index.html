@@ -2075,10 +2075,10 @@
       };
 
       const navItems = [
-        { id: 'recipesHub', label: 'Recipes', icon: 'LayoutGrid' },
-        { id: 'inventory', label: 'Bar', icon: 'Wine', count: getActiveBarInventory().length },
-        { id: 'browse', label: 'Browse', icon: 'Search' },
-        { id: 'settings', label: 'Settings', icon: 'Settings' },
+        { id: 'recipesHub', label: 'Recipes', icon: 'icons/recipes.svg' },
+        { id: 'inventory', label: 'Bar', icon: 'icons/bars.svg', count: getActiveBarInventory().length },
+        { id: 'browse', label: 'Browse', icon: 'icons/browse.svg' },
+        { id: 'settings', label: 'Settings', icon: 'icons/settings.svg' },
       ];
 
       return (
@@ -2681,7 +2681,7 @@
                     view === item.id ? 'text-copper' : 'text-ink-500'
                   }`}
                 >
-                  <Icon name={item.icon} className="w-5 h-5" />
+                  <img src={item.icon} className="w-5 h-5" alt={item.label} />
                   <span className="text-2xs">{item.label}</span>
                   {item.count > 0 && view !== item.id && (
                     <span className="absolute -top-1 right-1 w-1.5 h-1.5 bg-copper " />
@@ -3811,17 +3811,17 @@
       const modifiers = extractModifiers(drink, ingredientsDb);
       const category = drink.category || drink.ibaCategory;
       
-      // Status indicator - neutral margin language (very subtle gray checkmark for ready)
+      // Status indicator - more prominent for better visibility
       const getStatusIndicator = () => {
         if (canMake) {
-          // Ready: show tiny neutral gray checkmark
+          // Ready: show more visible checkmark
           return (
-            <Icon name="Check" className="w-2.5 h-2.5 text-ink-600" />
+            <Icon name="Check" className="w-3.5 h-3.5 text-ink-300" />
           );
         } else if (missingCount > 0 && missingCount <= 2) {
-          // Missing 1-2: show tiny neutral number
+          // Missing 1-2: show more visible number
           return (
-            <span className="text-ink-600 text-[10px] font-medium leading-none tabular-nums">
+            <span className="text-ink-300 text-xs font-semibold leading-none tabular-nums bg-ink-800 px-1.5 py-0.5 rounded">
               {missingCount}
             </span>
           );
@@ -3838,7 +3838,7 @@
       
       return (
         <div
-          className="py-4 border-b border-ink-700 cursor-pointer last:border-0"
+          className="py-4 cursor-pointer"
           onClick={onClick}
         >
           <div className="flex items-start gap-4">
@@ -4080,20 +4080,7 @@
                 {/* User Notes Section */}
                 <hr className="border-ink-700" />
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-ink-200">My Notes</h2>
-                    {!isEditingNote && (
-                      <button
-                        onClick={() => {
-                          setEditingNoteText(userNote || '');
-                          setIsEditingNote(true);
-                        }}
-                        className="text-sm text-ink-500 hover:text-ink-300 transition-colors"
-                      >
-                        {userNote ? 'Edit' : 'Add note'}
-                      </button>
-                    )}
-                  </div>
+                  <h2 className="text-lg font-semibold text-ink-200 mb-4">My Notes</h2>
                   {isEditingNote ? (
                     <div className="space-y-3">
                       <textarea
@@ -4138,9 +4125,25 @@
                       </div>
                     </div>
                   ) : userNote ? (
-                    <p className="text-ink-400 leading-relaxed whitespace-pre-wrap">{userNote}</p>
+                    <div
+                      onClick={() => {
+                        setEditingNoteText(userNote);
+                        setIsEditingNote(true);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <p className="text-ink-400 leading-relaxed whitespace-pre-wrap">{userNote}</p>
+                    </div>
                   ) : (
-                    <p className="text-ink-600 text-sm italic">No notes yet. Click "Add note" to add your thoughts.</p>
+                    <div
+                      onClick={() => {
+                        setEditingNoteText('');
+                        setIsEditingNote(true);
+                      }}
+                      className="min-h-[4rem] cursor-pointer border-2 border-dashed border-ink-700 rounded-lg flex items-center justify-center text-ink-600 hover:border-ink-500 hover:text-ink-500 transition-colors"
+                    >
+                      <span className="text-sm">Tap to add notes</span>
+                    </div>
                   )}
                 </div>
 
