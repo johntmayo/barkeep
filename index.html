@@ -717,7 +717,6 @@
       const [showImportShared, setShowImportShared] = useState(false);
       const [sharedRecipeData, setSharedRecipeData] = useState(null);
       const [collections, setCollections] = useState([]);
-      const [showShoppingList, setShowShoppingList] = useState(null);
       const [updateAvailable, setUpdateAvailable] = useState(false);
       const [waitingWorker, setWaitingWorker] = useState(null);
       const [unitPreference, setUnitPreference] = useState(() => {
@@ -2153,7 +2152,7 @@
                     setView('library');
                   }
                 }} className="flex items-center gap-2 text-ink-100">
-                  ← <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view?.startsWith('collection-') ? 'Home' : 'Library'}</span>
+                  <span className="text-2xl">←</span> <span className="text-xl font-bold uppercase">{view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view?.startsWith('collection-') ? 'Home' : 'Library'}</span>
                 </button>
               )}
               <div className="flex items-center gap-1">
@@ -2205,39 +2204,6 @@
                 toggleKeeper={toggleKeeper}
                 toggleToTry={toggleToTry}
                 isInToTry={isInToTry}
-                onCreateShoppingList={(drinks) => {
-                  const ingredientCounts = {};
-                  drinks.forEach(drink => {
-                    const missing = drink.ingredients?.filter(ing => {
-                      const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
-                      const barInventory = getActiveBarInventory();
-                      const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
-                      return !invCanonical.has(ingCanonical);
-                    }) || [];
-                    
-                    missing.forEach(ing => {
-                      const key = normalizeIngredient(ing.name, ingredientsDb);
-                      if (!ingredientCounts[key]) {
-                        ingredientCounts[key] = { name: ing.name, count: 0, recipes: [] };
-                      }
-                      if (!ingredientCounts[key].recipes.find(r => r.id === drink.id)) {
-                        ingredientCounts[key].count++;
-                        ingredientCounts[key].recipes.push({ id: drink.id, name: drink.name });
-                      }
-                    });
-                  });
-                  
-                  const shoppingList = Object.values(ingredientCounts)
-                    .sort((a, b) => b.count - a.count)
-                    .map(item => `${item.name} (unlocks ${item.count} ${item.count === 1 ? 'recipe' : 'recipes'})`)
-                    .join('\n');
-                  
-                  navigator.clipboard.writeText(shoppingList).then(() => {
-                    toast('Shopping list copied to clipboard', 'success');
-                  }).catch(() => {
-                    setShowShoppingList(shoppingList);
-                  });
-                }}
               />
             ) : view === 'inventory' ? (
               <InventoryView 
@@ -2304,6 +2270,7 @@
                 getActiveBarInventory={getActiveBarInventory}
                 normalizeIngredient={normalizeIngredient}
                 onAdd={addToInventory}
+                onSelectIngredient={(ingredient) => setSelectedIngredient(ingredient)}
               />
             ) : view === 'settings' ? (
               <SettingsView
@@ -2588,49 +2555,6 @@
                       </span>
                     )}
                   </p>
-                  {view === 'almostMake' && displayDrinks.length > 0 && (
-                    <button
-                      onClick={() => {
-                        // Create shopping list
-                        const ingredientCounts = {};
-                        displayDrinks.forEach(drink => {
-                          const missing = drink.ingredients?.filter(ing => {
-                            const ingCanonical = normalizeIngredient(ing.name, ingredientsDb);
-                            const barInventory = getActiveBarInventory();
-                            const invCanonical = new Set(barInventory.map(i => normalizeIngredient(i.name, ingredientsDb)));
-                            return !invCanonical.has(ingCanonical);
-                          }) || [];
-                          
-                          missing.forEach(ing => {
-                            const key = normalizeIngredient(ing.name, ingredientsDb);
-                            if (!ingredientCounts[key]) {
-                              ingredientCounts[key] = { name: ing.name, count: 0, recipes: [] };
-                            }
-                            if (!ingredientCounts[key].recipes.find(r => r.id === drink.id)) {
-                              ingredientCounts[key].count++;
-                              ingredientCounts[key].recipes.push({ id: drink.id, name: drink.name });
-                            }
-                          });
-                        });
-                        
-                        const shoppingList = Object.values(ingredientCounts)
-                          .sort((a, b) => b.count - a.count)
-                          .map(item => `${item.name} (unlocks ${item.count} ${item.count === 1 ? 'recipe' : 'recipes'})`)
-                          .join('\n');
-                        
-                        // Try clipboard
-                        navigator.clipboard.writeText(shoppingList).then(() => {
-                          toast('Shopping list copied to clipboard', 'success');
-                        }).catch(() => {
-                          setShowShoppingList(shoppingList);
-                        });
-                      }}
-                      className="px-4 py-2 btn-copper text-sm font-medium"
-                    >
-                      <Icon name="ShoppingCart" className="w-4 h-4 inline mr-2" />
-                      <span>Create Shopping List</span>
-                    </button>
-                  )}
                 </div>
 
                 {/* Recipe List */}
@@ -2818,49 +2742,6 @@
             />
           )}
           
-          {showShoppingList && (
-            <div className="fixed inset-0 z-50 bg-ink-950 flex items-center justify-center p-4" onClick={() => setShowShoppingList(null)}>
-              <div className="max-w-xl w-full bg-ink-900 p-6" onClick={e => e.stopPropagation()}>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-ink-100 uppercase">Shopping List</h2>
-                  <button onClick={() => setShowShoppingList(null)} className="text-ink-500 hover:text-ink-300">
-                    ×
-                  </button>
-                </div>
-                <textarea
-                  value={showShoppingList}
-                  readOnly
-                  className="w-full h-64 px-4 py-3 input-field text-sm text-ink-100 resize-none mb-4 font-mono"
-                />
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(showShoppingList);
-                      toast('Copied to clipboard', 'success');
-                    }}
-                    className="text-sm btn-copper"
-                  >
-                    copy to clipboard
-                  </button>
-                  <button
-                    onClick={() => {
-                      const blob = new Blob([showShoppingList], { type: 'text/plain' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = 'shopping-list.txt';
-                      a.click();
-                      URL.revokeObjectURL(url);
-                      toast('Downloaded', 'success');
-                    }}
-                    className="text-sm text-ink-500 hover:text-ink-300"
-                  >
-                    download
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       );
     };
@@ -2871,7 +2752,7 @@
       savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
       onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
       onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb, 
-      bars = [], activeBar, onSwitchBar, onCreateShoppingList, toggleKeeper, toggleToTry, isInToTry
+      bars = [], activeBar, onSwitchBar, toggleKeeper, toggleToTry, isInToTry
     }) => {
       const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
       
@@ -3171,7 +3052,7 @@
     };
 
     const GatewayBottlesView = ({
-      getAllDrinks, canMakeDrink, ingredientsDb, getActiveBarInventory, normalizeIngredient, onAdd
+      getAllDrinks, canMakeDrink, ingredientsDb, getActiveBarInventory, normalizeIngredient, onAdd, onSelectIngredient
     }) => {
       // Calculate gateway bottles
       const gatewayBottles = useMemo(() => {
@@ -3257,9 +3138,16 @@
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-display text-base text-ink-100 font-medium text-copper transition-colors">
+                        <button
+                          onClick={() => {
+                            if (onSelectIngredient) {
+                              onSelectIngredient(item.canonical);
+                            }
+                          }}
+                          className="font-display text-base text-ink-100 font-medium text-copper hover:text-copper/80 transition-colors text-left"
+                        >
                           {item.name}
-                        </h3>
+                        </button>
                         <span className="text-2xs px-2 py-0.5 bg-copper/20 text-copper border border-copper/30 font-medium">
                           {item.count} {item.count === 1 ? 'recipe' : 'recipes'}
                         </span>
@@ -3291,7 +3179,7 @@
       savedCount, favoritesCount, canMakeCount, almostMakeCount, wantToTryCount, customCount, allCount, collectionsCount, 
       onNavigate, getMakeableDrinks, getAlmostMakeableDrinks, getAllCollections, getCollectionRecipes,
       onSelectDrink, keepers, collections, getMissingCount, canMakeDrink, ingredientsDb, 
-      bars = [], activeBar, onSwitchBar, onCreateShoppingList, toggleKeeper, toggleToTry, isInToTry
+      bars = [], activeBar, onSwitchBar, toggleKeeper, toggleToTry, isInToTry
     }) => {
       const allCollections = Array.isArray(getAllCollections) ? getAllCollections : [];
       
@@ -3388,14 +3276,6 @@
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-ink-100 uppercase">Almost make</h2>
                 <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => {
-                      onCreateShoppingList(almostMakeRecipes);
-                    }}
-                    className="text-sm text-ink-500 hover:text-ink-300"
-                  >
-                    create shopping list
-                  </button>
                   <button
                     onClick={() => onNavigate('almostMake')}
                     className="text-sm text-ink-500 hover:text-ink-300"
@@ -3726,6 +3606,11 @@
       const [editingId, setEditingId] = useState(null);
       const [newName, setNewName] = useState('');
       const [newDescription, setNewDescription] = useState('');
+      const [expandedSections, setExpandedSections] = useState({
+        system: false,
+        curated: false,
+        custom: false
+      });
       
       const handleSave = () => {
         if (!newName.trim()) return;
@@ -3836,41 +3721,59 @@
           
           {/* System Collections (Keepers view + To Try) */}
           <div className="mb-8">
-            <h3 className="text-sm text-ink-500 uppercase tracking-widest mb-4">System</h3>
-            <hr className="border-ink-700 mb-4" />
-            <div className="space-y-4">
-              {/* Keepers View */}
-              <div className="pb-3 border-b border-ink-700 last:border-0">
-                <button
-                  onClick={() => onNavigate('keepers')}
-                  className="text-left hover:text-ink-300 transition-colors"
-                >
-                  <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">Keepers</h3>
-                  <p className="text-ink-500 text-sm">{keepersCount || 0} {keepersCount === 1 ? 'recipe' : 'recipes'}</p>
-                </button>
-              </div>
+            <button
+              onClick={() => setExpandedSections({...expandedSections, system: !expandedSections.system})}
+              className="flex items-center justify-between w-full mb-4"
+            >
+              <h3 className="text-sm text-ink-500 uppercase tracking-widest">System</h3>
+              <Icon name={expandedSections.system ? "ChevronUp" : "ChevronDown"} className="w-4 h-4 text-ink-500" />
+            </button>
+            {expandedSections.system && (
+              <>
+                <hr className="border-ink-700 mb-4" />
+                <div className="space-y-4">
+                  {/* Keepers View */}
+                  <div className="pb-3 border-b border-ink-700 last:border-0">
+                    <button
+                      onClick={() => onNavigate('keepers')}
+                      className="text-left hover:text-ink-300 transition-colors"
+                    >
+                      <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">Keepers</h3>
+                      <p className="text-ink-500 text-sm">{keepersCount || 0} {keepersCount === 1 ? 'recipe' : 'recipes'}</p>
+                    </button>
+                  </div>
 
-              {/* To Try Collection */}
-              {toTryCollection && (
-                <div className="pb-3 border-b border-ink-700 last:border-0">
-                  <button
-                    onClick={() => onNavigate(toTryCollection.id)}
-                    className="text-left hover:text-ink-300 transition-colors"
-                  >
-                    <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">{toTryCollection.name}</h3>
-                    <p className="text-ink-500 text-sm">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
-                  </button>
+                  {/* To Try Collection */}
+                  {toTryCollection && (
+                    <div className="pb-3 border-b border-ink-700 last:border-0">
+                      <button
+                        onClick={() => onNavigate(toTryCollection.id)}
+                        className="text-left hover:text-ink-300 transition-colors"
+                      >
+                        <h3 className="text-base font-bold text-ink-100 mb-1 uppercase">{toTryCollection.name}</h3>
+                        <p className="text-ink-500 text-sm">{(toTryCollection.recipeIds || []).length} {(toTryCollection.recipeIds || []).length === 1 ? 'recipe' : 'recipes'}</p>
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
           
           {/* Curated Collections */}
           {curatedCollections.length > 0 && (
             <div className="mb-8">
-              <h3 className="text-sm text-ink-500 uppercase tracking-widest mb-4">Curated</h3>
-              <hr className="border-ink-700 mb-4" />
-              <div className="space-y-4">
+              <button
+                onClick={() => setExpandedSections({...expandedSections, curated: !expandedSections.curated})}
+                className="flex items-center justify-between w-full mb-4"
+              >
+                <h3 className="text-sm text-ink-500 uppercase tracking-widest">Curated</h3>
+                <Icon name={expandedSections.curated ? "ChevronUp" : "ChevronDown"} className="w-4 h-4 text-ink-500" />
+              </button>
+              {expandedSections.curated && (
+                <>
+                  <hr className="border-ink-700 mb-4" />
+                  <div className="space-y-4">
                 {curatedCollections.map(coll => {
                   const recipeCount = getCollectionRecipes ? getCollectionRecipes(coll).length : 0;
                   return (
@@ -3885,7 +3788,9 @@
                     </div>
                   );
                 })}
-              </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
           
@@ -3893,8 +3798,18 @@
           <div>
             {otherPersonalCollections.length > 0 && (
               <>
-                <h3 className="text-sm text-ink-500 uppercase tracking-widest mb-4">Custom</h3>
-                <hr className="border-ink-700 mb-4" />
+                <button
+                  onClick={() => setExpandedSections({...expandedSections, custom: !expandedSections.custom})}
+                  className="flex items-center justify-between w-full mb-4"
+                >
+                  <h3 className="text-sm text-ink-500 uppercase tracking-widest">Custom</h3>
+                  <Icon name={expandedSections.custom ? "ChevronUp" : "ChevronDown"} className="w-4 h-4 text-ink-500" />
+                </button>
+                {expandedSections.custom && (
+                  <>
+                    <hr className="border-ink-700 mb-4" />
+                  </>
+                )}
               </>
             )}
             {personalCollections.length === 0 && curatedCollections.length === 0 ? (
@@ -3906,12 +3821,15 @@
                 <p className="text-ink-600 text-sm mt-1">Create collections to organize your recipes</p>
               </div>
             ) : otherPersonalCollections.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-ink-500 text-sm">No personal collections yet</p>
-                <p className="text-ink-600 text-2xs mt-1">Create one to get started</p>
-              </div>
+              expandedSections.custom && (
+                <div className="text-center py-8">
+                  <p className="text-ink-500 text-sm">No personal collections yet</p>
+                  <p className="text-ink-600 text-2xs mt-1">Create one to get started</p>
+                </div>
+              )
             ) : (
-              <div className="space-y-4">
+              expandedSections.custom && (
+                <div className="space-y-4">
                 {otherPersonalCollections.map(coll => {
                   const recipeCount = coll.recipeIds?.length || 0;
                   return (
@@ -4426,8 +4344,8 @@
             <div className="max-w-2xl mx-auto">
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
-                <button onClick={onClose} className="text-ink-500 hover:text-ink-300">
-                  ← Back
+                <button onClick={onClose} className="flex items-center gap-2 text-ink-500 hover:text-ink-300">
+                  <span className="text-2xl">←</span> <span>Back</span>
                 </button>
                 <div className="text-center">
                   {canMake && <span className="text-xs text-emerald-400 uppercase tracking-wide">Ready to make</span>}
@@ -4849,8 +4767,8 @@
             <div className="max-w-2xl mx-auto">
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
-                <button onClick={onClose} className="text-ink-500 hover:text-ink-300 transition-colors">
-                  ← Back
+                <button onClick={onClose} className="flex items-center gap-2 text-ink-500 hover:text-ink-300 transition-colors">
+                  <span className="text-2xl">←</span> <span>Back</span>
                 </button>
                 <h1 className="text-xl font-bold text-ink-100">Ingredient</h1>
                 <div className="w-12" />
