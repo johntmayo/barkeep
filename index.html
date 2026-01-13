@@ -5943,50 +5943,6 @@
             </div>
           )}
 
-<<<<<<< HEAD
-=======
-          {/* Gateway Bottles Section */}
-          {gatewayBottles.length > 0 && (
-            <div className="mt-8">
-              <div className="mb-4">
-                <h2 className="font-display text-xl text-ink-100 font-light mb-1">Gateway Bottles</h2>
-                <p className="text-ink-500 text-sm">Adding one of these would unlock new recipes</p>
-              </div>
-              <div className="border border-ink-700 overflow-hidden">
-                {gatewayBottles.map((item) => (
-                  <div
-                    key={item.name}
-                    className="py-3 px-4 border-b border-ink-700 transparent transition-colors last:border-0 group"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-display text-base text-ink-100 font-medium text-copper transition-colors">
-                            {item.name}
-                          </h3>
-                          <span className="text-2xs px-2 py-0.5  bg-copper/20 text-copper border border-copper/30 font-medium">
-                            {item.count} {item.count === 1 ? 'recipe' : 'recipes'}
-                          </span>
-                        </div>
-                        <p className="text-ink-600 text-2xs font-light line-clamp-1">
-                          {item.recipes.slice(0, 5).map(r => r.name).join(' · ')}
-                          {item.recipes.length > 5 && ' · ...'}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => onAdd(item.name)}
-                        className="px-3 py-1.5 text-xs text-copper hover:text-copper border border-copper/30 copper/50  transition-colors flex-shrink-0 opacity-0 opacity-100"
-                        title="Add to bar"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Copy Bar Contents Button */}
           {inventory.length > 0 && (
             <div className="mt-8 pt-6 border-t border-ink-700">
