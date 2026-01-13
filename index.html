@@ -2078,9 +2078,9 @@
       };
 
       const navItems = [
-        { id: 'home', label: 'Home', icon: 'icons/home.svg' },
+        { id: 'home', label: 'Mix', icon: 'icons/home.svg' },
         { id: 'bars', label: 'Bar', icon: 'icons/bars.svg' },
-        { id: 'library', label: 'Library', icon: 'icons/library.svg' },
+        { id: 'library', label: 'Notebook', icon: 'icons/library.svg' },
         { id: 'settings', label: 'Settings', icon: 'icons/settings.svg' },
       ];
 
@@ -4124,13 +4124,9 @@
     const RecipeCard = ({ drink, rating, isSaved, isFavorite, canMake, missingCount, onClick, onToggleSaved, onToggleFavorite, className }) => (
       <div className={`border border-ink-700 overflow-hidden group cursor-pointer  ${className}`} onClick={onClick}>
         <div className="relative h-36 sm:h-44 overflow-hidden bg-ink-900">
-          {drink.image ? (
-            <img src={drink.image} alt={drink.name} className="w-full h-full object-cover opacity-75 opacity-90 scale-105  duration-500" loading="lazy" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-ink-850 to-ink-900">
-              <span className="font-display text-4xl text-ink-700">{drink.name.charAt(0)}</span>
-            </div>
-          )}
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-ink-850 to-ink-900">
+            <span className="font-display text-4xl text-ink-700">{drink.name.charAt(0)}</span>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/30 to-transparent" />
           
           {/* Status badges */}
