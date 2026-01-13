@@ -2080,8 +2080,8 @@
 
       const navItems = [
         { id: 'home', label: 'Home', icon: 'icons/home.svg' },
+        { id: 'bars', label: 'Bar', icon: 'icons/bars.svg' },
         { id: 'library', label: 'Library', icon: 'icons/library.svg' },
-        { id: 'bars', label: 'Bars', icon: 'icons/bars.svg' },
         { id: 'settings', label: 'Settings', icon: 'icons/settings.svg' },
       ];
 
@@ -2140,13 +2140,15 @@
           {/* Mobile Header */}
           <header className="sm:hidden sticky top-0 z-40 bg-ink-950 border-b border-ink-700">
             <div className="flex items-center justify-between px-4 h-14">
-              {(view === 'home' || view === 'settings' || view === 'bars' || view === 'library' || view === 'manageBars' || view === 'inventory' || view === 'browse') ? (
+              {(view === 'home' || view === 'settings' || view === 'bars' || view === 'library' || view === 'manageBars' || view === 'inventory') ? (
                 <h1 className="text-xl font-bold text-ink-100">Barkeep</h1>
               ) : (
                 <button onClick={() => {
-                  // Go back to Home for personalized views
+                  // Go back to Home for personalized views, Library for browse
                   if (view === 'keepers' || view === 'toTry' || view === 'canMake' || view === 'almostMake' || view === 'custom' || view === 'collections' || view?.startsWith('collection-')) {
                     setView('home');
+                  } else if (view === 'browse') {
+                    setView('library');
                   } else {
                     setView('library');
                   }
@@ -2343,31 +2345,6 @@
               <>
                 {/* Search & Filters - Sticky Container */}
                 <div className="sticky top-0 z-30 bg-ink-950 pb-3 -mx-4 px-4 pt-2 mb-5 border-b border-ink-700">
-                  {/* Browse Mode Toggle - only show in browse view */}
-                  {view === 'browse' && (
-                    <div className="flex gap-2 mb-3 pb-3 border-b border-ink-700">
-                      <button
-                        onClick={() => setBrowseMode('recipes')}
-                        className={`flex-1 py-2 px-4 text-sm font-medium transition-colors ${
-                          browseMode === 'recipes'
-                            ? 'bg-copper text-ink-950'
-                            : 'bg-ink-800 text-ink-400 hover:text-ink-200'
-                        }`}
-                      >
-                        Recipes
-                      </button>
-                      <button
-                        onClick={() => setBrowseMode('ingredients')}
-                        className={`flex-1 py-2 px-4 text-sm font-medium transition-colors ${
-                          browseMode === 'ingredients'
-                            ? 'bg-copper text-ink-950'
-                            : 'bg-ink-800 text-ink-400 hover:text-ink-200'
-                        }`}
-                      >
-                        Ingredients
-                      </button>
-                    </div>
-                  )}
                   <div className="flex flex-col gap-3">
                     <div className="flex gap-2">
                       <div className="flex-1 relative">
@@ -2672,6 +2649,24 @@
                   }} />
                 ) : (
                   <div className="bg-transparent overflow-hidden">
+                    {/* Create New Recipe Button - only show in custom view */}
+                    {view === 'custom' && (
+                      <div
+                        className="py-4 cursor-pointer group"
+                        onClick={() => {
+                          setEditingDrink(null);
+                          setShowAddDrink(true);
+                        }}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="flex-1 min-w-0 border border-dashed border-ink-600 rounded py-4 px-4 hover:border-ink-500 transition-colors">
+                            <div className="flex items-center justify-center">
+                              <Icon name="Plus" className="w-6 h-6 text-ink-500" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     {displayDrinks.map((drink, i) => (
                       <RecipeRow
                         key={drink.id}
@@ -2878,7 +2873,7 @@
             {/* Row 1: Ready (full-width) */}
             <button
               onClick={() => onNavigate('canMake')}
-              className="w-full border border-ink-700 p-6 text-left group hover:border-copper/50 transition-colors"
+              className="w-full border border-ink-700 p-8 text-left group hover:border-copper/50 transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div>
