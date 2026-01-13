@@ -3806,11 +3806,11 @@
                   <h3 className="text-sm text-ink-500 uppercase tracking-widest">Custom</h3>
                   <Icon name={expandedSections.custom ? "ChevronUp" : "ChevronDown"} className="w-4 h-4 text-ink-500" />
                 </button>
-                {expandedSections.custom ? (
+                {expandedSections.custom && (
                   <>
                     <hr className="border-ink-700 mb-4" />
                   </>
-                ) : null}
+                )}
               </>
             )}
             {personalCollections.length === 0 && curatedCollections.length === 0 ? (
@@ -3822,14 +3822,14 @@
                 <p className="text-ink-600 text-sm mt-1">Create collections to organize your recipes</p>
               </div>
             ) : otherPersonalCollections.length === 0 ? (
-              expandedSections.custom ? (
+              expandedSections.custom && (
                 <div className="text-center py-8">
                   <p className="text-ink-500 text-sm">No personal collections yet</p>
                   <p className="text-ink-600 text-2xs mt-1">Create one to get started</p>
                 </div>
-              ) : null
+              )
             ) : (
-              expandedSections.custom ? (
+              expandedSections.custom && (
                 <div className="space-y-4">
                   {otherPersonalCollections.map(coll => {
                     const recipeCount = coll.recipeIds?.length || 0;
@@ -3868,7 +3868,7 @@
                     );
                   })}
                 </div>
-              ) : null
+              )
             )}
           </div>
         </div>
