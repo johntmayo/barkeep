@@ -4864,6 +4864,10 @@
       const [showAutocomplete, setShowAutocomplete] = useState(false);
       const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
       const autocompleteRefs = useRef({});
+      const [scanningImage, setScanningImage] = useState(false);
+      const [imagePreview, setImagePreview] = useState(null);
+      const fileInputRef = useRef(null);
+      const toast = useToast();
 
       // Flatten all ingredients for search (including aliases)
       const allIngredients = useMemo(() => {
@@ -4966,6 +4970,99 @@
 
       const removeIngredient = (i) => setIngredients(ingredients.filter((_, idx) => idx !== i));
 
+      const handleImageScan = async (file) => {
+        if (!file) return;
+        
+        setScanningImage(true);
+        const previewUrl = URL.createObjectURL(file);
+        setImagePreview(previewUrl);
+        
+        try {
+          // Convert image to base64
+          const reader = new FileReader();
+          reader.onloadend = async () => {
+            try {
+              const base64Image = reader.result.split(',')[1];
+              
+              // Call Netlify function
+              const response = await fetch('/.netlify/functions/extract', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: base64Image })
+              });
+              
+              if (!response.ok) {
+                throw new Error('Failed to extract recipe');
+              }
+              
+              const data = await response.json();
+              
+              // Populate form with extracted data
+              if (data.name) setName(data.name);
+              if (data.category) setCategory(data.category);
+              if (data.glass) setGlass(data.glass);
+              if (data.instructions) setInstructions(data.instructions);
+              if (data.notes) setNotes(data.notes);
+              
+              if (data.ingredients && Array.isArray(data.ingredients)) {
+                const formattedIngredients = data.ingredients.map(ing => {
+                  // Parse ingredient - could be string or object
+                  if (typeof ing === 'string') {
+                    return {
+                      name: ing,
+                      amount: '',
+                      unit: 'oz'
+                    };
+                  }
+                  // Object format: { name, amount, unit } or { name, measure }
+                  const name = ing.name || '';
+                  let amount = '';
+                  let unit = 'oz';
+                  
+                  if (ing.measure) {
+                    // Parse measure like "2 oz" or "1/2 oz"
+                    const parts = ing.measure.trim().split(/\s+/);
+                    if (parts.length >= 2) {
+                      amount = parts.slice(0, -1).join(' ');
+                      unit = parts[parts.length - 1];
+                    } else if (parts.length === 1) {
+                      unit = parts[0];
+                    }
+                  } else if (ing.amount) {
+                    amount = ing.amount;
+                    unit = ing.unit || 'oz';
+                  }
+                  
+                  return { name, amount, unit };
+                });
+                setIngredients(formattedIngredients);
+              }
+              
+              setScanningImage(false);
+              toast('Recipe extracted successfully!', 'success');
+            } catch (error) {
+              console.error('Scan error:', error);
+              setScanningImage(false);
+              toast('Failed to extract recipe. Please try again.', 'error');
+            } finally {
+              // Clean up preview URL
+              URL.revokeObjectURL(previewUrl);
+            }
+          };
+          reader.readAsDataURL(file);
+        } catch (error) {
+          console.error('Scan error:', error);
+          setScanningImage(false);
+          toast('Failed to extract recipe. Please try again.', 'error');
+          if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+            setImagePreview(null);
+          }
+        }
+      };
+
       const handleSubmit = () => {
         if (!name.trim() || ingredients.length === 0) return;
         
@@ -5024,8 +5121,39 @@
               <div className="p-5 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="font-display text-2xl text-ink-100 font-light">{editingDrink ? 'Edit Recipe' : 'Build Cocktail'}</h2>
-                  <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300"><Icon name="X" className="w-5 h-5" /></button>
+                  <div className="flex items-center gap-2">
+                    {!editingDrink && (
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={scanningImage}
+                        className="px-3 py-1.5 text-xs text-copper border border-copper/30 hover:bg-copper/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        title="Scan recipe from image"
+                      >
+                        {scanningImage ? 'Scanning...' : '📷 Scan'}
+                      </button>
+                    )}
+                    <button onClick={onClose} className="p-2 text-ink-500 hover:text-ink-300"><Icon name="X" className="w-5 h-5" /></button>
+                  </div>
                 </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageScan(file);
+                    // Reset input so same file can be selected again
+                    e.target.value = '';
+                  }}
+                  className="hidden"
+                />
+
+                {imagePreview && (
+                  <div className="mb-4 p-3 bg-ink-900 rounded border border-ink-700">
+                    <img src={imagePreview} alt="Preview" className="max-w-full max-h-48 mx-auto object-contain rounded" />
+                  </div>
+                )}
 
                 <div className="space-y-5">
                   {/* Name */}
@@ -5862,7 +5990,6 @@
               </button>
             </div>
           )}
->>>>>>> 04fb139f8c2dc16d53c377052398948e774cf3ab
         </div>
       );
     };
