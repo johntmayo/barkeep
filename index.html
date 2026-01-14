@@ -2570,17 +2570,38 @@
                     ))}
                   </div>
                 ) : displayDrinks.length === 0 ? (
-                  <EmptyState view={view} onAction={() => {
-                    if (view === 'canMake') {
-                      setView('inventory');
-                    } else if (view === 'browse') {
-                      setShowAddDrink(true);
-                    } else if (view === 'custom') {
-                      setView('browse');
-                    } else {
-                      setView('browse');
-                    }
-                  }} />
+                  view === 'custom' ? (
+                    <div className="bg-transparent overflow-hidden">
+                      {/* Create New Recipe Button - show in custom view even when empty */}
+                      <div
+                        className="py-4 cursor-pointer group"
+                        onClick={() => {
+                          setEditingDrink(null);
+                          setShowAddDrink(true);
+                        }}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="flex-1 min-w-0 border border-dashed border-ink-600 rounded py-4 px-4 hover:border-ink-500 transition-colors">
+                            <div className="flex items-center justify-center">
+                              <Icon name="Plus" className="w-6 h-6 text-ink-500" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <EmptyState view={view} onAction={() => {
+                      if (view === 'canMake') {
+                        setView('inventory');
+                      } else if (view === 'browse') {
+                        setShowAddDrink(true);
+                      } else if (view === 'custom') {
+                        setView('browse');
+                      } else {
+                        setView('browse');
+                      }
+                    }} />
+                  )
                 ) : (
                   <div className="bg-transparent overflow-hidden">
                     {/* Create New Recipe Button - only show in custom view */}
