@@ -317,6 +317,65 @@
       return null;
     };
     
+    // Smart ingredient matching - handles brand names like "Dolin Dry Vermouth" → "Dry Vermouth"
+    const findBestIngredientMatch = (scannedName, ingredientsDb) => {
+      if (!scannedName || !ingredientsDb) return null;
+      
+      const normalizedScanned = normalizeIngredient(scannedName, ingredientsDb);
+      
+      // First, try exact canonical match
+      let bestMatch = null;
+      let bestMatchScore = 0;
+      
+      ingredientsDb.categories?.forEach(cat => {
+        cat.subcategories?.forEach(sub => {
+          sub.items?.forEach(item => {
+            const itemCanonical = normalizeIngredient(item.name, ingredientsDb);
+            
+            // Exact match
+            if (itemCanonical === normalizedScanned) {
+              bestMatch = item.name;
+              bestMatchScore = 100;
+              return;
+            }
+            
+            // Check aliases
+            if (item.aliases) {
+              const aliasMatch = item.aliases.some(alias => 
+                normalizeIngredient(alias, ingredientsDb) === normalizedScanned
+              );
+              if (aliasMatch) {
+                bestMatch = item.name;
+                bestMatchScore = 95;
+                return;
+              }
+            }
+            
+            // Partial match: scanned name contains canonical name (e.g., "Dolin Dry Vermouth" contains "Dry Vermouth")
+            if (normalizedScanned.includes(itemCanonical) && itemCanonical.length >= 3) {
+              const score = (itemCanonical.length / normalizedScanned.length) * 80;
+              if (score > bestMatchScore) {
+                bestMatch = item.name;
+                bestMatchScore = score;
+              }
+            }
+            
+            // Reverse partial match: canonical name contains scanned name (e.g., for abbreviations)
+            if (itemCanonical.includes(normalizedScanned) && normalizedScanned.length >= 3) {
+              const score = (normalizedScanned.length / itemCanonical.length) * 70;
+              if (score > bestMatchScore) {
+                bestMatch = item.name;
+                bestMatchScore = score;
+              }
+            }
+          });
+        });
+      });
+      
+      // Only return match if score is high enough (avoid false positives)
+      return bestMatchScore >= 60 ? bestMatch : null;
+    };
+    
     // Get substitution group for a base spirit ingredient
     // Returns null if not eligible for substitution
     // 
@@ -4910,8 +4969,15 @@
         return flat;
       }, [ingredientsDb]);
 
-      // Get canonical name for an ingredient
+      // Get canonical name for an ingredient (uses smart matching for brand names)
       const getCanonicalName = (name) => {
+        if (!name || !ingredientsDb) return null;
+        
+        // Try smart matching first (handles brand names like "Dolin Dry Vermouth")
+        const smartMatch = findBestIngredientMatch(name, ingredientsDb);
+        if (smartMatch) return smartMatch;
+        
+        // Fall back to existing exact match logic
         const normalized = normalizeIngredient(name, ingredientsDb);
         const found = allIngredients.find(ing => normalizeIngredient(ing.name, ingredientsDb) === normalized && !ing.isAlias);
         return found ? found.name : null;
@@ -5030,33 +5096,37 @@
               if (data.ingredients && Array.isArray(data.ingredients)) {
                 const formattedIngredients = data.ingredients.map(ing => {
                   // Parse ingredient - could be string or object
-                  if (typeof ing === 'string') {
-                    return {
-                      name: ing,
-                      amount: '',
-                      unit: 'oz'
-                    };
-                  }
-                  // Object format: { name, amount, unit } or { name, measure }
-                  const name = ing.name || '';
+                  const rawName = typeof ing === 'string' ? ing : (ing.name || '');
+                  
+                  // Try to auto-match to canonical ingredient (handles brand names)
+                  const matchedName = findBestIngredientMatch(rawName, ingredientsDb) || rawName;
+                  
+                  // Parse measure
                   let amount = '';
                   let unit = 'oz';
                   
-                  if (ing.measure) {
-                    // Parse measure like "2 oz" or "1/2 oz"
-                    const parts = ing.measure.trim().split(/\s+/);
-                    if (parts.length >= 2) {
-                      amount = parts.slice(0, -1).join(' ');
-                      unit = parts[parts.length - 1];
-                    } else if (parts.length === 1) {
-                      unit = parts[0];
+                  if (typeof ing !== 'string') {
+                    if (ing.measure) {
+                      // Parse measure like "2 oz" or "1/2 oz"
+                      const parts = ing.measure.trim().split(/\s+/);
+                      if (parts.length >= 2) {
+                        amount = parts.slice(0, -1).join(' ');
+                        unit = parts[parts.length - 1];
+                      } else if (parts.length === 1) {
+                        unit = parts[0];
+                      }
+                    } else if (ing.amount) {
+                      amount = ing.amount;
+                      unit = ing.unit || 'oz';
                     }
-                  } else if (ing.amount) {
-                    amount = ing.amount;
-                    unit = ing.unit || 'oz';
                   }
                   
-                  return { name, amount, unit };
+                  return { 
+                    name: matchedName, 
+                    amount, 
+                    unit,
+                    originalName: rawName !== matchedName ? rawName : undefined // Store original if matched
+                  };
                 });
                 setIngredients(formattedIngredients);
               }
@@ -5219,7 +5289,7 @@
                           
                           return (
                             <div key={i} className="relative">
-                              <div className={`flex flex-col sm:flex-row sm:items-center gap-2 p-3 border border-ink-700 ${isUnmatched ? 'border border-amber-900/50 bg-amber-950/10' : ''}`}>
+                              <div className={`flex flex-col sm:flex-row sm:items-center gap-2 p-3 border ${isUnmatched ? 'border-amber-800/40 bg-amber-950/5' : canonicalName ? 'border-emerald-900/30' : 'border-ink-700'}`}>
                                 {/* Top row: Amount and Unit controls */}
                                 <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
                                   {/* Quick amount buttons */}
@@ -5328,9 +5398,9 @@
                                     placeholder="Ingredient name (type to search or enter custom)"
                                     className={`w-full px-3 py-1.5 bg-transparent border text-sm font-light ${
                                       isUnmatched 
-                                        ? 'border-amber-900/50 text-amber-300' 
+                                        ? 'border-amber-800/40 text-amber-200' 
                                         : canonicalName 
-                                          ? 'border-emerald-900/30 text-ink-300' 
+                                          ? 'border-emerald-900/30 text-ink-100' 
                                           : 'border-ink-700 text-ink-300'
                                     }`}
                                   />
@@ -5358,9 +5428,16 @@
                                     </div>
                                   )}
                                   
-                                  {/* Validation feedback - now shows it's OK to use custom */}
+                                  {/* Show original name if it was matched */}
+                                  {ing.originalName && (
+                                    <div className="absolute -top-5 left-0 text-2xs text-ink-500 italic">
+                                      Matched from: {ing.originalName}
+                                    </div>
+                                  )}
+                                  
+                                  {/* Validation feedback - improved colors for readability */}
                                   {isUnmatched && ing.name.length >= 2 && (
-                                    <div className="absolute top-full left-0 right-0 mt-1 px-2 py-1 text-2xs text-amber-400 bg-amber-950/30 border border-amber-900/50 z-40">
+                                    <div className="absolute top-full left-0 right-0 mt-1 px-2 py-1 text-2xs text-amber-300 bg-ink-900 border border-amber-800/40 z-40">
                                       Custom ingredient (not in database)
                                     </div>
                                   )}
